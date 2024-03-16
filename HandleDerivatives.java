@@ -86,6 +86,10 @@ public class HandleDerivatives {
     private int priority(String operator) {
         switch (operator) {
             case "sqrt":
+            case "log":
+            case "ln":
+            case "sin":
+            case "cos":
                 return 4;
             case "^":
                 return 3;
@@ -114,35 +118,55 @@ public class HandleDerivatives {
         Stack<Double> stack = new Stack<>();
 
         for(String token : rpn){
+   // debug    // System.out.println(rpn); // debug
             switch (token) {
+                case "sin":
+                   if (stack.isEmpty()) throw new IllegalArgumentException("Insufficient operands for sin");
+                    stack.push(Math.sin(Math.toRadians(stack.pop()))); //  the angle is in degrees and converts to radians
+                    break;
+                case "cos":
+                    if (stack.isEmpty()) throw new IllegalArgumentException("Insufficient operands for cos");
+                    stack.push(Math.cos(Math.toRadians(stack.pop()))); //  the angle is in degrees and converts to radians
+                    break;
+                case "ln":
+                    if (stack.isEmpty()) throw new IllegalArgumentException("Insufficient operands for log");
+                      double value = stack.pop();
+                      if(value <= 0) throw new IllegalArgumentException("Logarithm of non-positive number");
+                      stack.push(Math.log(value)); // Natural logarithm base 
+                      break;
+                case "log":
+                       if (stack.isEmpty()) throw new IllegalArgumentException("Insufficient operands for log");
+                      double v = stack.pop();
+                      if(v <= 0) throw new IllegalArgumentException("Logarithm of non-positive number");
+                      stack.push(Math.log10(v)); //  logarithm base 10
+                    break;
                 case "sqrt":
-   //          System.out.println(rpn); // debug
-                if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for sqrt");
+                    if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for sqrt");
                     stack.push(Math.sqrt(stack.pop()));
                     break;
                 case "^":
-                if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for ^");
+                    if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for ^");
                     double expo = stack.pop();
                     stack.push(Math.pow(stack.pop(),expo));
                     break;
                 case "*":
-                if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for *");
+                    if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for *");
                     stack.push(stack.pop()*stack.pop());
                     break;
                 case "/":
-                if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for /");
+                    if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for /");
                     double devider = stack.pop();
                     stack.push((double)stack.pop()/(double)devider);
                     break;
                 case "+":
-                if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for +");
+                    if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for +");
                     stack.push(stack.pop()+stack.pop());
                     break;
                 case "-":
-                if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for -");
-                double a = stack.pop();
-                double b = stack.pop();
-                stack.push(a - b);
+                    if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for -");
+                    double a = stack.pop();
+                    double b = stack.pop();
+                    stack.push(a - b);
                     break;
                 default:
                     stack.push(Double.parseDouble(token)); // from str to double

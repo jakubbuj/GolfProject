@@ -22,9 +22,9 @@ public class HandleDerivatives {
             String replacedDerString = replaceVariables(derString, state);
 //  System.out.println("replaced string : "+replacedDerString);
             List<String> rpn = str_to_RPN(replacedDerString);
-// System.out.println("rpn : "+rpn);
+ System.out.println("rpn : "+rpn);
             derivativesArray[i] = rpn_to_double(rpn);
-//System.out.println(derivativesArray[i]);
+System.out.println(derivativesArray[i]);
         }
  //System.out.println();
         return derivativesArray;
@@ -166,7 +166,7 @@ public class HandleDerivatives {
                     if (rpn.size() < 2) throw new IllegalArgumentException("Insufficient operands for -");
                     double a = stack.pop();
                     double b = stack.pop();
-                    stack.push(a - b);
+                    stack.push(b - a);
                     break;
                 default:
                     stack.push(Double.parseDouble(token)); // from str to double

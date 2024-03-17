@@ -43,7 +43,7 @@ public class Euler_Method_for_1st_ODE {
             double[] derivativeValues = handlederivatives.calculate(currentstate); //fill aray with derivatives solved for each dimension
 
             for(int k=0;k<dimentions;k++){ //iterate over each dimension
-                currentstate[k] += stepSize* derivativeValues[k];// update variables 
+                currentstate[k] += stepSize * derivativeValues[k];// update variables 
             }
             time+=stepSize; // keep track of time if needed
         }

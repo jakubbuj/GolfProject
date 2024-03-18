@@ -9,11 +9,12 @@ import javafx.scene.control.Alert;
 // use sqrt as normal operator with spaces after and infront the same with ( and )
 public class HandleDerivatives {
     private List<String> derivativesString;
+    private double time;
 
 
-    HandleDerivatives(List<String> derivatives){
+    HandleDerivatives(List<String> derivatives, double time){
         this.derivativesString=derivatives;
-
+        this.time=time;
     }
 
     //recives a state so array contaning values for all dimentions(derivatives) for every variable
@@ -24,9 +25,9 @@ public class HandleDerivatives {
             String replacedDerString = replaceVariables(derString, state);
 //  System.out.println("replaced string : "+replacedDerString);
             List<String> rpn = str_to_RPN(replacedDerString);
- System.out.println("rpn : "+rpn);
+ //System.out.println("rpn : "+rpn);
             derivativesArray[i] = rpn_to_double(rpn);
-System.out.println(derivativesArray[i]);
+//System.out.println(derivativesArray[i]);
         }
  //System.out.println();
         return derivativesArray;
@@ -35,6 +36,9 @@ System.out.println(derivativesArray[i]);
     // replace variables in derivative expression with values assigned to them in map
     public String replaceVariables(String derivative, double[] state) {
         String[] vari = {"a","b","c","d","e","f","g","h","i","j"};
+        
+        derivative = derivative.replaceAll("t", String.valueOf(time));
+
         for(int i=0;i<state.length;i++){
             derivative = derivative.replaceAll(vari[i], String.valueOf(state[i]));
         }

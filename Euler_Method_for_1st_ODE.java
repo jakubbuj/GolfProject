@@ -39,7 +39,7 @@ public class Euler_Method_for_1st_ODE {
         for (int i = 0; i <= steps; i++) { // iterate over each step
             evolution[i] = currentstate.clone();
 
-            handlederivatives = new HandleDerivatives(rawDerivatives); // pass derivatives
+            handlederivatives = new HandleDerivatives(rawDerivatives, time); // pass derivatives
             double[] derivativeValues = handlederivatives.calculate(currentstate); // fill aray with derivatives solved
                                                                                    // for each dimension
 

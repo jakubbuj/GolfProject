@@ -145,6 +145,7 @@ public class GUI extends Application {
         derivativeField.setPromptText("Enter a derivative for dimension " + (i + 1));
         derivativesFields.add(derivativeField); // add to list 
         root.getChildren().add(derivativeField);
+        derivativeField.setStyle(style);
     }
 
     //create fields for variables
@@ -153,6 +154,7 @@ public class GUI extends Application {
         initialValueField.setPromptText("Enter initial value for dimension " + (i + 1));
         initialValuesFields.add(initialValueField); // add to list 
         root.getChildren().add(initialValueField);
+        initialValueField.setStyle(style);
     }
 
         Button submitButton = new Button("Submit");
@@ -170,7 +172,7 @@ public class GUI extends Application {
         showPlotButton.setStyle(style);
         root.getChildren().add(showPlotButton);
 
-        // Wrap the VBox with a ScrollPane
+        // wrap the VBox with a ScrollPane
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(root);
         scrollPane.setFitToWidth(true);

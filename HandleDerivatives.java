@@ -79,6 +79,23 @@ System.out.println(derivativesArray[i]);
             showAlert("Please make sure that there are values between the brackets.");
         }
 
+        // Check if every opening '(' has a corresponding closing ')'
+        Stack<Character> stack = new Stack<>();
+        for (char c : derivative.toCharArray()) {
+            if (c == '(') {
+                stack.push(c);
+            } else if (c == ')') {
+                if (stack.isEmpty() || stack.pop() != '(') {
+                    showAlert("Please ensure that every opening '(' has a corresponding closing ')' symbol in the derivative expression.");
+                    return;
+                }
+            }
+        }
+        if (!stack.isEmpty()) {
+            showAlert("Please ensure that every opening '(' has a corresponding closing ')' symbol in the derivative expression.");
+            return;
+        }
+        
         // Check if alphabetic characters from (dimensions + 1) to z are used outside of sin, cos, sqrt, log, ln
         if (derivative.matches(".*\\b(sin|cos|sqrt|log|ln)\\b.*")) {
             // Exclude valid functions and then check for remaining alphabetic characters

@@ -45,7 +45,7 @@ public class GUI extends Application {
         dimensionLabel.setStyle(style); 
 
         TextField dimensionField = new TextField();
-        dimensionField.setPromptText("Specify number of dimensions");
+        dimensionField.setPromptText("Specify the number of dimensions");
         dimensionField.setStyle(style); 
 
         Button dimensionButton = new Button("Select");
@@ -56,14 +56,17 @@ public class GUI extends Application {
             String input = dimensionField.getText();
             try {
                 int inputNumber = Integer.parseInt(input);
-                if (inputNumber >= 1 && inputNumber <= 10) {
-                    dimensions = inputNumber;
+                if (inputNumber >= 1) {
+                    if (inputNumber >= 10){
+                        dimensions = 10;
+                    } else {
+                        dimensions = inputNumber;
+                    }
                     displayOptions();
-                } else {
-                    showAlert("Please enter a number between 1 and 10.");
-                }
+                    primaryStage.close();
+                } 
             } catch (NumberFormatException ex) {
-                showAlert("Please enter a valid integer for dimensions.");
+                showAlert("Please enter a valid integer for the dimensions.");
             }
         });
 
@@ -84,13 +87,19 @@ public class GUI extends Application {
     
         Button option1Button = new Button("Euler solver (first order ODEs)");
         option1Button.setStyle("-fx-font-size: 16px; -fx-pref-height: 40px;"); 
-        option1Button.setOnAction(e -> displayEulerSolver("Option 1 selected"));
+        option1Button.setOnAction(e -> {
+            displayEulerSolver("Option 1 selected");
+            optionsStage.close(); // Close the options window
+        });
         option1Button.setMaxWidth(Double.MAX_VALUE); 
     
         Button option2Button = new Button("Another solver (second order ODEs)");
         option2Button.setStyle("-fx-font-size: 16px; -fx-pref-height: 40px;"); 
         option2Button.setMaxWidth(Double.MAX_VALUE); 
-        //option2Button.setOnAction(e -> displayResult("Option 2 selected"));
+        //option1Button.setOnAction(e -> {
+        //displayEulerSolver("Option 2 selected");
+        //optionsStage.close(); // Close the options window
+        //});
     
         Label titleLabel = new Label("Choose solver");
         titleLabel.setStyle("-fx-font-size: 18px;");
@@ -128,14 +137,12 @@ public class GUI extends Application {
         Label derivativesLabel = new Label("Derivatives and initial values:");
         derivativesLabel.setStyle(style);
 
-        
-
         root.getChildren().addAll(startTimeLabel, startTimeField, endTimeLabel, endTimeField, stepSizeLabel, stepSizeField, derivativesLabel);
 
     //create derivatives fields
     for (int i = 0; i < dimensions; i++) {
         TextField derivativeField = new TextField();
-        derivativeField.setPromptText("Enter derivative for dimension " + (i + 1));
+        derivativeField.setPromptText("Enter a derivative for dimension " + (i + 1));
         derivativesFields.add(derivativeField); // add to list 
         root.getChildren().add(derivativeField);
     }
@@ -170,7 +177,7 @@ public class GUI extends Application {
 
         Stage eulerStage = new Stage();
         eulerStage.setTitle("Eulers ODE Solver");
-        eulerStage.setScene(new Scene(scrollPane, 600, 480));
+        eulerStage.setScene(new Scene(scrollPane, 600, 530));
         eulerStage.show();
     }
 
@@ -179,44 +186,61 @@ public class GUI extends Application {
     public void handleSubmitButton(){
         derivatives.clear();
         initialValues.clear();
+        List<Integer> invalidIndices = new ArrayList<>();
 
         if(isDouble(startTimeField.getText())){
             startTime = Double.parseDouble(startTimeField.getText());
         }else{
-            showAlert("Please enter valid numbers (double) for startTime .");
+            showAlert("Please enter a valid number (double) for the startTime.");
         }
         if(isDouble(endTimeField.getText())){
             endTime = Double.parseDouble(endTimeField.getText());
         }else{
-            showAlert("Please enter valid numbers (double) for endTime .");
+            showAlert("Please enter a valid number (double) for the endTime.");
+        }
+        if (startTime > endTime){
+            showAlert("Please make sure that the startTime is smaller then the endtime");
         }
         if(isDouble(stepSizeField.getText())){
             stepSize = Double.parseDouble(stepSizeField.getText());
         }else{
-            showAlert("Please enter valid numbers (double) for stepSize .");
+            showAlert("Please enter a valid number (double) for the stepSize.");
+        }
+        if (stepSize<startTime || stepSize>endTime){
+            showAlert("Please make sure that the stepsize is between the starttime and endtime");
         }
 
         for (TextField field : derivativesFields) { // derivatives 
             derivatives.add(field.getText()); // Store the derivative expressions
         }
-        int index=1;
-        for (TextField field : initialValuesFields) {  //innitial values 
+    
+        int index = 1;
+        for (TextField field : initialValuesFields) {  // initial values 
             if(isDouble(field.getText())){
-                initialValues.add(Double.parseDouble(field.getText()));
-                index++;
+                initialValues.add(Double.parseDouble(field.getText()));          
+            } else {
+                invalidIndices.add(index); // Add index of invalid value
             }
-            else{
-                showAlert("Please enter valid number (double) for initial value.  "+index);
-                index++;
+            index++;
+        }
+    
+        if (!invalidIndices.isEmpty()) { // Check if there are any invalid values
+            StringBuilder errorMessage = new StringBuilder("Invalid number(s) (double) for the initial values at index: ");
+            for (int i = 0; i < invalidIndices.size(); i++) {
+                errorMessage.append(invalidIndices.get(i));
+                if (i < invalidIndices.size() - 1) {
+                    errorMessage.append(", "); 
+                }
             }
+            showAlert(errorMessage.toString());
         }
 
     }
 
     public void aa(){
         
-        System.out.println(" derivative input : "+ derivatives);
-        System.out.println(" initioal values : "+initialValues);
+        System.out.println("derivative input : "+ derivatives);
+        System.out.println("initioal values : "+ initialValues);
 
         Euler_Method_for_1st_ODE Euler = new Euler_Method_for_1st_ODE(startTime, endTime, stepSize, initialValues, derivatives);
         double[][] evolution = Euler.solver();

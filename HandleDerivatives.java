@@ -54,7 +54,7 @@ System.out.println(derivativesArray[i]);
         if (derivative.contains("/") && (!derivative.contains("/ ") || !derivative.contains(" /"))) {
             showAlert("Please make sure to use spaces before and after the '/' operator in the derivative expression.");
         }
-        if (derivative.contains("(") && (!derivative.contains("( ") || !derivative.contains(" ("))) {
+        if (derivative.contains("(") && (!derivative.contains("( ") )) {
             showAlert("Please make sure to use spaces before and after the '(' symbol in the derivative expression.");
         }
         if (derivative.contains(")") && (!derivative.contains(" )") )) {

@@ -23,7 +23,7 @@ public class Euler_Method_for_1st_ODE {
     // returrn 2d array containg evolution of values threw calcultaion
     public double[][] solver() {
         // number of steps to take
-        double time = startTime;
+        double time = startTime+stepSize;
         int dimentions = initialValues.size();
         int steps = (int) (endTime / stepSize);
 

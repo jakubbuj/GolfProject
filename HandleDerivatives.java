@@ -3,6 +3,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
+import javafx.scene.control.Alert;
+
 // regarding reverse polish notation as input beofre and after operator use spaces if u want to have negative number use "-6" with only space infront
 // use sqrt as normal operator with spaces after and infront the same with ( and )
 public class HandleDerivatives {
@@ -39,10 +41,64 @@ System.out.println(derivativesArray[i]);
         return derivative;
     }
 
+    public void errorHandler(String derivative, int dimensions) {
+        if (derivative.contains("+") && (!derivative.contains("+ ") || !derivative.contains(" +"))) {
+            showAlert("Please make sure to use spaces before and after the '+' operator in the derivative expression.");
+        }
+        if (derivative.contains("^") && (!derivative.contains("^ ") || !derivative.contains(" ^"))) {
+            showAlert("Please make sure to use spaces before and after the '^' operator in the derivative expression.");
+        }
+        if (derivative.contains("*") && (!derivative.contains("* ") || !derivative.contains(" *"))) {
+            showAlert("Please make sure to use spaces before and after the '*' operator in the derivative expression.");
+        }
+        if (derivative.contains("/") && (!derivative.contains("/ ") || !derivative.contains(" /"))) {
+            showAlert("Please make sure to use spaces before and after the '/' operator in the derivative expression.");
+        }
+        if (derivative.contains("(") && (!derivative.contains("( ") || !derivative.contains(" ("))) {
+            showAlert("Please make sure to use spaces before and after the '(' symbol in the derivative expression.");
+        }
+        if (derivative.contains(")") && (!derivative.contains(" )") )) {
+            showAlert("Please make sure to use spaces before the ')' symbol in the derivative expression.");
+        }
+        if (derivative.contains("sin") && (!derivative.contains("sin (") )) {
+            showAlert("Please make sure to use spaces after the 'sin' symbol in the derivative expression.");
+        }
+        if (derivative.contains("cos") && (!derivative.contains("cos (") )) {
+            showAlert("Please make sure to use spaces after the ')' symbol in the derivative expression.");
+        }
+        if (derivative.contains("sqrt") && (!derivative.contains("sqrt (") )) {
+            showAlert("Please make sure to use spaces after the 'sqrt' symbol in the derivative expression.");
+        }
+        if (derivative.contains("log") && (!derivative.contains("log (") )) {
+            showAlert("Please make sure to use spaces after the 'log' symbol in the derivative expression.");
+        }
+        if (derivative.contains("ln") && (!derivative.contains("ln (") )) {
+            showAlert("Please make sure to use spaces after the 'ln' symbol in the derivative expression.");
+        }
+        if (derivative.contains("()")||derivative.contains("( )")){
+            showAlert("Please make sure that there are values between the brackets.");
+        }
+
+        // Check if alphabetic characters from (dimensions + 1) to z are used outside of sin, cos, sqrt, log, ln
+        if (derivative.matches(".*\\b(sin|cos|sqrt|log|ln)\\b.*")) {
+            // Exclude valid functions and then check for remaining alphabetic characters
+            String remaining = derivative.replaceAll("(sin|cos|sqrt|log|ln)", "");
+            if (dimensions == 2 && remaining.matches(".*[c-zC-Z].*")) {
+                showAlert("Please ensure proper use of alphabetic characters (c-z) in the derivative expression.");
+            } else if (dimensions != 2 && remaining.matches(".*[" + (char)(dimensions + 'a' - 1) + "-zK-Z].*")) {
+                showAlert("Please ensure proper use of alphabetic characters (" + (char)(dimensions + 'a' ) + "-z) in the derivative expression.");
+            }
+        } else if (dimensions == 2 && derivative.matches(".*[c-zC-Z].*")) {
+            showAlert("Please ensure proper use of alphabetic characters (c-z) in the derivative expression.");
+        } else if (dimensions != 2 && derivative.matches(".*[" + (char)(dimensions + 'a' - 1) + "-zK-Z].*")) {
+            showAlert("Please ensure proper use of alphabetic characters (" + (char)(dimensions + 'a' ) + "-z) in the derivative expression.");
+        }
+    }
 
     //polish reversed notation
     public List<String> str_to_RPN(String derivative) {
         derivative.trim();
+        errorHandler(derivative, derivativesString.size());
         String[] tokens = derivative.split("\\s+");// create tokens
         List<String> rpn = new LinkedList<>();//contain rpn notation
         Stack<String> operators = new Stack<>();//contaion operators temporarly
@@ -177,6 +233,12 @@ System.out.println(derivativesArray[i]);
             throw new IllegalArgumentException("Invalid RPN expression");
         }
         return stack.pop();
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
     // TEST

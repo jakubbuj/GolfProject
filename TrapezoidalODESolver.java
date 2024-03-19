@@ -22,12 +22,11 @@ public class TrapezoidalODESolver {
         double[][] evolution = new double[steps][dimensions];
         double[] currentState = new double[dimensions];
 
-        // Initialize currentState with initial values
         for (int i = 0; i < dimensions; i++) {
             currentState[i] = initialValues.get(i);
         }
 
-        DerivativeHandler derivativeHandler = new DerivativeHandler(); // Create DerivativeHandler instance
+        DerivativeHandler derivativeHandler = new DerivativeHandler(); 
 
         // Solve using Trapezoidal method
         for (int i = 0; i < steps; i++) {

@@ -17,7 +17,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class GUI extends Application {
     private TextField dimensionsField = new TextField();
@@ -146,6 +145,7 @@ public class GUI extends Application {
         derivativeField.setPromptText("Enter a derivative for dimension " + (i + 1));
         derivativesFields.add(derivativeField); // add to list 
         root.getChildren().add(derivativeField);
+        derivativeField.setStyle(style);
     }
 
     //create fields for variables
@@ -154,6 +154,7 @@ public class GUI extends Application {
         initialValueField.setPromptText("Enter initial value for dimension " + (i + 1));
         initialValuesFields.add(initialValueField); // add to list 
         root.getChildren().add(initialValueField);
+        initialValueField.setStyle(style);
     }
 
         Button submitButton = new Button("Submit");
@@ -171,7 +172,7 @@ public class GUI extends Application {
         showPlotButton.setStyle(style);
         root.getChildren().add(showPlotButton);
 
-        // Wrap the VBox with a ScrollPane
+        // wrap the VBox with a ScrollPane
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(root);
         scrollPane.setFitToWidth(true);
@@ -191,46 +192,30 @@ public class GUI extends Application {
 
         if(isDouble(startTimeField.getText())){
             startTime = Double.parseDouble(startTimeField.getText());
-        } else {
+        }else{
             showAlert("Please enter a valid number (double) for the startTime.");
-            return; // Exit the method if the input is invalid
         }
-
         if(isDouble(endTimeField.getText())){
             endTime = Double.parseDouble(endTimeField.getText());
-        } else {
+        }else{
             showAlert("Please enter a valid number (double) for the endTime.");
-            return; // Exit the method if the input is invalid
         }
-
         if (startTime > endTime){
-            showAlert("Please make sure that the startTime is smaller than the endTime.");
-            return; // Exit the method if the input is invalid
+            showAlert("Please make sure that the startTime is smaller then the endtime");
         }
-
         if(isDouble(stepSizeField.getText())){
             stepSize = Double.parseDouble(stepSizeField.getText());
-        } else {
+        }else{
             showAlert("Please enter a valid number (double) for the stepSize.");
-            return; // Exit the method if the input is invalid
         }
-
-        if (stepSize < startTime || stepSize > endTime){
-            showAlert("Please make sure that the stepsize is between the starttime and endtime.");
-            return; // Exit the method if the input is invalid
+        if (stepSize<startTime || stepSize>endTime){
+            showAlert("Please make sure that the stepsize is between the starttime and endtime");
         }
 
         for (TextField field : derivativesFields) { // derivatives 
-            String derivative = field.getText();
-            try {
-                errorHandler(derivative, dimensions); // Check for errors in the derivative expression
-                derivatives.add(derivative); // Store the derivative expressions
-            } catch (IllegalArgumentException e) {
-                showAlert(e.getMessage());
-                return; // Exit the method if there's an error
-            }
+            derivatives.add(field.getText()); // Store the derivative expressions
         }
-
+    
         int index = 1;
         for (TextField field : initialValuesFields) {  // initial values 
             if(isDouble(field.getText())){
@@ -240,7 +225,7 @@ public class GUI extends Application {
             }
             index++;
         }
-
+    
         if (!invalidIndices.isEmpty()) { // Check if there are any invalid values
             StringBuilder errorMessage = new StringBuilder("Invalid number(s) (double) for the initial values at index: ");
             for (int i = 0; i < invalidIndices.size(); i++) {
@@ -250,78 +235,8 @@ public class GUI extends Application {
                 }
             }
             showAlert(errorMessage.toString());
-            return; // Exit the method if the input is invalid
         }
 
-    }
-    
-    public void errorHandler(String derivative, int dimensions) throws IllegalArgumentException {
-        if (derivative.contains("+") && (!derivative.contains("+ ") || !derivative.contains(" +"))) {
-            throw new IllegalArgumentException("Please make sure to use spaces before and after the '+' operator in the derivative expression.");
-        }
-        if (derivative.contains("^") && (!derivative.contains("^ ") || !derivative.contains(" ^"))) {
-            throw new IllegalArgumentException("Please make sure to use spaces before and after the '^' operator in the derivative expression.");
-        }
-        if (derivative.contains("*") && (!derivative.contains("* ") || !derivative.contains(" *"))) {
-            throw new IllegalArgumentException("Please make sure to use spaces before and after the '*' operator in the derivative expression.");
-        }
-        if (derivative.contains("/") && (!derivative.contains("/ ") || !derivative.contains(" /"))) {
-            throw new IllegalArgumentException("Please make sure to use spaces before and after the '/' operator in the derivative expression.");
-        }
-        if (derivative.contains("(") && (!derivative.contains("( ") || !derivative.contains(" ("))) {
-            throw new IllegalArgumentException("Please make sure to use spaces before and after the '(' symbol in the derivative expression.");
-        }
-        if (derivative.contains(")") && (!derivative.contains(" )") )) {
-            throw new IllegalArgumentException("Please make sure to use spaces before the ')' symbol in the derivative expression.");
-        }
-        if (derivative.contains("sin") && (!derivative.contains("sin (") )) {
-            throw new IllegalArgumentException("Please make sure to use spaces after the 'sin' symbol in the derivative expression.");
-        }
-        if (derivative.contains("cos") && (!derivative.contains("cos (") )) {
-            throw new IllegalArgumentException("Please make sure to use spaces after the ')' symbol in the derivative expression.");
-        }
-        if (derivative.contains("sqrt") && (!derivative.contains("sqrt (") )) {
-            throw new IllegalArgumentException("Please make sure to use spaces after the 'sqrt' symbol in the derivative expression.");
-        }
-        if (derivative.contains("log") && (!derivative.contains("log (") )) {
-            throw new IllegalArgumentException("Please make sure to use spaces after the 'log' symbol in the derivative expression.");
-        }
-        if (derivative.contains("ln") && (!derivative.contains("ln (") )) {
-            throw new IllegalArgumentException("Please make sure to use spaces after the 'ln' symbol in the derivative expression.");
-        }
-        if (derivative.contains("()") || derivative.contains("( )")) {
-            throw new IllegalArgumentException("Please make sure that there are values between the brackets.");
-        }
-    
-        // Check if every opening '(' has a corresponding closing ')'
-        Stack<Character> stack = new Stack<>();
-        for (char c : derivative.toCharArray()) {
-            if (c == '(') {
-                stack.push(c);
-            } else if (c == ')') {
-                if (stack.isEmpty() || stack.pop() != '(') {
-                    throw new IllegalArgumentException("Please ensure that every opening '(' has a corresponding closing ')' symbol in the derivative expression.");
-                }
-            }
-        }
-        if (!stack.isEmpty()) {
-            throw new IllegalArgumentException("Please ensure that every opening '(' has a corresponding closing ')' symbol in the derivative expression.");
-        }
-    
-        // Check if alphabetic characters from (dimensions + 1) to z (excluding 't') are used outside of sin, cos, sqrt, log, ln
-        if (derivative.matches(".*\\b(sin|cos|sqrt|log|ln)\\b.*")) {
-            // Exclude valid functions and then check for remaining alphabetic characters
-            String remaining = derivative.replaceAll("(sin|cos|sqrt|log|ln)", "");
-            if (dimensions == 2 && remaining.matches(".*[c-sS-Z].*")) {
-                throw new IllegalArgumentException("Please ensure proper use of alphabetic characters (c-z) in the derivative expression.");
-            } else if (dimensions != 2 && remaining.matches(".*[" + (char)(dimensions + 'a' - 1) + "-sS-Z].*")) {
-                throw new IllegalArgumentException("Please ensure proper use of alphabetic characters (" + (char)(dimensions + 'a' ) + "-z) in the derivative expression.");
-            }
-        } else if (dimensions == 2 && derivative.matches(".*[c-sS-Z].*")) {
-            throw new IllegalArgumentException("Please ensure proper use of alphabetic characters (c-z) in the derivative expression.");
-        } else if (dimensions != 2 && derivative.matches(".*[" + (char)(dimensions + 'a' - 1) + "-sS-Z].*")) {
-            throw new IllegalArgumentException("Please ensure proper use of alphabetic characters (" + (char)(dimensions + 'a' ) + "-z) in the derivative expression.");
-        }
     }
 
     public void aa(){

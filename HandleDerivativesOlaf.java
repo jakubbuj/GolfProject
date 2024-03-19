@@ -49,7 +49,7 @@ public class HandleDerivatives {
     public String replaceVariables(String derivative, double[] state) {
         String[] vari = {"a","b","c","d","e","f","g","h","i","j"};
         
-        derivative = derivative.replaceAll("t", String.valueOf(time));
+        derivative = derivative.replaceAll(" t ", (" " + String.valueOf(time) + " "));
 
         for(int i=0;i<state.length;i++){
             derivative = derivative.replaceAll(vari[i], String.valueOf(state[i]));
@@ -201,18 +201,21 @@ public class HandleDerivatives {
         alert.setContentText(message);
         alert.showAndWait();
     }
+// TEST
+//     public static void main (String[] args){
+//         String test = "-5 * x * ( sqrt ( 24 * y + 1 * z ) )";
+//         System.err.println(test);
+
+//         double[] state = {3,1,1};
+//         test = test = replaceVariables(test, state);
+//         System.out.println(test);
+
+//         List<String> a= str_to_RPN(test);
+//         System.out.println(a);
+
+//         System.out.println(rpn_to_double(a));
+//     }
+
+
 }
-    // TEST
-    // public static void main (String[] args){
-    //     String test = "-5 * x * ( sqrt ( 24 * y + 1 * z ) )";
-    //     System.err.println(test);
-
-    //     double[] state = {3,1,1};
-    //     test = test = replaceVariables(test, state);
-    //     System.out.println(test);
-
-    //     List<String> a= str_to_RPN(test);
-    //     System.out.println(a);
-
-    //     System.out.println(rpn_to_double(a));
-    // }
+    

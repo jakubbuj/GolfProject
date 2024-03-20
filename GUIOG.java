@@ -229,11 +229,6 @@ public class GUIOG extends Application {
             return; // Exit the method if the input is invalid
         }
 
-        if (stepSize < startTime || stepSize > endTime){
-            showAlert("Please make sure that the stepsize is between the starttime and endtime.");
-            return; // Exit the method if the input is invalid
-        }
-
         for (TextField field : derivativesFields) { // derivatives 
             String derivative = field.getText();
             try {
@@ -323,9 +318,9 @@ public class GUIOG extends Application {
         }
     
         // Check if alphabetic characters from (dimensions + 1) to z (excluding 't') are used outside of sin, cos, sqrt, log, ln
-        if (derivative.matches(".*\\b(sin|cos|sqrt|log|ln)\\b.*")) {
+        if (derivative.matches(".*\\b(sin|cos|sqrt|log|ln|time)\\b.*")) {
             // Exclude valid functions and then check for remaining alphabetic characters
-            String remaining = derivative.replaceAll("(sin|cos|sqrt|log|ln)", "");
+            String remaining = derivative.replaceAll("(sin|cos|sqrt|log|ln|time)", "");
             if (remaining.matches(".*[" + (char)(dimensions + 'a') + "-sS-Z].*")) {
                 throw new IllegalArgumentException("Please ensure proper use of alphabetic characters (" + (char)(dimensions + 'a' ) + "-z) in the derivative expression.");
             }

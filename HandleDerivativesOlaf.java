@@ -44,12 +44,17 @@ public class HandleDerivatives {
         return derivativesArray;
     }
 
+    // public double[] rungeCalculate (double[] state){
+    //     double[] derivativesArray = new double[state.length];
+
+    // }
+
 
     // replace variables in derivative expression with values assigned to them in map
     public String replaceVariables(String derivative, double[] state) {
         String[] vari = {"a","b","c","d","e","f","g","h","i","j"};
         
-        derivative = derivative.replaceAll(" t ", (" " + String.valueOf(time) + " "));
+        derivative = derivative.replaceAll("time", String.valueOf(time));
 
         for(int i=0;i<state.length;i++){
             derivative = derivative.replaceAll(vari[i], String.valueOf(state[i]));

@@ -3,8 +3,8 @@ import java.util.List;
 
 public class Runge_Kutta_4th_ODE {
     
-    HandleDerivativesOlaf handlederivatives;
-    GUIOG gui;
+    HandleDerivatives handlederivatives;
+    GUI gui;
     private double startTime = 0;
     private double endTime = 0;
     private double stepSize = 0;
@@ -39,28 +39,28 @@ public class Runge_Kutta_4th_ODE {
         for (int i = 0; i <= steps; i++) { // iterate over each step
             evolution[i] = currentstate.clone();
 
-            HandleDerivativesOlaf k1 = new HandleDerivativesOlaf(rawDerivatives, time);
+            HandleDerivatives k1 = new HandleDerivatives(rawDerivatives, time);
             double[] k1Values = k1.calculate(currentstate);
 
             for (int j = 0; j < initialValues.size(); j++) {
                 temporaryState[j] = currentstate[j] + (k1Values[j] * (stepSize/2));
             }
 
-            HandleDerivativesOlaf k2 = new HandleDerivativesOlaf(rawDerivatives, time + (stepSize/2));
+            HandleDerivatives k2 = new HandleDerivatives(rawDerivatives, time + (stepSize/2));
             double[] k2Values = k2.calculate(temporaryState);
 
             for (int j = 0; j < initialValues.size(); j++) {
                 temporaryState[j] = currentstate[j] + (k2Values[j] * (stepSize/2));
             }
 
-            HandleDerivativesOlaf k3 = new HandleDerivativesOlaf(rawDerivatives, time + (stepSize/2));
+            HandleDerivatives k3 = new HandleDerivatives(rawDerivatives, time + (stepSize/2));
             double[] k3Values = k3.calculate(temporaryState);
 
             for (int j = 0; j < initialValues.size(); j++) {
                 temporaryState[j] = currentstate[j] + (k3Values[j] * (stepSize/2));
             }
 
-            HandleDerivativesOlaf k4 = new HandleDerivativesOlaf(rawDerivatives, time + stepSize);
+            HandleDerivatives k4 = new HandleDerivatives(rawDerivatives, time + stepSize);
             double[] k4Values = k4.calculate(temporaryState);
 
             double[] averageSlopes = new double[dimentions];

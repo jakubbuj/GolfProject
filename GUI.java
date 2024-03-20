@@ -89,7 +89,7 @@ public class GUI extends Application {
         optionsStage.initModality(Modality.APPLICATION_MODAL);
         optionsStage.setTitle("Options");
     
-        Button option1Button = new Button("Euler solver (first order ODEs)");
+        Button option1Button = new Button("Euler Solver (first order)");
         option1Button.setStyle("-fx-font-size: 16px; -fx-pref-height: 40px;"); 
         option1Button.setOnAction(e -> {
             displayEulerSolver("Option 1 selected");
@@ -97,7 +97,7 @@ public class GUI extends Application {
         });
         option1Button.setMaxWidth(Double.MAX_VALUE); 
     
-        Button option2Button = new Button("Runge Kutta (forth order ODEs)");
+        Button option2Button = new Button("Runge-Kutta Solver (fourth order)");
         option2Button.setStyle("-fx-font-size: 16px; -fx-pref-height: 40px;"); 
         option2Button.setMaxWidth(Double.MAX_VALUE); 
         option2Button.setOnAction(e -> {
@@ -186,7 +186,7 @@ public class GUI extends Application {
         scrollPane.setFitToWidth(true);
 
         eulerStage = new Stage();
-        eulerStage.setTitle("Eulers ODE Solver");
+        eulerStage.setTitle("First Order Euler ODE Solver");
         eulerStage.setScene(new Scene(scrollPane, 600, 530));
         eulerStage.show();
     }
@@ -226,6 +226,11 @@ public class GUI extends Application {
             stepSize = Double.parseDouble(stepSizeField.getText());
         } else {
             showAlert("Please enter a valid number (double) for the stepSize.");
+            return; // Exit the method if the input is invalid
+        }
+
+        if (stepSize < startTime || stepSize > endTime){
+            showAlert("Please make sure that the stepsize is between the starttime and endtime.");
             return; // Exit the method if the input is invalid
         }
 
@@ -476,7 +481,7 @@ public class GUI extends Application {
         scrollPane.setFitToWidth(true);
 
         rungeStage = new Stage();
-        rungeStage.setTitle("Forth order Runge Kutta ODE Solver");
+        rungeStage.setTitle("Fourth Order Runge-Kutta ODE Solver");
         rungeStage.setScene(new Scene(scrollPane, 600, 530));
         rungeStage.show();
     }

@@ -29,6 +29,9 @@ public class GUIOlaf extends Application {
     private double stepSize = 0.0;
     private double[][] evolution;
     private int dimensions = 2; 
+    private Stage eulerStage;
+    private Stage rungeStage;
+    private Stage optionsStage;
 
     private List<TextField> derivativesFields = new ArrayList<>();
     private List<TextField> initialValuesFields = new ArrayList<>();
@@ -82,7 +85,7 @@ public class GUIOlaf extends Application {
     //Second window where user selects solver
     private void displayOptions() {
 
-        Stage optionsStage = new Stage();
+        optionsStage = new Stage();
         optionsStage.initModality(Modality.APPLICATION_MODAL);
         optionsStage.setTitle("Options");
     
@@ -94,13 +97,13 @@ public class GUIOlaf extends Application {
         });
         option1Button.setMaxWidth(Double.MAX_VALUE); 
     
-        Button option2Button = new Button("Another solver (second order ODEs)");
+        Button option2Button = new Button("Runge Kutta (forth order ODEs)");
         option2Button.setStyle("-fx-font-size: 16px; -fx-pref-height: 40px;"); 
         option2Button.setMaxWidth(Double.MAX_VALUE); 
-        //option1Button.setOnAction(e -> {
-        //displayEulerSolver("Option 2 selected");
-        //optionsStage.close(); // Close the options window
-        //});
+        option2Button.setOnAction(e -> {
+        displaySecondOrderSolver("Option 2 selected");
+        optionsStage.close(); // Close the options window
+        });
     
         Label titleLabel = new Label("Choose solver");
         titleLabel.setStyle("-fx-font-size: 18px;");
@@ -155,6 +158,7 @@ public class GUIOlaf extends Application {
         initialValuesFields.add(initialValueField); // add to list 
         root.getChildren().add(initialValueField);
     }
+       
 
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(event -> handleSubmitButton());
@@ -171,16 +175,26 @@ public class GUIOlaf extends Application {
         showPlotButton.setStyle(style);
         root.getChildren().add(showPlotButton);
 
+        Button backButton = new Button("Go back");
+        backButton.setOnAction(event -> handleGoBackeuler());
+        backButton.setStyle(style);
+        root.getChildren().add(backButton);
+
         // Wrap the VBox with a ScrollPane
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(root);
         scrollPane.setFitToWidth(true);
 
-        Stage eulerStage = new Stage();
+        eulerStage = new Stage();
         eulerStage.setTitle("Eulers ODE Solver");
         eulerStage.setScene(new Scene(scrollPane, 600, 530));
         eulerStage.show();
     }
+
+    public void handleGoBackeuler() {
+        eulerStage.close();
+        optionsStage.show();
+   }
 
 
     //submit button and adding elements to string and double lists
@@ -337,12 +351,43 @@ public class GUIOlaf extends Application {
 
     }
 
+    public void aarunge(){
+        
+        System.out.println("derivative input : "+ derivatives);
+        System.out.println("initioal values : "+ initialValues);
+
+        Runge_Kutta_4th_ODE range = new Runge_Kutta_4th_ODE(startTime, endTime, stepSize, initialValues, derivatives);
+        double[][] evolution = range.rungeSolver();
+
+        for(int i=0;i<evolution[0].length;i++){
+            for(int j=0;j<evolution.length;j++){
+                System.out.print(evolution[j][i]+" ");
+            }
+            System.out.println();
+        }
+
+    }
+
 
     public void handleShowPlotButton() {
        
         // Generate scatter plot data
         Euler_Method_for_1st_ODE euler = new Euler_Method_for_1st_ODE(startTime, endTime, stepSize, initialValues, derivatives);
         double[][] evolution = euler.solver();
+    
+        // Instantiate ScatterPlotterFX with the generated data
+        ScatterPlot scatterPlotter = new ScatterPlot(evolution, startTime, endTime, stepSize);
+    
+        // Display the scatter plot in the new window
+        scatterPlotter.plot();
+
+    }
+
+    public void handleShowPlotButtonRunge() {
+       
+        // Generate scatter plot data
+        Runge_Kutta_4th_ODE ruunge = new Runge_Kutta_4th_ODE(startTime, endTime, stepSize, initialValues, derivatives);
+        double[][] evolution = ruunge.rungeSolver();
     
         // Instantiate ScatterPlotterFX with the generated data
         ScatterPlot scatterPlotter = new ScatterPlot(evolution, startTime, endTime, stepSize);
@@ -367,7 +412,86 @@ public class GUIOlaf extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    
+
+
+    private void displaySecondOrderSolver(String message) {
+
+        VBox root = new VBox(5);
+        root.setPadding(new Insets(10));
+
+        Label startTimeLabel = new Label("Start time:");
+        startTimeField.setPromptText("Enter start time");
+        startTimeLabel.setStyle(style);
+        startTimeField.setStyle(style);
+
+        Label endTimeLabel = new Label("End time:");
+        endTimeField.setPromptText("Enter end time");
+        endTimeLabel.setStyle(style);
+        endTimeField.setStyle(style);
+
+        Label stepSizeLabel = new Label("Size of the steps:");
+        stepSizeField.setPromptText("Enter size of the steps");
+        stepSizeLabel.setStyle(style);
+        stepSizeField.setStyle(style);
+
+        Label derivativesLabel = new Label("Derivatives and initial values:");
+        derivativesLabel.setStyle(style);
+
+        root.getChildren().addAll(startTimeLabel, startTimeField, endTimeLabel, endTimeField, stepSizeLabel, stepSizeField, derivativesLabel);
+
+    //create derivatives fields
+    for (int i = 0; i < dimensions; i++) {
+        TextField derivativeField = new TextField();
+        derivativeField.setPromptText("Enter a derivative for dimension " + (i + 1));
+        derivativesFields.add(derivativeField); // add to list 
+        root.getChildren().add(derivativeField);
+    }
+
+    //create fields for variables
+    for (int i = 0; i < dimensions; i++) {
+        TextField initialValueField = new TextField();
+        initialValueField.setPromptText("Enter initial value for dimension " + (i + 1));
+        initialValuesFields.add(initialValueField); // add to list 
+        root.getChildren().add(initialValueField);
+    }
+
+        Button submitButton = new Button("Submit");
+        submitButton.setOnAction(event -> handleSubmitButton());
+        submitButton.setStyle(style);
+        root.getChildren().add(submitButton);
+
+        Button generateButton = new Button("Generate");
+        generateButton.setOnAction(event -> aarunge());
+        generateButton.setStyle(style);
+        root.getChildren().add(generateButton);
+
+        Button showPlotButton = new Button("Show Evolution");
+        showPlotButton.setOnAction(event -> handleShowPlotButtonRunge());
+        showPlotButton.setStyle(style);
+        root.getChildren().add(showPlotButton);
+
+        Button returnButtonRunge = new Button("Go back");
+        returnButtonRunge.setOnAction(event -> handleGoBackRunge());
+        returnButtonRunge.setStyle(style);
+        root.getChildren().add(returnButtonRunge);
+
+        // Wrap the VBox with a ScrollPane
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(root);
+        scrollPane.setFitToWidth(true);
+
+        rungeStage = new Stage();
+        rungeStage.setTitle("Forth order Runge Kutta ODE Solver");
+        rungeStage.setScene(new Scene(scrollPane, 600, 530));
+        rungeStage.show();
+    }
+
+    public void handleGoBackRunge() {
+        rungeStage.close();
+        optionsStage.show();
+
+    }
+
 
     public static void run(String[] args){
         launch(args); // This will launch the JavaFX application

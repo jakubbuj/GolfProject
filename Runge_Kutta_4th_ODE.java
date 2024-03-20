@@ -4,7 +4,7 @@ import java.util.List;
 public class Runge_Kutta_4th_ODE {
     
     HandleDerivativesOlaf handlederivatives;
-    GUIOlaf gui;
+    GUIOG gui;
     private double startTime = 0;
     private double endTime = 0;
     private double stepSize = 0;

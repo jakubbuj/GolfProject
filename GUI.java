@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class GUIOG extends Application {
+public class GUI extends Application {
     private TextField dimensionsField = new TextField();
     private TextField startTimeField = new TextField();
     private TextField endTimeField = new TextField();

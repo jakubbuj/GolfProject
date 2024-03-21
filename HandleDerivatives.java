@@ -55,6 +55,7 @@ public class HandleDerivatives {
         String[] vari = {"a","b","c","d","e","f","g","h","i","j"};
         
         derivative = derivative.replaceAll("time", String.valueOf(time));
+        derivative = derivative.replaceAll("E", String.valueOf(Math.E));
 
         for(int i=0;i<state.length;i++){
             derivative = derivative.replaceAll(vari[i], String.valueOf(state[i]));

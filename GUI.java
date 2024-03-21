@@ -231,11 +231,6 @@ public class GUI extends Application {
             return; // Exit the method if the input is invalid
         }
 
-        if (stepSize < startTime || stepSize > endTime){
-            showAlert("Please make sure that the stepsize is between the starttime and endtime.");
-            return; // Exit the method if the input is invalid
-        }
-
         for (TextField field : derivativesFields) { // derivatives 
             String derivative = field.getText();
             try {

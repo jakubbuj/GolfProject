@@ -147,6 +147,7 @@ public class GUI extends Application {
     for (int i = 0; i < dimensions; i++) {
         TextField derivativeField = new TextField();
         derivativeField.setPromptText("Enter a derivative for dimension " + (i + 1));
+        derivativeField.setStyle(style);
         derivativesFields.add(derivativeField); // add to list 
         root.getChildren().add(derivativeField);
     }
@@ -155,7 +156,8 @@ public class GUI extends Application {
     for (int i = 0; i < dimensions; i++) {
         TextField initialValueField = new TextField();
         initialValueField.setPromptText("Enter initial value for dimension " + (i + 1));
-        initialValuesFields.add(initialValueField); // add to list 
+        initialValueField.setStyle(style);
+        initialValuesFields.add(initialValueField); // add to list
         root.getChildren().add(initialValueField);
     }
        
@@ -443,6 +445,7 @@ public class GUI extends Application {
     for (int i = 0; i < dimensions; i++) {
         TextField derivativeField = new TextField();
         derivativeField.setPromptText("Enter a derivative for dimension " + (i + 1));
+        derivativeField.setStyle(style);
         derivativesFields.add(derivativeField); // add to list 
         root.getChildren().add(derivativeField);
     }
@@ -451,6 +454,7 @@ public class GUI extends Application {
     for (int i = 0; i < dimensions; i++) {
         TextField initialValueField = new TextField();
         initialValueField.setPromptText("Enter initial value for dimension " + (i + 1));
+        initialValueField.setStyle(style);
         initialValuesFields.add(initialValueField); // add to list 
         root.getChildren().add(initialValueField);
     }

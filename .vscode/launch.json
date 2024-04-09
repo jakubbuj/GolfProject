@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DesktopLauncher",
+            "request": "launch",
+            "mainClass": "com.game.DesktopLauncher",
+            "projectName": "project-1.2-ken-17-desktop"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "Main",

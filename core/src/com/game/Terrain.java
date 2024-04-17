@@ -1,26 +1,22 @@
 package com.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 
 public class Terrain {
     private Model terrainModel;  // model class like schemat
     private ModelInstance terrainInstance;  // instance
     private Model waterModel;
     private ModelInstance waterInstance;
+    private MapBorder mapBorder;
 
     // Define size of the terrain
     private   int width = 100;  // Number of vertices along the x-axis
@@ -30,14 +26,16 @@ public class Terrain {
     public Terrain() {
 
         // initialize the terrain ( grass field )
-        addGrass(); 
+        addGrass();
 
         // Add the water plane after the terrain has been created.
         addWater(0.8f); // You can adjust the alpha for transparency
 
+        //Add map border
+        mapBorder = new MapBorder(width, depth, scale);
     }
 
-    //method add grass
+//    method add grass
     public void addGrass(){
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
@@ -75,10 +73,14 @@ public class Terrain {
             }
         }
 
-        
+
         terrainModel = modelBuilder.end();
         terrainInstance = new ModelInstance(terrainModel);
     }
+
+
+
+
 
     // Method to add water
     public void addWater(float alpha) {
@@ -107,23 +109,30 @@ public class Terrain {
         return (float)(0.4 * (0.9 - Math.exp(-Math.pow(x, 2) / 8 + Math.pow(y, 2) / 8)));
     }
 
-public void render(ModelBatch modelBatch, Environment environment) {
-    modelBatch.render(terrainInstance, environment);
-    
-    // Enable blending for transparent objects
-    Gdx.gl.glEnable(GL20.GL_BLEND);
-    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-    
-    modelBatch.render(waterInstance, environment); 
-    
-    // disable blending if you want to render more objects that are not transparent 
-    Gdx.gl.glDisable(GL20.GL_BLEND);
-}
+//public void render(ModelBatch modelBatch, Environment environment) {
+//    modelBatch.render(terrainInstance, environment);
+//
+//    // Enable blending for transparent objects
+//    Gdx.gl.glEnable(GL20.GL_BLEND);
+//    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+//
+//    modelBatch.render(waterInstance, environment);
+//
+//    // disable blending if you want to render more objects that are not transparent
+//    Gdx.gl.glDisable(GL20.GL_BLEND);
+//}
+
+    public void render(ModelBatch modelBatch, Environment environment) {
+        modelBatch.render(terrainInstance, environment);
+        modelBatch.render(mapBorder.getBorderInstance(), environment);
+        modelBatch.render(waterInstance, environment);
+    }
 
     public void dispose() {
         terrainModel.dispose();
         if (waterModel != null) {
             waterModel.dispose(); // Dispose of the waterModel resources
         }
+        mapBorder.dispose();
     }
 }

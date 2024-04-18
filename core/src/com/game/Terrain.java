@@ -1,12 +1,12 @@
 package com.game;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
@@ -17,6 +17,11 @@ public class Terrain {
     private Model waterModel;
     private ModelInstance waterInstance;
     private MapBorder mapBorder;
+    private Texture grassTexture;
+    private Texture waterTexture;
+
+    private static final String GRASS_TEXTURE_PATH = "\project-1.2-ken-17\assets\grass.jpg";
+    private static final String WATER_TEXTURE_PATH = "\project-1.2-ken-17\assets\water.jpg";
 
     // Define size of the terrain
     private   int width = 100;  // Number of vertices along the x-axis
@@ -31,7 +36,7 @@ public class Terrain {
         // Add the water plane after the terrain has been created.
         addWater(0.8f); // You can adjust the alpha for transparency
 
-        //Add map border
+        // Add map border
         mapBorder = new MapBorder(width, depth, scale);
     }
 
@@ -40,13 +45,16 @@ public class Terrain {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
 
+        // Load the grass texture
+        grassTexture = new Texture(GRASS_TEXTURE_PATH);
+
         // Compute half width and depth to center the terrain
         float halfWidth = width * scale * 0.5f;
         float halfDepth = depth * scale * 0.5f;
 
-        Material material = new Material(ColorAttribute.createDiffuse(Color.GREEN));
+        Material material = new Material(TextureAttribute.createDiffuse(grassTexture));
         MeshPartBuilder mpb = modelBuilder.part("terrain", GL20.GL_TRIANGLES,
-            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, material);
+            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | Usage.TextureCoordinates, material);
 
         // Generate a grid of vertices for the terrain
         for (int y = 0; y < depth - 1; y++) {
@@ -86,8 +94,16 @@ public class Terrain {
     public void addWater(float alpha) {
         ModelBuilder modelBuilder = new ModelBuilder();
 
+        // Load the water texture
+        waterTexture = new Texture(WATER_TEXTURE_PATH);
+
         float halfWidth = width * scale * 0.5f;
         float halfDepth = depth * scale * 0.5f;
+
+        // Create water material with texture
+        Material material = new Material(
+                TextureAttribute.createDiffuse(waterTexture),
+                new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
         waterModel = modelBuilder.createRect(
             -halfWidth, 0, halfDepth,
@@ -95,14 +111,12 @@ public class Terrain {
             halfWidth, 0, -halfDepth,
             -halfWidth, 0, -halfDepth,
             0, 1, 0,
-            new Material(
-                    ColorAttribute.createDiffuse(new Color(0, 0, 1, alpha)),
-                    new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)),
-            Usage.Position | Usage.Normal);
+            material,
+            Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
         waterInstance = new ModelInstance(waterModel);
 }
-    
+
 
     private float getHeight(float x, float y) {
         // This is a simple example using a sine function for the height
@@ -131,7 +145,13 @@ public class Terrain {
     public void dispose() {
         terrainModel.dispose();
         if (waterModel != null) {
-            waterModel.dispose(); // Dispose of the waterModel resources
+            waterModel.dispose();
+        }
+        if (grassTexture != null) {
+            grassTexture.dispose();
+        }
+        if (waterTexture != null) {
+            waterTexture.dispose();
         }
         mapBorder.dispose();
     }

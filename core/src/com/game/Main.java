@@ -46,7 +46,7 @@ public class Main extends ApplicationAdapter {
 
         // Set up the environment with some light
         environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 10f));
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1.0f, 1.0f, 1.0f, 10f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0, 2, 0)); // Stronger light
         environment.add(new PointLight().set(1f, 1f, 1f, new Vector3(0, 50, 29), 200f)); // Point light
         
@@ -57,7 +57,7 @@ public class Main extends ApplicationAdapter {
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST); // Ensure depth testing is enabled
-        Gdx.gl.glClearColor(0, 0, 0, 1); // Set a clear color distinct from your terrain color
+        Gdx.gl.glClearColor(0.75f, 0.85f, 1.0f, 1.0f); // Set a clear color distinct from your terrain color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     
         camController.update();

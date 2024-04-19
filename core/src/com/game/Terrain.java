@@ -20,8 +20,8 @@ public class Terrain {
     private Texture grassTexture;
     private Texture waterTexture;
 
-    private static final String GRASS_TEXTURE_PATH = "\project-1.2-ken-17\assets\grass.jpg";
-    private static final String WATER_TEXTURE_PATH = "\project-1.2-ken-17\assets\water.jpg";
+    private static final String GRASS_TEXTURE_PATH = "\project-1.2-ken-17\assets\grass.jpg"; // Add the path to the image from the assets file
+    private static final String WATER_TEXTURE_PATH = "\project-1.2-ken-17\assets\water.jpg"; // Add the path to the image from the assets file
 
     // Define size of the terrain
     private   int width = 100;  // Number of vertices along the x-axis

@@ -1,5 +1,3 @@
-
-
 public class PhysicsEngine {
     
     double X0, Y0; // initial position of the ball
@@ -7,7 +5,7 @@ public class PhysicsEngine {
     double GRASS_K, GRASS_S; // kinetic and static coefficients on the grass
     double SAND_K, SAND_S; // kinetic and static coefficients on the sand
     String heightFunction; // h(x,y) function of the height profile
-    double xMap = 100, yMap = 100; // x and y map sizes
+    double xMapStart = 0, xMapEnd = 50, yMapStart = 0, yMapEnd = 50; // x and y map limits
     double maxVelocity = 5;
 
     final double g = 9.80665;
@@ -33,10 +31,11 @@ public class PhysicsEngine {
     }
 
     public static void main(String[] args) {
-        PhysicsEngine testEngine = new PhysicsEngine("2 * x - y", 50, 50, 99, 99, 1, 0.1, 0.5, 0.3, 0.4);
+        PhysicsEngine testEngine = new PhysicsEngine("2 * x - y", 0, 0, 4, 1, 0.15, 0.1, 0.2, 0.3, 0.4);
 
         testEngine.runSimulation(0.5, 0);
-        testEngine.runSimulation(70, 8);
+        testEngine.runSimulation(10, 10);
+        
     }
 
     public void runSimulation(double xInitialVelocity, double yInitialVelocity){
@@ -57,7 +56,7 @@ public class PhysicsEngine {
 
             }
 
-            if(stateVector[0] > xMap || stateVector[0] < 0 || stateVector[1] > yMap || stateVector[1] < 0){
+            if(stateVector[0] > xMapEnd || stateVector[0] < xMapStart || stateVector[1] > yMapEnd || stateVector[1] < yMapStart){
 
                 System.out.println("Ball fell out of the map!");
                 break;

@@ -23,11 +23,14 @@ public class Terrain {
     private static final String GRASS_TEXTURE_PATH = "assets/grass.jpg"; 
     private static final String WATER_TEXTURE_PATH = "assets/water.jpg"; 
     // Define size of the terrain
-    private   int width = 100;  // Number of vertices along the x-axis
-    private   int depth = 100;  // Number of vertices along the y-axis
-    private   float scale = 0.5f;  // Scale of the terrain
+    private  int width = 0;  // Number of vertices along the x-axis
+    private  int depth = 0;  // Number of vertices along the y-axis
+    private  float scale = 0;  // Scale of the terrain
 
-    public Terrain() {
+    public Terrain(int width, int depth, float scale) {
+        this.width=width;
+        this.depth=depth;
+        this.scale=scale;
 
         // initialize the terrain ( grass field )
         addGrass();

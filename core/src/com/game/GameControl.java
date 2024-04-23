@@ -20,14 +20,16 @@ public class GameControl extends ApplicationAdapter {
     private PerspectiveCamera camera;
     private CameraInputController camController;
     private PhysicsEngine physicsEngine;
-    public static String functionTerrain="";
+
+    // game parameters 
+    public static String functionTerrain = " sqrt ( ( sin x + cos y ) ^ 2 )";
+    private int width=100; int depth=100; float scale=(float) 0.5;
 
     @Override
     public void create() {
         modelBatch = new ModelBatch();
         environment = new Environment();
-        functionTerrain = "sin x + sin y";
-        terrain = new Terrain();
+        terrain = new Terrain(width, depth, scale);
 
         camera = new PerspectiveCamera(75, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(10f, 10f, 10f);
@@ -40,9 +42,10 @@ public class GameControl extends ApplicationAdapter {
         Gdx.input.setInputProcessor(camController);
 
         // ligts
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1.0f, 1.0f, 1.0f, 10f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0, 2, 0)); // Stronger light
-        environment.add(new PointLight().set(1f, 1f, 1f, new Vector3(0, 50, 29), 200f)); // Point light
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.6f, 0.6f, 0.6f, 1.0f)); // Slightly dimmer ambient light
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f)); // Adjust direction for better illumination
+        environment.add(new PointLight().set(0.9f, 0.9f, 0.9f, new Vector3(0, 50, 29), 300f)); // Increase intensity and range for better visibility
+
 
         // Initialize the ball and physics engine with some arbitrary parameters for now
         ball = new GolfBall(new Vector3(10, 20, 10));

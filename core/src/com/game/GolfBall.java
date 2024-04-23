@@ -18,7 +18,7 @@ public class GolfBall {
 
     public GolfBall(Vector3 startPosition) {
         this.position = new Vector3(startPosition);
-        this.velocity = new Vector3((float) 0.01, 0, 0);
+        this.velocity = new Vector3((float) 0.00, 0, 0);
 
         // Create the ball model
         ModelBuilder modelBuilder = new ModelBuilder();

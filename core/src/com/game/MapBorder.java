@@ -32,10 +32,10 @@ public class MapBorder {
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, material);
 
         // Create borders along the edges of the map
-        createBorderAlongEdge(borderBuilder, new Vector3(-halfWidth, 0, halfDepth), new Vector3(-halfWidth, 0, -halfDepth), scale, depth);
-        createBorderAlongEdge(borderBuilder, new Vector3(halfWidth, 0, halfDepth), new Vector3(-halfWidth, 0, halfDepth), scale, width);
-        createBorderAlongEdge(borderBuilder, new Vector3(-halfWidth, 0, -halfDepth), new Vector3(halfWidth, 0, -halfDepth), scale, depth);
-        createBorderAlongEdge(borderBuilder, new Vector3(halfWidth, 0, -halfDepth), new Vector3(halfWidth, 0, halfDepth), scale, width);
+        createBorderAlongEdge(borderBuilder, new Vector3(-halfWidth, 100, halfDepth), new Vector3(-halfWidth, 0, -halfDepth), scale, depth);
+        createBorderAlongEdge(borderBuilder, new Vector3(halfWidth, 100, halfDepth), new Vector3(-halfWidth, 0, halfDepth), scale, width);
+        createBorderAlongEdge(borderBuilder, new Vector3(-halfWidth, 100, -halfDepth), new Vector3(halfWidth, 0, -halfDepth), scale, depth);
+        createBorderAlongEdge(borderBuilder, new Vector3(halfWidth, 100, -halfDepth), new Vector3(halfWidth, 0, halfDepth), scale, width);
 
         borderModel = modelBuilder.end();
         borderInstance = new ModelInstance(borderModel);

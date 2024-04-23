@@ -249,17 +249,31 @@ public class PhysicsEngine {
     // In PhysicsEngine.java
 
     public void runSingleStep(double dt, Vector3 ballPosition, Vector3 ballVelocity) {
+        //filling statevectors with values
         stateVector[0] = ballPosition.x;
         stateVector[1] = ballPosition.z;     
         stateVector[2] = ballVelocity.x;
         stateVector[3] = ballVelocity.z;
 
+        //updating state vectors
         updateStateVectorRungeKutta(false);
 
-        ballPosition.x = (float) stateVector[0];
-        ballPosition.z = (float) stateVector[1];
-        ballVelocity.x = (float) stateVector[2];
-        ballVelocity.z = (float) stateVector[3];
+        // checking if any of the states in nan
+        boolean hasNaN = false;
+        for (double value : stateVector) {
+            if (Double.isNaN(value)) {
+                hasNaN = true;
+                break;
+            }
+        }
+    
+        // If any value is NaN, revert to the previous valid state
+        if (hasNaN) {
+            stateVector[0] = ballPosition.x;
+            stateVector[1] = ballPosition.z;
+            stateVector[2] = ballVelocity.x;
+            stateVector[3] = ballVelocity.z;
+        }
 
         // Update height to keep the ball on the terrain
         terrainHeight = (float) GetHeight.getHeight(heightFunction, ballPosition.x, ballPosition.z);

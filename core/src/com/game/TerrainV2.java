@@ -11,12 +11,13 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import java.util.Random;
+
 
 public class TerrainV2 {
     private Model terrainModel;  // model class like schemat
@@ -83,10 +84,12 @@ public class TerrainV2 {
     
     private Material determineMaterial(float height, float waterLevel, int x, int y, boolean[][] grassTiles) {
         Material material;
-
+    
+        float sandHeight = getSandHeight(x, y);
+    
         if (height <= waterLevel) {
             material = earthMaterial;
-        } else if (grassTiles[x][y] || random.nextDouble() < 0.1) {
+        } else if (sandHeight > 0.5) {
             material = sandMaterial;
             if (!grassTiles[x][y]) {
                 propagateSand(x, y, grassTiles);
@@ -95,9 +98,10 @@ public class TerrainV2 {
             material = grassMaterial;
             grassTiles[x][y] = true;
         }
-
+    
         return material;
     }
+    
     
     private void propagateSand(int x, int y, boolean[][] grassTiles) {
         // Define the range of neighboring tiles to cover
@@ -166,7 +170,11 @@ public class TerrainV2 {
             Usage.Position | Usage.Normal);
 
         waterInstance = new ModelInstance(waterModel);
-}
+    }
+    
+    private float getSandHeight(float x, float y) {
+        return (float) (Math.sin(x * 0.1f) + Math.cos(y * 0.1f));
+    }
     
 
     private float getHeight(float x, float y) {

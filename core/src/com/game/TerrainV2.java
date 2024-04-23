@@ -31,16 +31,13 @@ public class TerrainV2 {
     // Define size of the terrain
     private int width = 100;  // Number of vertices along the x-axis
     private int depth = 100;  // Number of vertices along the y-axis
-    private float scale = 0.5f;  // Scale of the terrain
-
-    private Random random;
+    private float scale = 0.1f;  // Scale of the terrain
 
     public final Material grassMaterial = new Material(ColorAttribute.createDiffuse(Color.GREEN)); // Use green color for grass
-    public final Material earthMaterial = new Material(ColorAttribute.createDiffuse(new Color(0.5f, 0.3f, 0.1f, 1.0f))); // Earth color material
     public final Material sandMaterial = new Material(ColorAttribute.createDiffuse(Color.YELLOW)); // Use yellow color for sand
     
-    public TerrainV2(int seed) {
-        this.random = new Random(seed);
+    public TerrainV2() {
+
         // initialize the terrain ( grass field )
         addTerrain(); 
 
@@ -84,12 +81,9 @@ public class TerrainV2 {
     
     private Material determineMaterial(float height, float waterLevel, int x, int y, boolean[][] grassTiles) {
         Material material;
-    
         float sandHeight = getSandHeight(x, y);
     
-        if (height <= waterLevel) {
-            material = earthMaterial;
-        } else if (sandHeight > 0.5) {
+        if (sandHeight > 0.5) {
             material = sandMaterial;
             if (!grassTiles[x][y]) {
                 propagateSand(x, y, grassTiles);
@@ -176,7 +170,6 @@ public class TerrainV2 {
         return (float) (Math.sin(x * 0.1f) + Math.cos(y * 0.1f));
     }
     
-
     private float getHeight(float x, float y) {
         // This is a simple example using a sine function for the height
         return (float)(0.4 * (0.9 - Math.exp(-Math.pow(x, 2) / 8 + Math.pow(y, 2) / 8)));

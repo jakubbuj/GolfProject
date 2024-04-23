@@ -110,20 +110,22 @@ public class PhysicsEngine {
         double x = stateVector[0];
         double z = stateVector[1];
 
-        double[] stateVector1 = returnUpdatedVector(isImmobile, x, z, GRASS_K);
-        double[] stateVector2 = returnUpdatedVector(isImmobile, x + h / 2, z + stateVector1[1] / 2, GRASS_K);
-        double[] stateVector3 = returnUpdatedVector(isImmobile, x + h / 2, z + stateVector2[1] / 2, GRASS_K);
-        double[] stateVector4 = returnUpdatedVector(isImmobile, x + h, z + stateVector3[1], GRASS_K);
+        double kineticCoefficient = GRASS_K; // Assuming the object is on grass
+        // Calculate the next state vector using the Runge-Kutta method
+        double[] stateVector1 = returnUpdatedVector(isImmobile, x, z, kineticCoefficient);
+        double[] stateVector2 = returnUpdatedVector(isImmobile, x + h / 2, z + stateVector1[1] / 2, kineticCoefficient);
+        double[] stateVector3 = returnUpdatedVector(isImmobile, x + h / 2, z + stateVector2[1] / 2, kineticCoefficient);
+        double[] stateVector4 = returnUpdatedVector(isImmobile, x + h, z + stateVector3[1], kineticCoefficient);
         
-
         double[] averageVector = new double[4];
         for (int i = 0; i < stateVector.length; i++) {
             averageVector[i] = (1.0 / 6.0) * (stateVector1[i] + 2 * stateVector2[i] + 2 * stateVector3[i] + stateVector4[i]);
             stateVector[i] += h * averageVector[i];
         }
+    
     }
+    
     public double[] returnUpdatedVector(boolean isImmobile, double x, double z, double kineticCoefficient) {
-
         double xVelocity = stateVector[2];
         double zVelocity = stateVector[3];
     
@@ -136,26 +138,30 @@ public class PhysicsEngine {
         double xSecondTerm;
         double zSecondTerm;
     
+        // Determine friction components based on motion state
         if (isImmobile(x, z)) {
+            // Friction acts against the slope
             xSecondTerm = -kineticCoefficient * g * (slopeX / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
             zSecondTerm = -kineticCoefficient * g * (slopeZ / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
         } else {
-            xSecondTerm = -kineticCoefficient * g
-                    * (xVelocity / Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity));
-            zSecondTerm = -kineticCoefficient * g
-                    * (zVelocity / Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity));
+            // Friction acts against velocity
+            xSecondTerm = -kineticCoefficient * g * (xVelocity / Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity));
+            zSecondTerm = -kineticCoefficient * g * (zVelocity / Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity));
         }
     
+        // Calculate total acceleration
         double xAcceleration = xFirstTerm + xSecondTerm;
         double zAcceleration = zFirstTerm + zSecondTerm;
     
-        systemFunction[0] = stateVector[2];
-        systemFunction[1] = stateVector[3];
+        // Update system function array
+        systemFunction[0] = stateVector[2]; // xVelocity
+        systemFunction[1] = stateVector[3]; // zVelocity
         systemFunction[2] = xAcceleration;
         systemFunction[3] = zAcceleration;
     
         return systemFunction;
     }
+    
     
     public void updateStateVectorEuler(boolean isImmobile) {
 

@@ -15,10 +15,12 @@ public class GolfBall {
     private ModelInstance modelInstance;
     private Vector3 position;
     private Vector3 velocity;
+    private double mass;
 
     public GolfBall(Vector3 startPosition) {
         this.position = new Vector3(startPosition);
         this.velocity = new Vector3((float) 0.00, 0, 0);
+        this.mass=0.05;
 
         // Create the ball model
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -42,6 +44,10 @@ public class GolfBall {
 
     public Vector3 getVelocity() {
         return velocity;
+    }
+
+    public double getMass(){
+        return mass;
     }
     
     public void setPosition(Vector3 position) {

@@ -20,11 +20,13 @@ public class GameControl extends ApplicationAdapter {
     private PerspectiveCamera camera;
     private CameraInputController camController;
     private PhysicsEngine physicsEngine;
+    public static String functionTerrain="";
 
     @Override
     public void create() {
         modelBatch = new ModelBatch();
         environment = new Environment();
+        functionTerrain = "sin x + sin y";
         terrain = new Terrain();
 
         camera = new PerspectiveCamera(75, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -37,12 +39,14 @@ public class GameControl extends ApplicationAdapter {
         camController = new CameraInputController(camera);
         Gdx.input.setInputProcessor(camController);
 
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+        // ligts
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1.0f, 1.0f, 1.0f, 10f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0, 2, 0)); // Stronger light
+        environment.add(new PointLight().set(1f, 1f, 1f, new Vector3(0, 50, 29), 200f)); // Point light
 
         // Initialize the ball and physics engine with some arbitrary parameters for now
-        ball = new GolfBall(new Vector3(0, 0, 1));
-        physicsEngine = new PhysicsEngine("2 * x - y", 0, 0, 4, 1, 0.15, 0.1, 0.2, 0.3, 0.4);
+        ball = new GolfBall(new Vector3(10, 20, 10));
+        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, 4, 1, 0.15, 0.1, 0.2, 0.3, 0.4, 0.5, 0.0);
     }
 
     @Override
@@ -51,9 +55,10 @@ public class GameControl extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
 
-        // Update the camera and the game state
         camController.update();
-        update(Gdx.graphics.getDeltaTime());
+
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        update(deltaTime);
 
         // Render the terrain and the ball
         modelBatch.begin(camera);
@@ -63,6 +68,9 @@ public class GameControl extends ApplicationAdapter {
     }
 
     private void update(float deltaTime) {
+
+        System.out.println("Ball position: " + ball.getPosition()+"  "+ ball.getVelocity());
+
         // Convert deltaTime from seconds to the time units expected by PhysicsEngine
         double dt = deltaTime; // Assuming PhysicsEngine expects seconds.
 
@@ -73,28 +81,31 @@ public class GameControl extends ApplicationAdapter {
         // Run a single step of the simulation.
         physicsEngine.runSingleStep(dt, ballPosition, ballVelocity);
 
-        // Update the GolfBall instance with new state from the physics engine
+        //Update the GolfBall instance with new state from the physics engine
         ball.setVelocity(new Vector3(
-                (float) physicsEngine.getStateVector()[2],
-                (float) physicsEngine.getStateVector()[3],
-                0f // Assuming the game is 2D, Z velocity remains unchanged
+            (float) physicsEngine.getStateVector()[2], // X velocity
+            0f, // Y velocity remains 0 because we don't have vertical movement in this physics engine
+            (float) physicsEngine.getStateVector()[3] // Z velocity
         ));
 
-        ball.updatePosition(new Vector3(
-                (float) physicsEngine.getStateVector()[0],
-                (float) physicsEngine.getStateVector()[1],
-                ballPosition.z // Z position remains unchanged
+        ball.setPosition(new Vector3(
+            (float) physicsEngine.getStateVector()[0],
+            (float) physicsEngine.terrainHeight,
+            (float) physicsEngine.getStateVector()[1]
         ));
-
-        // You would then use this updated state in the ball's render method to display
-        // it in the new position
     }
 
     @Override
     public void dispose() {
-        // Dispose all the resources
         modelBatch.dispose();
-        terrain.dispose();
-        // Add disposal for other created resources (e.g., ball model) if necessary
+        if (terrain != null) {
+            terrain.dispose();
+        }
+        if (ball != null) {
+            ball.dispose(); // Ensure this dispose method exists in GolfBall to clean up the model
+        }
+        if (camera != null) {
+            camera = null; // Release the camera if needed
+        }
     }
 }

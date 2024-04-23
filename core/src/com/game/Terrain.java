@@ -117,23 +117,12 @@ public class Terrain {
 }
 
 
-    private float getHeight(float x, float y) {
-        // This is a simple example using a sine function for the height
-        return (float)(0.4 * (0.9 - Math.exp(-Math.pow(x, 2) / 8 + Math.pow(y, 2) / 8)));
-    }
+    private float getHeight(float x, float z) {
 
-//public void render(ModelBatch modelBatch, Environment environment) {
-//    modelBatch.render(terrainInstance, environment);
-//
-//    // Enable blending for transparent objects
-//    Gdx.gl.glEnable(GL20.GL_BLEND);
-//    Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-//
-//    modelBatch.render(waterInstance, environment);
-//
-//    // disable blending if you want to render more objects that are not transparent
-//    Gdx.gl.glDisable(GL20.GL_BLEND);
-//}
+        
+        // This is a simple example using a sine function for the height
+        return (float) GetHeight.getHeight(GameControl.functionTerrain, x, z);
+    }
 
     public void render(ModelBatch modelBatch, Environment environment) {
         modelBatch.render(terrainInstance, environment);

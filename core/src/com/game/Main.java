@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
 
 public class Main extends ApplicationAdapter {
-    private ModelBatch modelBatch;  // combine all model elements into big one
+    private ModelBatch modelBatch; // combine all model elements into big one
     private Terrain terrain;
     private Cube cube;
     private Environment environment;
@@ -24,9 +24,8 @@ public class Main extends ApplicationAdapter {
     public void create() {
         // Set up the camera, where it starts and where it looks
         camera = new PerspectiveCamera(69, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(0, 20, 20f); // Position the camera to look from an angle
+        camera.position.set(0, 5, 5f); // Position the camera to look from an angle
         camera.lookAt(0, 0, 0); // Look at the center of the terrain
-        
 
         // how far and near can camera see
         camera.near = 0.1f;
@@ -42,14 +41,14 @@ public class Main extends ApplicationAdapter {
         // Initialize the terrain
         terrain = new Terrain();
 
-        //cube = new Cube();
+        // cube = new Cube();
 
         // Set up the environment with some light
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1.0f, 1.0f, 1.0f, 10f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 0, 2, 0)); // Stronger light
         environment.add(new PointLight().set(1f, 1f, 1f, new Vector3(0, 50, 29), 200f)); // Point light
-        
+
     }
 
     @Override
@@ -59,12 +58,12 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST); // Ensure depth testing is enabled
         Gdx.gl.glClearColor(0.75f, 0.85f, 1.0f, 1.0f); // Set a clear color distinct from your terrain color
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-    
+
         camController.update();
         camera.update();
-    
+
         modelBatch.begin(camera);
-        //cube.render(modelBatch, environment);
+        // cube.render(modelBatch, environment);
         terrain.render(modelBatch, environment);
         modelBatch.end();
     }

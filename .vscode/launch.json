@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "PhysicsEngine",
+            "request": "launch",
+            "mainClass": "com.game.PhysicsEngine",
+            "projectName": "project-1.2-ken-17-core"
+        },
+        {
+            "type": "java",
+            "name": "GetHeight",
+            "request": "launch",
+            "mainClass": "com.game.GetHeight",
+            "projectName": "project-1.2-ken-17-core"
+        },
+        {
+            "type": "java",
             "name": "DesktopLauncher",
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",

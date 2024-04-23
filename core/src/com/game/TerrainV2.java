@@ -1,21 +1,18 @@
 package com.game;
 
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 
 public class TerrainV2 {
     private Model terrainModel;  // model class like schemat
@@ -24,6 +21,10 @@ public class TerrainV2 {
     private ModelInstance waterInstance;
     private Model sandModel;  // Model for sand spots
     private ModelInstance sandInstance;  // Instance for rendering sand spots
+    private MapBorder mapBorder;
+    private Texture waterTexture;
+
+    private static final String WATER_TEXTURE_PATH = "assets/water.jpg";
 
     // Define size of the terrain
     private   int width = 100;  // Number of vertices along the x-axis
@@ -33,10 +34,12 @@ public class TerrainV2 {
     public TerrainV2() {
 
         // initialize the terrain ( grass field )
-        addTerrain(); 
+        addTerrain();
 
         // Add the water plane after the terrain has been created.
         addWater(0.8f); // You can adjust the alpha for transparency
+
+        mapBorder = new MapBorder(width, depth, scale);
 
     }
 
@@ -52,66 +55,66 @@ public class TerrainV2 {
     }
 
     private void generateTerrain(ModelBuilder modelBuilder) {
-    // Compute half width and depth to center the terrain
-    float halfWidth = width * scale * 0.5f;
-    float halfDepth = depth * scale * 0.5f;
+        // Compute half width and depth to center the terrain
+        float halfWidth = width * scale * 0.5f;
+        float halfDepth = depth * scale * 0.5f;
 
-    // Get the height of the water level
-    float waterLevel = getHeight(0, 0); // Assuming water level at the center
+        // Get the height of the water level
+        float waterLevel = getHeight(0, 0); // Assuming water level at the center
 
-    // Boolean arrays to track grass and sand tiles
-    boolean[][] grassTiles = new boolean[width][depth];
-    boolean[][] sandTiles = new boolean[width][depth];
+        // Boolean arrays to track grass and sand tiles
+        boolean[][] grassTiles = new boolean[width][depth];
+        boolean[][] sandTiles = new boolean[width][depth];
 
-    // Generate the terrain with grass, sand, and earth
-    for (int y = 0; y < depth - 1; y++) {
-        for (int x = 0; x < width - 1; x++) {
-            // Adjusted to center the terrain
-            float adjustedX = (x * scale) - halfWidth;
-            float adjustedY = (y * scale) - halfDepth;
+        // Generate the terrain with grass, sand, and earth
+        for (int y = 0; y < depth - 1; y++) {
+            for (int x = 0; x < width - 1; x++) {
+                // Adjusted to center the terrain
+                float adjustedX = (x * scale) - halfWidth;
+                float adjustedY = (y * scale) - halfDepth;
 
-            // Get the height of the terrain at this point
-            float height = getHeight(adjustedX, adjustedY);
+                // Get the height of the terrain at this point
+                float height = getHeight(adjustedX, adjustedY);
 
-            // Material variable declaration
-            Material material;
+                // Material variable declaration
+                Material material;
 
-            if (height <= waterLevel) {
-                material = createEarthMaterial();
-            } else if (checkSandNearby(sandTiles, x, y)) {
-                continue; // Skip generating grass if sand is nearby
-            } else if (Math.random() < 0.003) {
-                material = createSandMaterial(modelBuilder, adjustedX, adjustedY);
-                propagateSand(sandTiles, modelBuilder, x, y, adjustedX, adjustedY);
-            } else {
-                material = createGrassMaterial();
-                grassTiles[x][y] = true; // Mark this tile as grass
-            }
+                if (height <= waterLevel) {
+                    material = createEarthMaterial();
+                } else if (checkSandNearby(sandTiles, x, y)) {
+                    continue; // Skip generating grass if sand is nearby
+                } else if (Math.random() < 0.003) {
+                    material = createSandMaterial(modelBuilder, adjustedX, adjustedY);
+                    propagateSand(sandTiles, modelBuilder, x, y, adjustedX, adjustedY);
+                } else {
+                    material = createGrassMaterial();
+                    grassTiles[x][y] = true; // Mark this tile as grass
+                }
 
-            // Method call to add terrain part
-            addTerrainPart(modelBuilder, material, adjustedX, adjustedY);
-        }
-    }
-}
-
-private boolean checkSandNearby(boolean[][] sandTiles, int x, int y) {
-    // Check neighboring tiles within the range of the patch size of sand
-    int patchSize = 2; // Define the patch size of sand
-
-    for (int dx = -patchSize; dx <= patchSize; dx++) {
-        for (int dy = -patchSize; dy <= patchSize; dy++) {
-            int nx = x + dx;
-            int ny = y + dy;
-
-            // Check if the neighboring tile is within bounds and contains sand
-            if (nx >= 0 && nx < width && ny >= 0 && ny < depth && sandTiles[nx][ny]) {
-                return true; // Sand found nearby
+                // Method call to add terrain part
+                addTerrainPart(modelBuilder, material, adjustedX, adjustedY);
             }
         }
     }
 
-    return false; // No sand found nearby
-}
+    private boolean checkSandNearby(boolean[][] sandTiles, int x, int y) {
+        // Check neighboring tiles within the range of the patch size of sand
+        int patchSize = 2; // Define the patch size of sand
+
+        for (int dx = -patchSize; dx <= patchSize; dx++) {
+            for (int dy = -patchSize; dy <= patchSize; dy++) {
+                int nx = x + dx;
+                int ny = y + dy;
+
+                // Check if the neighboring tile is within bounds and contains sand
+                if (nx >= 0 && nx < width && ny >= 0 && ny < depth && sandTiles[nx][ny]) {
+                    return true; // Sand found nearby
+                }
+            }
+        }
+
+        return false; // No sand found nearby
+    }
 
 
     private Material createGrassMaterial() {
@@ -171,29 +174,35 @@ private boolean checkSandNearby(boolean[][] sandTiles, int x, int y) {
         mpb.triangle(topLeft, bottomRight, bottomLeft); // Triangle 1
         mpb.triangle(topLeft, topRight, bottomRight); // Triangle 2
     }
-    
-    
+
+
     // Method to add water
     public void addWater(float alpha) {
         ModelBuilder modelBuilder = new ModelBuilder();
 
+        // Load the water texture
+        waterTexture = new Texture(WATER_TEXTURE_PATH);
+
         float halfWidth = width * scale * 0.5f;
         float halfDepth = depth * scale * 0.5f;
 
+        // Create water material with texture
+        Material material = new Material(
+                TextureAttribute.createDiffuse(waterTexture),
+                new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+
         waterModel = modelBuilder.createRect(
-            -halfWidth, 0, halfDepth,
-            halfWidth, 0, halfDepth,
-            halfWidth, 0, -halfDepth,
-            -halfWidth, 0, -halfDepth,
-            0, 1, 0,
-            new Material(
-                    ColorAttribute.createDiffuse(new Color(0, 0, 1, alpha)),
-                    new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)),
-            Usage.Position | Usage.Normal);
+                -halfWidth, 0, halfDepth,
+                halfWidth, 0, halfDepth,
+                halfWidth, 0, -halfDepth,
+                -halfWidth, 0, -halfDepth,
+                0, 1, 0,
+                material,
+                Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
         waterInstance = new ModelInstance(waterModel);
-}
-    
+    }
+
 
     private float getHeight(float x, float y) {
         // This is a simple example using a sine function for the height
@@ -203,28 +212,32 @@ private boolean checkSandNearby(boolean[][] sandTiles, int x, int y) {
     public void render(ModelBatch modelBatch, Environment environment) {
         // Render the terrain
         modelBatch.render(terrainInstance, environment);
-        
+
         // Enable blending for transparent objects
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        
+
+        //Render map border
+        modelBatch.render(mapBorder.getBorderInstance(), environment);
+
         // Render the water
-        modelBatch.render(waterInstance, environment); 
-        
+        modelBatch.render(waterInstance, environment);
+
         // Render the sand spots
         if (sandInstance != null) {
             modelBatch.render(sandInstance, environment);
         }
-        
+
         // Disable blending
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
-    
+
 
     public void dispose() {
         terrainModel.dispose();
         if (waterModel != null) {
             waterModel.dispose(); // Dispose of the waterModel resources
         }
+        mapBorder.dispose();
     }
 }

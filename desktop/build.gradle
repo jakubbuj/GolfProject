@@ -1,6 +1,14 @@
 sourceCompatibility = 1.8
-sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ["../assets"]
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/']
+        }
+        resources {
+            srcDirs = ['resources/']
+        }
+    }
+}
 
 project.ext.mainClassName = "com.game.DesktopLauncher"
 project.ext.assetsDir = new File("../assets")

@@ -6,76 +6,17 @@
     "configurations": [
         {
             "type": "java",
-            "name": "PhysicsEngine",
-            "request": "launch",
-            "mainClass": "com.game.PhysicsEngine",
-            "projectName": "project-1.2-ken-17-core"
-        },
-        {
-            "type": "java",
-            "name": "GetHeight",
-            "request": "launch",
-            "mainClass": "com.game.GetHeight",
-            "projectName": "project-1.2-ken-17-core"
-        },
-        {
-            "type": "java",
             "name": "DesktopLauncher",
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",
+            "projectName": "desktop"
+        },
+        {
+            "type": "java",
+            "name": "Launch DesktopLauncher",
+            "request": "launch",
+            "mainClass": "com.game.DesktopLauncher",
             "projectName": "project-1.2-ken-17-desktop"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "project-1.2-ken-17-5_61cda093"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "project-1.2-ken-17-3_61cda091"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "project-1.2-ken-17_5bbd59ab"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}",
-            "vmArgs": "--module-path \"C:/Users/grudk/OneDrive/Pulpit/javafx-sdk-21.0.1/lib\" --add-modules javafx.controls,javafx.fxml"
-        },
-        {
-            "type": "java",
-            "name": "GUI",
-            "request": "launch",
-            "mainClass": "GUI",
-            "projectName": "Project_1_2_group17_36232be4",
-            "vmArgs": "--module-path \"C:/Users/grudk/OneDrive/Pulpit/javafx-sdk-21.0.1/lib\" --add-modules javafx.controls,javafx.fxml"
-        },
-        {
-            "type": "java",
-            "name": "HandleDerivatives",
-            "request": "launch",
-            "mainClass": "HandleDerivatives",
-            "projectName": "Project_1_2_group17_36232be4",
-            "vmArgs": "--module-path \"C:/Users/grudk/OneDrive/Pulpit/javafx-sdk-21.0.1/lib\" --add-modules javafx.controls,javafx.fxml"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "Project_1_2_group17_36232be4",
-            "vmArgs": "--module-path \"C:/Users/grudk/OneDrive/Pulpit/javafx-sdk-21.0.1/lib\" --add-modules javafx.controls,javafx.fxml"
         }
     ]
 }

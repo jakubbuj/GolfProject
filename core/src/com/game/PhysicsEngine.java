@@ -40,7 +40,7 @@ public class PhysicsEngine {
     }
 
     public static void main(String[] args) {
-        PhysicsEngine testEngine = new PhysicsEngine("2 * x - y", 5, 2, 4, 1, 0.15, 0.1, 0.2, 0.3, 0.4,0.5,0.0);
+        PhysicsEngine testEngine = new PhysicsEngine(" sqrt ( ( sin x + cos y ) ^ 2 )", 5, 2, 4, 1, 0.15, 1, 0.5, 0.3, 0.4,0.5,0.0);
 
         testEngine.runSimulation(0.5, 0);
        // testEngine.runSimulation(10, 10);
@@ -100,8 +100,7 @@ public class PhysicsEngine {
             //     break;
             // }
 
-            updateStateVectorRungeKutta(false);
-
+            updateStateVectorEuler(false);
         }
 
     }
@@ -162,95 +161,77 @@ public class PhysicsEngine {
         return systemFunction;
     }
     
-    
+
     public void updateStateVectorEuler(boolean isImmobile) {
-
-        double x = stateVector[0]; // X position on the plane
-        double z = stateVector[1]; // Z position on the plane
+        double x = stateVector[0];
+        double z = stateVector[1];
     
-        double xVelocity = stateVector[2]; // X velocity
-        double zVelocity = stateVector[3]; // Z velocity
-
-        // No vertical movement in Y since it's only for height, not affected by this physics simulation
-        // The slope calculation methods need to work with the ground plane (x, z), not vertical (y)
-        double slopeX = calculateDerivativeX(x, z); // Should calculate the derivative on the plane
-        double slopeZ = calculateDerivativeZ(x, z); // Should calculate the derivative on the plane
-
-        // Friction coefficients
-        double kineticCoefficient = GRASS_K; // Kinetic coefficient for grass
-        // Use sand kinetic coefficient if within sand area, assuming a method isWithinSandArea(x, z)
-        // if (isWithinSandArea(x, z)) {
-        //     kineticCoefficient = SAND_K;
-        // }
-
-        // Calculate forces based on the slopes and friction coefficients on the plane
-        double forceX = -kineticCoefficient * g * slopeX;
-        double forceZ = -kineticCoefficient * g * slopeZ;
-        double xSecondTerm;
-        double ySecondTerm;
-        if (isImmobile(x, z)) {
-
-            xSecondTerm = -kineticCoefficient * g * (slopeX / Math.sqrt(slopeX * slopeX + forceZ * forceZ));
-            ySecondTerm = -kineticCoefficient * g * (forceZ / Math.sqrt(slopeX * slopeX + forceZ * forceZ));
-
-        } else {
-
-            xSecondTerm = -kineticCoefficient * g
-                    * (xVelocity / Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity));
-            ySecondTerm = -kineticCoefficient * g
-                    * (zVelocity / Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity));
-
+        double xVelocity = stateVector[2];
+        double zVelocity = stateVector[3];
+    
+        double normVelocity = Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity);
+    
+        // Calculate the slope of the height field at the current position
+        double slopeX = calculateDerivativeX(x, z);
+        double slopeZ = calculateDerivativeZ(x, z);
+    
+        // Determine the coefficient of kinetic friction based on the terrain
+        double kineticCoefficient = isWithinSandArea(x, z) ? SAND_K : GRASS_K;
+    
+        // Calculate the force of gravity acting along the slope
+        double gravityForceX = -g * slopeX;
+        double gravityForceZ = -g * slopeZ;
+    
+        // Calculate friction force magnitude; it should oppose the velocity vector
+        double frictionForceX = normVelocity > LIMIT_ZERO ? kineticCoefficient * g * (xVelocity / normVelocity) : 0;
+        double frictionForceZ = normVelocity > LIMIT_ZERO ? kineticCoefficient * g * (zVelocity / normVelocity) : 0;
+    
+        // Update accelerations by combining gravitational and frictional forces
+        double xAcceleration = gravityForceX - frictionForceX;
+        double zAcceleration = gravityForceZ - frictionForceZ;
+    
+        // Apply Euler's method to update velocities and positions
+        stateVector[2] += xAcceleration * h;  // Update x velocity
+        stateVector[3] += zAcceleration * h;  // Update z velocity
+    
+        // Update positions based on new velocities
+        stateVector[0] += stateVector[2] * h;
+        stateVector[1] += stateVector[3] * h;
+    
+        // Check if the velocity is low enough to consider the ball stopped
+        if (Math.sqrt(stateVector[2] * stateVector[2] + stateVector[3] * stateVector[3]) < LIMIT_ZERO) {
+            stateVector[2] = 0;
+            stateVector[3] = 0;
         }
-        double xAcceleration = forceX + xSecondTerm;
-        double yAcceleration = forceZ + ySecondTerm;
-
-        systemFunction[0] = stateVector[2];
-        systemFunction[1] = stateVector[3];
-        systemFunction[2] = xAcceleration;
-        systemFunction[3] = yAcceleration;
-
-        for (int i = 0; i < stateVector.length; i++) {
-            stateVector[i] += h * systemFunction[i];
-        }
-
+    }
+    
+    
+    private boolean isWithinSandArea(double x, double z) {
+        // Assume a method that checks if coordinates are in a sand area
+        return false; // Placeholder: Implement the actual area check based on your game map
+    }
+    
+    // Check if the ball is immobile based on the static friction exceeding the force due to slope
+    public boolean isImmobile(double x, double z) {
+        double slopeX = calculateDerivativeX(x, z);
+        double slopeZ = calculateDerivativeZ(x, z);
+        double normSlope = Math.sqrt(slopeX * slopeX + slopeZ * slopeZ);
+        double staticCoefficient = isWithinSandArea(x, z) ? SAND_S : GRASS_S;
+        return staticCoefficient * g > normSlope;
     }
 
-    // Checking if the ball is not moving
-    public boolean isImmobile(double x, double y) {
-        double staticCoefficient = GRASS_S;
-        /*
-         * if (isWithinSandArea(x, y)) {
-         * staticCoefficient = SAND_S;
-         * } else {
-         * staticCoefficient = GRASS_S;
-         * }
-         */
-
-        // Calculating partial derivatives of the terrain at (X0, Y0)
-        double slopeX = calculateDerivativeX(x, y);
-        double forceZ = calculateDerivativeZ(x, y);
-
-        // Return true if the static friction coefficient is greater than the slope
-        // magnitude
-        return staticCoefficient > Math.sqrt(slopeX * slopeX + forceZ * forceZ);
-    }
-
-    // Helper method to check if a position is within the sand area
-    // private boolean isWithinSandArea(double x, double y) {
-
-    // }
-
-    // Calculating the partial derivative with respect to x
     private double calculateDerivativeX(double x, double y) {
-        return (Math.abs(GetHeight.getHeight(heightFunction, x - LIMIT_ZERO, y)
-                - GetHeight.getHeight(heightFunction, x + LIMIT_ZERO, y))) / (2 * LIMIT_ZERO);
+        double forwardHeight = GetHeight.getHeight(heightFunction, x + LIMIT_ZERO, y);
+        double backwardHeight = GetHeight.getHeight(heightFunction, x - LIMIT_ZERO, y);
+        return (forwardHeight - backwardHeight) / (2 * LIMIT_ZERO);
     }
-
-    // Calculating the partial derivative with respect to Y
+    
     private double calculateDerivativeZ(double x, double z) {
-        return (Math.abs(GetHeight.getHeight(heightFunction, x, z - LIMIT_ZERO)
-                - GetHeight.getHeight(heightFunction, x, z + LIMIT_ZERO))) / (2 * LIMIT_ZERO);
+        double forwardHeight = GetHeight.getHeight(heightFunction, x, z + LIMIT_ZERO);
+        double backwardHeight = GetHeight.getHeight(heightFunction, x, z - LIMIT_ZERO);
+        return (forwardHeight - backwardHeight) / (2 * LIMIT_ZERO);
     }
+    
 
     // In PhysicsEngine.java
 
@@ -262,7 +243,7 @@ public class PhysicsEngine {
         stateVector[3] = ballVelocity.z;
 
         //updating state vectors
-        updateStateVectorRungeKutta(false);
+        updateStateVectorEuler(false);
 
         // checking if any of the states in nan
         boolean hasNaN = false;

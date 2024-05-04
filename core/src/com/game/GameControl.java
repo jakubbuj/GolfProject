@@ -34,7 +34,7 @@ public class GameControl extends ApplicationAdapter {
     public static String functionTerrain = " sqrt ( ( sin x + cos y ) ^ 2 )";
     private int width = 100; 
     private int depth = 100; 
-    private float scale = 0.5f;
+    private float scale = 0.3f;
 
     @Override
     public void create() {
@@ -50,7 +50,7 @@ public class GameControl extends ApplicationAdapter {
 
         // Initialize the ball and physics engine with some arbitrary parameters for now
         ball = new GolfBall(new Vector3(10, 20, 10));
-        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, 4, 1, 0.15, 0.1, 0.2, 0.3, 0.4, 0.5, 0.0);
+        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, 4, 1, 0.15, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
         ballMovement = new GolfBallMovement(ball, physicsEngine);
     }
 

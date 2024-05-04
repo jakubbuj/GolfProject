@@ -28,7 +28,7 @@ public class GolfBallMovement {
         // Update the ball instance with new state from the physics engine
         ball.setPosition(new Vector3(
             (float) physicsEngine.getStateVector()[0],
-            (float) physicsEngine.terrainHeight,
+            (float) physicsEngine.terrainHeight + 0.2f,
             (float) physicsEngine.getStateVector()[1]
         ));
 

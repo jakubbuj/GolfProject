@@ -109,18 +109,37 @@ public class PhysicsEngine {
         double x = stateVector[0];
         double z = stateVector[1];
 
-        double kineticCoefficient = GRASS_K; // Assuming the object is on grass
+        double kineticCoefficient = isWithinSandArea(x, z) ? SAND_K : GRASS_K;
         // Calculate the next state vector using the Runge-Kutta method
-        double[] stateVector1 = returnUpdatedVector(isImmobile, x, z, kineticCoefficient);
-        double[] stateVector2 = returnUpdatedVector(isImmobile, x + h / 2, z + stateVector1[1] / 2, kineticCoefficient);
-        double[] stateVector3 = returnUpdatedVector(isImmobile, x + h / 2, z + stateVector2[1] / 2, kineticCoefficient);
-        double[] stateVector4 = returnUpdatedVector(isImmobile, x + h, z + stateVector3[1], kineticCoefficient);
-        
-        double[] averageVector = new double[4];
-        for (int i = 0; i < stateVector.length; i++) {
-            averageVector[i] = (1.0 / 6.0) * (stateVector1[i] + 2 * stateVector2[i] + 2 * stateVector3[i] + stateVector4[i]);
-            stateVector[i] += h * averageVector[i];
+
+        double [] stateVector1 = new double[4];
+        double [] stateVector2 = new double[4];
+        double [] stateVector3 = new double[4];
+        double [] stateVector4 = new double[4];
+
+        double [] averageVector = new double[4];
+
+        for (int i = 0; i < stateVector.length; i++){
+            if (i%2 == 0){
+            // Update x fields of the state vector : stateVector[0] and stateVector[2]
+                stateVector1 = returnUpdatedVector(isImmobile, x, z, kineticCoefficient);
+                stateVector2 = returnUpdatedVector(isImmobile, x + 0.5 * stateVector1[0], z, kineticCoefficient);
+                stateVector3 = returnUpdatedVector(isImmobile, x + 0.5 * stateVector2[0], z, kineticCoefficient);
+                stateVector4 = returnUpdatedVector(isImmobile, x + stateVector3[0], z, kineticCoefficient);
+            } else {
+            // Update y fields of the state vector : stateVector[1] and stateVector[3]
+                stateVector1 = returnUpdatedVector(isImmobile, x, z, kineticCoefficient);
+                stateVector2 = returnUpdatedVector(isImmobile, x, z + 0.5 * stateVector1[1], kineticCoefficient);
+                stateVector3 = returnUpdatedVector(isImmobile, x, z + 0.5 * stateVector2[1], kineticCoefficient);
+                stateVector4 = returnUpdatedVector(isImmobile, x, z + stateVector3[1], kineticCoefficient);
+            }
+            averageVector[i] = (1.0/6.0) * (stateVector1[i] + 2 * stateVector2[i] + 2 * stateVector3[i] + stateVector4[i]);
         }
+        
+        stateVector[0] += h * stateVector[2];
+        stateVector[1] += h * stateVector[3];
+        stateVector[2] += h * averageVector[2];
+        stateVector[3] += h * averageVector[3];
     
     }
     
@@ -137,11 +156,12 @@ public class PhysicsEngine {
         double xSecondTerm;
         double zSecondTerm;
     
+       double normVelocity = Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity);
         // Determine friction components based on motion state
-        if (isImmobile(x, z)) {
+        if (normVelocity <= LIMIT_ZERO) {
             // Friction acts against the slope
-            xSecondTerm = -kineticCoefficient * g * (slopeX / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
-            zSecondTerm = -kineticCoefficient * g * (slopeZ / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
+            xSecondTerm = 0;//-kineticCoefficient * g * (slopeX / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
+            zSecondTerm = 0;//-kineticCoefficient * g * (slopeZ / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
         } else {
             // Friction acts against velocity
             xSecondTerm = -kineticCoefficient * g * (xVelocity / Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity));
@@ -212,13 +232,13 @@ public class PhysicsEngine {
     }
     
     // Check if the ball is immobile based on the static friction exceeding the force due to slope
-    public boolean isImmobile(double x, double z) {
-        double slopeX = calculateDerivativeX(x, z);
-        double slopeZ = calculateDerivativeZ(x, z);
-        double normSlope = Math.sqrt(slopeX * slopeX + slopeZ * slopeZ);
-        double staticCoefficient = isWithinSandArea(x, z) ? SAND_S : GRASS_S;
-        return staticCoefficient * g > normSlope;
-    }
+    // public boolean isImmobile(double x, double z) {
+    //     double slopeX = calculateDerivativeX(x, z);
+    //     double slopeZ = calculateDerivativeZ(x, z);
+    //     double normSlope = Math.sqrt(slopeX * slopeX + slopeZ * slopeZ);
+    //     double staticCoefficient = isWithinSandArea(x, z) ? SAND_S : GRASS_S;
+    //     return staticCoefficient * g > normSlope;
+    // }
 
     private double calculateDerivativeX(double x, double y) {
         double forwardHeight = GetHeight.getHeight(heightFunction, x + LIMIT_ZERO, y);

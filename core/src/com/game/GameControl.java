@@ -56,7 +56,7 @@ public class GameControl extends ApplicationAdapter {
         ballMovement = new GolfBallMovement(ball, physicsEngine);
 
         target = new Target(4, 1, 4, modelBatch); // Example values
-        gameRules = new GameRules(target, ball);
+        gameRules = new GameRules(target, ball, functionTerrain);
 
     }
 

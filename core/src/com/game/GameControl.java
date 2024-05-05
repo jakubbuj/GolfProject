@@ -19,9 +19,9 @@ public class GameControl extends ApplicationAdapter {
 
     private UI ui;
     private ModelBatch modelBatch;
-    private Environment environment;
+    static Environment environment;
     private Terrain terrain;
-    private PerspectiveCamera camera;
+    public static PerspectiveCamera camera;
     private CameraInputController camController;
     private PhysicsEngine physicsEngine;
     private GameRules gameRules;
@@ -36,7 +36,7 @@ public class GameControl extends ApplicationAdapter {
     public static String functionTerrain = " sqrt ( ( sin x + cos y ) ^ 2 )";
     private int width = 100;
     private int depth = 100;
-    private float scale = 0.5f;
+    private float scale = 0.9f;
 
     @Override
     public void create() {
@@ -54,8 +54,8 @@ public class GameControl extends ApplicationAdapter {
         ball = new GolfBall(new Vector3(10, 20, 10));
         physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, 4, 1, 0.15, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
         ballMovement = new GolfBallMovement(ball, physicsEngine);
-
-        target = new Target(4, 1, 4, modelBatch); // Example values
+        
+        target = new Target(4, 1, 1f); // Example values
         gameRules = new GameRules(target, ball, functionTerrain);
 
     }
@@ -117,28 +117,37 @@ public class GameControl extends ApplicationAdapter {
 
     @Override
     public void render() {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
-        camController.update();
-
         float deltaTime = Gdx.graphics.getDeltaTime();
-
+    
+        // Clear the screen
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        Gdx.gl.glClearColor(0.0f, 0.5f, 0.5f, 1); // Adjust clear color if needed
+    
+        // Update camera and input controller
+        camController.update();
+    
+        // Handle game logic updates
         if (isCharging) {
             chargePower += deltaTime; // Increase charge power over time
             chargePower = Math.min(chargePower, MAX_CHARGE); // Clamp to max charge
         }
-
-        ui.setChargePower(chargePower); // vizualize charge power in chargebar
-
-        update(deltaTime);
-
+    
+        ui.setChargePower(chargePower); // Update UI to visualize charge power
+    
+        update(deltaTime); // Update game logic
+    
+        // Begin model batch and render all models
         modelBatch.begin(camera);
         terrain.render(modelBatch, environment);
         ball.render(modelBatch, environment);
-        modelBatch.end();
-
+        target.render(modelBatch, environment); // Ensure target is rendered within the batch cycle
+        modelBatch.end(); // Make sure to end the batch after all rendering calls
+    
+        // Render the UI elements
         ui.render();
     }
+    
+    
 
     private void update(float deltaTime) {
         ballMovement.update(deltaTime);

@@ -61,45 +61,6 @@ public class PhysicsEngine {
                     + stateVector[2] + ", Y velocity: " + stateVector[3] + ", height: "
                      + GetHeight.getHeight(heightFunction, stateVector[0], stateVector[1]));
 
-            // if ((stateVector[0] > (Xt - Rt) && stateVector[0] < (Xt + Rt))
-            //         && (stateVector[1] > (Yt - Rt) && stateVector[1] < (Yt + Rt))) {
-
-            //     System.out.println("Ball reached the target!");
-            //     break;
-
-            // }
-
-            // if (stateVector[0] > xMapEnd || stateVector[0] < xMapStart || stateVector[1] > yMapEnd
-            //         || stateVector[1] < yMapStart) {
-
-            //     System.out.println("Ball fell out of the map!");
-            //     break;
-
-            // }
-
-            // if (GetHeight.getHeight(heightFunction, stateVector[0], stateVector[1]) < 0) {
-
-            //     System.out.println("Ball fell in water!");
-            //     break;
-
-            // }
-
-            // if (Math.abs(stateVector[2]) < h && Math.abs(stateVector[3]) < h) {
-
-            //     stateVector[2] = 0;
-            //     stateVector[3] = 0;
-            //     while (!isImmobile(stateVector[0], stateVector[1])) {
-            //         updateStateVectorRungeKutta(false);
-            //     }
-            //     System.out.println("Ball stopped!");
-
-            //     if ((stateVector[0] > (Xt - Rt) && stateVector[0] < (Xt + Rt))
-            //             && (stateVector[1] > (Yt - Rt) && stateVector[1] < (Yt + Rt))) {
-            //         System.out.println("Ball reached the target!");
-            //     }
-            //     break;
-            // }
-
             updateStateVectorEuler(false);
         }
 

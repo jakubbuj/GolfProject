@@ -15,7 +15,7 @@ public class GameRules {
     // Method to check if the game is over (i.e., ball reaches the target)
     public boolean isGameOver() {
         double distance = Math.sqrt(Math.pow((ball.getPosition().x - target.getX()), 2) +
-                Math.pow((ball.getPosition().z - target.getY()), 2));
+                Math.pow((ball.getPosition().z - target.getZ()), 2));
         return distance <= target.getRadius();
     }
 

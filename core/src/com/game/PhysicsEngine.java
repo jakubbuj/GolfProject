@@ -160,8 +160,8 @@ public class PhysicsEngine {
         // Determine friction components based on motion state
         if (normVelocity <= LIMIT_ZERO) {
             // Friction acts against the slope
-            xSecondTerm = 0;//-kineticCoefficient * g * (slopeX / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
-            zSecondTerm = 0;//-kineticCoefficient * g * (slopeZ / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
+            xSecondTerm = -kineticCoefficient * g * (slopeX / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
+            zSecondTerm = -kineticCoefficient * g * (slopeZ / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
         } else {
             // Friction acts against velocity
             xSecondTerm = -kineticCoefficient * g * (xVelocity / Math.sqrt(xVelocity * xVelocity + zVelocity * zVelocity));
@@ -203,8 +203,8 @@ public class PhysicsEngine {
         double gravityForceZ = -g * slopeZ;
     
         // Calculate friction force magnitude; it should oppose the velocity vector
-        double frictionForceX = normVelocity > LIMIT_ZERO ? kineticCoefficient * g * (xVelocity / normVelocity) : 0;
-        double frictionForceZ = normVelocity > LIMIT_ZERO ? kineticCoefficient * g * (zVelocity / normVelocity) : 0;
+        double frictionForceX = normVelocity > LIMIT_ZERO ? kineticCoefficient * g * (xVelocity / normVelocity) : kineticCoefficient * g * (slopeX/ Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
+        double frictionForceZ = normVelocity > LIMIT_ZERO ? kineticCoefficient * g * (zVelocity / normVelocity) : kineticCoefficient * g * (slopeZ/ Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
     
         // Update accelerations by combining gravitational and frictional forces
         double xAcceleration = gravityForceX - frictionForceX;
@@ -263,7 +263,7 @@ public class PhysicsEngine {
         stateVector[3] = ballVelocity.z;
 
         //updating state vectors
-        updateStateVectorEuler(false);
+        updateStateVectorRungeKutta(false);
 
         // checking if any of the states in nan
         boolean hasNaN = false;

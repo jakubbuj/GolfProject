@@ -9,6 +9,13 @@
             "name": "PhysicsEngine",
             "request": "launch",
             "mainClass": "com.game.PhysicsEngine",
+            "projectName": "project-1.2-ken-17-core"
+        },
+        {
+            "type": "java",
+            "name": "PhysicsEngine",
+            "request": "launch",
+            "mainClass": "com.game.PhysicsEngine",
             "projectName": "core"
         },
         {
@@ -24,6 +31,6 @@
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",
             "projectName": "project-1.2-ken-17-desktop"
-        },
+        }
     ]
 }

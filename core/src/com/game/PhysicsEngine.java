@@ -43,66 +43,34 @@ public class PhysicsEngine {
         PhysicsEngine testEngine = new PhysicsEngine(" sqrt ( ( sin x + cos y ) ^ 2 )", 5, 2, 4, 1, 0.15, 1, 0.5, 0.3, 0.4,0.5,0.0);
 
         testEngine.runSimulation(0.5, 0);
-       // testEngine.runSimulation(10, 10);
+        System.out.println("asdasd");
 
     }
 
+    //set desired initailvelocities and position of the ball
+    public void setState(double x0, double y0, double vx0, double vy0) {
+        this.X0 = x0;
+        this.Y0 = y0;
+        this.xInitialVelocity = vx0;
+        this.zInitialVelocity = vy0;
+    }
 
-    public void runSimulation(double xInitialVelocity, double yInitialVelocity) {
-
+    public double[] runSimulation(double xInitialVelocity, double yInitialVelocity) {
+        // Initialize the state vector for position and velocity
         stateVector[0] = X0;
         stateVector[1] = Y0;
         stateVector[2] = xInitialVelocity;
         stateVector[3] = yInitialVelocity;
 
-        while (true) {
-
-            System.out.println("X position: " + stateVector[0] + ", Y position: " + stateVector[1] + ", X velocity: "
-                    + stateVector[2] + ", Y velocity: " + stateVector[3] + ", height: "
-                     + GetHeight.getHeight(heightFunction, stateVector[0], stateVector[1]));
-
-            // if ((stateVector[0] > (Xt - Rt) && stateVector[0] < (Xt + Rt))
-            //         && (stateVector[1] > (Yt - Rt) && stateVector[1] < (Yt + Rt))) {
-
-            //     System.out.println("Ball reached the target!");
-            //     break;
-
-            // }
-
-            // if (stateVector[0] > xMapEnd || stateVector[0] < xMapStart || stateVector[1] > yMapEnd
-            //         || stateVector[1] < yMapStart) {
-
-            //     System.out.println("Ball fell out of the map!");
-            //     break;
-
-            // }
-
-            // if (GetHeight.getHeight(heightFunction, stateVector[0], stateVector[1]) < 0) {
-
-            //     System.out.println("Ball fell in water!");
-            //     break;
-
-            // }
-
-            // if (Math.abs(stateVector[2]) < h && Math.abs(stateVector[3]) < h) {
-
-            //     stateVector[2] = 0;
-            //     stateVector[3] = 0;
-            //     while (!isImmobile(stateVector[0], stateVector[1])) {
-            //         updateStateVectorRungeKutta(false);
-            //     }
-            //     System.out.println("Ball stopped!");
-
-            //     if ((stateVector[0] > (Xt - Rt) && stateVector[0] < (Xt + Rt))
-            //             && (stateVector[1] > (Yt - Rt) && stateVector[1] < (Yt + Rt))) {
-            //         System.out.println("Ball reached the target!");
-            //     }
-            //     break;
-            // }
-
-            updateStateVectorEuler(false);
+        // Simulation loop: run until both velocities are close to zero
+        while (Math.sqrt(stateVector[2] * stateVector[2] + stateVector[3] * stateVector[3]) >= LIMIT_ZERO) {
+            updateStateVectorRungeKutta(false);
         }
 
+        // Optionally print final stopping position of the ball
+        System.out.println("Final position: X = " + stateVector[0] + ", Y = " + stateVector[1]);
+
+        return stateVector;
     }
 
     public void updateStateVectorRungeKutta(boolean isImmobile) {
@@ -140,6 +108,12 @@ public class PhysicsEngine {
         stateVector[1] += h * stateVector[3];
         stateVector[2] += h * averageVector[2];
         stateVector[3] += h * averageVector[3];
+
+        // Check if the velocity is low enough to consider the ball stopped
+        if (Math.sqrt(stateVector[2] * stateVector[2] + stateVector[3] * stateVector[3]) < LIMIT_ZERO) {
+            stateVector[2] = 0;
+            stateVector[3] = 0;
+        }
     
     }
     
@@ -253,9 +227,8 @@ public class PhysicsEngine {
     }
     
 
-    // In PhysicsEngine.java
 
-    public void runSingleStep(double dt, Vector3 ballPosition, Vector3 ballVelocity) {
+    public double[] runSingleStep(Vector3 ballPosition, Vector3 ballVelocity) {
         //filling statevectors with values
         stateVector[0] = ballPosition.x;
         stateVector[1] = ballPosition.z;     
@@ -284,7 +257,10 @@ public class PhysicsEngine {
 
         // Update height to keep the ball on the terrain
         terrainHeight = (float) GetHeight.getHeight(heightFunction, ballPosition.x, ballPosition.z);
+
+        return stateVector;
     }
+    
 
     public double[] getStateVector() {
         return stateVector;

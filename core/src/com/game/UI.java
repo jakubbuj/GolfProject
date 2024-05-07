@@ -1,22 +1,28 @@
 package com.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class UI {
+    private GameControl gameControl; // Reference to the GameControl
     private Stage stage;
     private ProgressBar progressBar;
     private Skin skin;
+    private Button aiShotButton;
 
-    public UI() {
-        skin = new Skin(Gdx.files.internal("assets/skins/visui/assets/uiskin.json")); // Load a skin for UI elements
-
+    public UI(GameControl gameControl) {
+        this.gameControl = gameControl;
+        skin = new Skin(Gdx.files.internal("assets/skins/visui/assets/uiskin.json"));
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-
         setupLoadingBar();
+        setupAIShotButton();
     }
 
     private void setupLoadingBar() {
@@ -25,9 +31,22 @@ public class UI {
         progressBar.setPosition(Gdx.graphics.getWidth() - progressBar.getWidth() - 10, 10);
         stage.addActor(progressBar);
     }
+    
+    private void setupAIShotButton() {
+        aiShotButton = new TextButton("AI Shot", skin);
+        aiShotButton.setPosition(Gdx.graphics.getWidth() - 210, 30);
+        aiShotButton.setSize(200, 30);
+        aiShotButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameControl.triggerAIShot();
+            }
+        });
+        stage.addActor(aiShotButton);
+    }
 
     public void render() {
-        stage.act();
+        stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
 

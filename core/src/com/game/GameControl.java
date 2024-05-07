@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -30,18 +31,24 @@ public class GameControl extends ApplicationAdapter {
     private boolean isCharging;
     private float chargePower;
     static final float MAX_CHARGE = 5.0f;
+    // balls
     private GolfBall ball;
+    private GolfBall AIball;
     private GolfBallMovement ballMovement;
+    private GolfAI golfAI;
     // game parameters
     public static String functionTerrain = " sqrt ( ( sin x + cos y ) ^ 2 )";
     private int width = 100;
     private int depth = 100;
     private float scale = 0.9f;
+    //target
+    private Vector3 targetposition = new Vector3(4.0f,0.0f,1.0f);
+    private float targetRadius = 0.15f;
 
     @Override
     public void create() {
 
-        ui = new UI();
+        ui = new UI(this);
         modelBatch = new ModelBatch();
         environment = new Environment();
         terrain = new Terrain(width, depth, scale);
@@ -50,11 +57,16 @@ public class GameControl extends ApplicationAdapter {
         setupLights();
         setupInput();
 
+        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, 4, 1, targetRadius, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
+
         // Initialize the ball and physics engine with some arbitrary parameters for now
-        ball = new GolfBall(new Vector3(10, 20, 10));
-        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, 4, 1, 0.15, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
+        ball = new GolfBall(new Vector3(10, 20, 10),Color.WHITE);
+        AIball = new GolfBall(new Vector3(10,20,11),Color.MAGENTA);
+
+
         ballMovement = new GolfBallMovement(ball, physicsEngine);
-        
+        golfAI = new GolfAI(AIball, targetposition , targetRadius, physicsEngine);
+
         target = new Target(4, 1, 1f); // Example values
         gameRules = new GameRules(target, ball, functionTerrain);
 
@@ -107,6 +119,12 @@ public class GameControl extends ApplicationAdapter {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
+    public void triggerAIShot() {
+        Vector3 aiShot = golfAI.findBestShot();
+        AIball.setVelocity(aiShot);
+        golfAI.update();  // This makes the ball move
+    }
+
     private void applyForceBasedOnCharge() {
         // Apply the force in the direction you want, for example, forwards from the
         // camera's perspective
@@ -134,11 +152,12 @@ public class GameControl extends ApplicationAdapter {
     
         ui.setChargePower(chargePower); // Update UI to visualize charge power
     
-        update(deltaTime); // Update game logic
+        update(); // Update game logic
     
         // Begin model batch and render all models
         modelBatch.begin(camera);
         terrain.render(modelBatch, environment);
+        AIball.render(modelBatch, environment);
         ball.render(modelBatch, environment);
         target.render(modelBatch, environment); // Ensure target is rendered within the batch cycle
         modelBatch.end(); // Make sure to end the batch after all rendering calls
@@ -149,8 +168,9 @@ public class GameControl extends ApplicationAdapter {
     
     
 
-    private void update(float deltaTime) {
-        ballMovement.update(deltaTime);
+    private void update() {
+        ballMovement.update(); // moke a golfbal move
+        golfAI.update();    // make aiball move
         // game rules
         gameRules.checkGameStatus();
     }

@@ -17,7 +17,7 @@ public class GolfBall {
     private Vector3 velocity;
     private double mass;
 
-    public GolfBall(Vector3 startPosition) {
+    public GolfBall(Vector3 startPosition,Color color) {
         this.position = new Vector3(startPosition);
         this.velocity = new Vector3((float) 0.00, 0, 0);
         this.mass=0.05;
@@ -25,7 +25,7 @@ public class GolfBall {
         // Create the ball model
         ModelBuilder modelBuilder = new ModelBuilder();
         Model ballModel = modelBuilder.createSphere(1f, 1f, 1f, 24, 24,
-        new Material(ColorAttribute.createDiffuse(Color.WHITE)),
+        new Material(ColorAttribute.createDiffuse(color)),
         Usage.Position | Usage.Normal);
 
         this.modelInstance = new ModelInstance(ballModel); // Create a ModelInstance from the Model

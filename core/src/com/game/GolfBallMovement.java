@@ -18,26 +18,27 @@ public class GolfBallMovement {
         ball.setVelocity(velocity);
     }
 
-    public void update(float deltaTime) {
-        // Update the ball's position using the physics engine
-        Vector3 ballPosition = ball.getPosition();
-        Vector3 ballVelocity = ball.getVelocity();
+    public void update() {
+        // Get the current position and velocity of the ball
+        Vector3 currentPosition = ball.getPosition();
+        Vector3 currentVelocity = ball.getVelocity();
 
-        physicsEngine.runSingleStep(deltaTime, ballPosition, ballVelocity);
+        // Set the current state in the physics engine
+        physicsEngine.setState(currentPosition.x, currentPosition.z, currentVelocity.x, currentVelocity.z);
 
-        // Update the ball instance with new state from the physics engine
-        ball.setPosition(new Vector3(
-            (float) physicsEngine.getStateVector()[0],
-            (float) physicsEngine.terrainHeight + 0.2f,
-            (float) physicsEngine.getStateVector()[1]
-        ));
+        // Run the physics simulation for one timestep
+        double[] newState = physicsEngine.runSingleStep(currentPosition, currentVelocity);
 
-        ball.setVelocity(new Vector3(
-            (float) physicsEngine.getStateVector()[2],
-            0f, // Y velocity remains 0 because we don't have vertical movement in this physics engine
-            (float) physicsEngine.getStateVector()[3]
-        ));
+        // Update the ball's position based on the physics engine output
+        ball.setPosition(new Vector3((float) newState[0], ball.getPosition().y, (float) newState[1]));
+
+        // Update the ball's velocity based on the physics engine output
+        ball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
+
+        // Adjust the ball's vertical position based on the terrain height
+        ball.getPosition().y = (float) (physicsEngine.terrainHeight + 0.2f); // Keeping the ball slightly above the terrain
     }
 }
+
 
 

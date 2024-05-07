@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "GolfAI",
+            "request": "launch",
+            "mainClass": "com.game.GolfAI",
+            "projectName": "core"
+        },
+        {
+            "type": "java",
             "name": "PhysicsEngine",
             "request": "launch",
             "mainClass": "com.game.PhysicsEngine",

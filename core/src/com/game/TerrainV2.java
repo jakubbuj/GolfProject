@@ -11,37 +11,37 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import java.util.Random;
 
 
 public class TerrainV2 {
-    private Model terrainModel;  // model class like schemat
-    private ModelInstance terrainInstance;  // instance
+    private Model terrainModel; // model class like schemat
+    private ModelInstance terrainInstance; // instance
     private Model waterModel;
     private ModelInstance waterInstance;
-    private Model sandModel;  // Model for sand spots
-    private ModelInstance sandInstance;  // Instance for rendering sand spots
+    private Model sandModel; // Model for sand spots
+    private ModelInstance sandInstance; // Instance for rendering sand spots
     private MapBorder mapBorder;
 
     // Define size of the terrain
-    private int width = 100;  // Number of vertices along the x-axis
-    private int depth = 100;  // Number of vertices along the y-axis
-    private float scale = 0.1f;  // Scale of the terrain
+    private int width = 100; // Number of vertices along the x-axis
+    private int depth = 100; // Number of vertices along the y-axis
+    private float scale = 0.1f; // Scale of the terrain
 
-    public final Material grassMaterial = new Material(ColorAttribute.createDiffuse(Color.GREEN)); // Use green color for grass
-    public final Material sandMaterial = new Material(ColorAttribute.createDiffuse(Color.YELLOW)); // Use yellow color for sand
-    
+    public final Material grassMaterial = new Material(ColorAttribute.createDiffuse(Color.GREEN)); // Use green color
+                                                                                                   // for grass
+    public final Material sandMaterial = new Material(ColorAttribute.createDiffuse(Color.YELLOW)); // Use yellow color
+                                                                                                   // for sand
+
     public TerrainV2(int width, int depth, float scale) {
-        this.width=width;
-        this.depth=depth;
-        this.scale=scale;
+        this.width = width;
+        this.depth = depth;
+        this.scale = scale;
         // initialize the terrain ( grass field )
-        addTerrain(); 
+        addTerrain();
 
         // Add the water plane after the terrain has been created.
         addWater(0.8f); // You can adjust the alpha for transparency
@@ -52,101 +52,65 @@ public class TerrainV2 {
     public void addTerrain() {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
-    
+
         float halfWidth = width * scale * 0.5f;
         float halfDepth = depth * scale * 0.5f;
-    
+
         float waterLevel = getHeight(0, 0);
-    
+
         boolean[][] grassTiles = new boolean[width][depth];
-    
+
         generateTerrain(modelBuilder, halfWidth, halfDepth, waterLevel, grassTiles);
-    
+
         terrainModel = modelBuilder.end();
         terrainInstance = new ModelInstance(terrainModel);
     }
-    
-    private void generateTerrain(ModelBuilder modelBuilder, float halfWidth, float halfDepth, float waterLevel, boolean[][] grassTiles) {
+
+    private void generateTerrain(ModelBuilder modelBuilder, float halfWidth, float halfDepth, float waterLevel,
+            boolean[][] grassTiles) {
         for (int y = 0; y < depth - 1; y++) {
             for (int x = 0; x < width - 1; x++) {
                 float adjustedX = (x * scale) - halfWidth;
                 float adjustedY = (y * scale) - halfDepth;
-    
+
                 float height = getHeight(adjustedX, adjustedY);
-    
+
                 Material material = determineMaterial(height, waterLevel, x, y, grassTiles);
-    
+
                 createVerticesAndTriangles(modelBuilder, adjustedX, adjustedY, height, material, x, y, grassTiles);
             }
         }
     }
-    
+
     private Material determineMaterial(float height, float waterLevel, int x, int y, boolean[][] grassTiles) {
         Material material;
         float sandHeight = getSandHeight(x, y);
-    
+
         if (sandHeight > 0.5) {
             material = sandMaterial;
-            if (!grassTiles[x][y]) {
-                propagateSand(x, y, grassTiles);
-            }
         } else {
             material = grassMaterial;
             grassTiles[x][y] = true;
         }
-    
         return material;
     }
+
     
-    
-    private void propagateSand(int x, int y, boolean[][] grassTiles) {
-        // Define the range of neighboring tiles to cover
-        int spreadRange = 1; // Increase this value to spread sand to a larger area
-    
-        // Loop through all neighboring tiles within the spread range
-        for (int dx = -spreadRange; dx <= spreadRange; dx++) {
-            for (int dy = -spreadRange; dy <= spreadRange; dy++) {
-                int nx = x + dx;
-                int ny = y + dy;
-    
-                // Check if the neighboring tile is within bounds and not already sand
-                if (nx >= 0 && nx < width && ny >= 0 && ny < depth && !grassTiles[nx][ny]) {
-                    // Check if any adjacent tile is already sand
-                    boolean adjacentToSand = false;
-                    for (int i = -1; i <= 1; i++) {
-                        for (int j = -1; j <= 1; j++) {
-                            int ax = nx + i;
-                            int ay = ny + j;
-                            if (ax >= 0 && ax < width && ay >= 0 && ay < depth && grassTiles[ax][ay]) {
-                                adjacentToSand = true;
-                                break;
-                            }
-                        }
-                        if (adjacentToSand) break;
-                    }
-                    
-                    // If adjacent to sand, assign sand material to neighboring tile
-                    if (adjacentToSand) {
-                        grassTiles[nx][ny] = true; // Mark neighboring tile as sand
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    private void createVerticesAndTriangles(ModelBuilder modelBuilder, float adjustedX, float adjustedY, float height, Material material, int x, int y, boolean[][] grassTiles) {
+
+    private void createVerticesAndTriangles(ModelBuilder modelBuilder, float adjustedX, float adjustedY, float height,
+            Material material, int x, int y, boolean[][] grassTiles) {
         Vector3 bottomLeft = new Vector3(adjustedX, height, adjustedY);
         Vector3 bottomRight = new Vector3(adjustedX + scale, getHeight(adjustedX + scale, adjustedY), adjustedY);
         Vector3 topLeft = new Vector3(adjustedX, getHeight(adjustedX, adjustedY + scale), adjustedY + scale);
-        Vector3 topRight = new Vector3(adjustedX + scale, getHeight(adjustedX + scale, adjustedY + scale), adjustedY + scale);
-    
+        Vector3 topRight = new Vector3(adjustedX + scale, getHeight(adjustedX + scale, adjustedY + scale),
+                adjustedY + scale);
+
         MeshPartBuilder mpb = modelBuilder.part("terrain", GL20.GL_TRIANGLES,
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, material);
         mpb.triangle(topLeft, bottomRight, bottomLeft);
         mpb.triangle(topLeft, topRight, bottomRight);
     }
-    
+
     // Method to add water
     public void addWater(float alpha) {
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -155,50 +119,48 @@ public class TerrainV2 {
         float halfDepth = depth * scale * 0.5f;
 
         waterModel = modelBuilder.createRect(
-            -halfWidth, 0, halfDepth,
-            halfWidth, 0, halfDepth,
-            halfWidth, 0, -halfDepth,
-            -halfWidth, 0, -halfDepth,
-            0, 1, 0,
-            new Material(
-                    ColorAttribute.createDiffuse(new Color(0, 0, 1, alpha)),
-                    new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)),
-            Usage.Position | Usage.Normal);
+                -halfWidth, 0, halfDepth,
+                halfWidth, 0, halfDepth,
+                halfWidth, 0, -halfDepth,
+                -halfWidth, 0, -halfDepth,
+                0, 1, 0,
+                new Material(
+                        ColorAttribute.createDiffuse(new Color(0, 0, 1, alpha)),
+                        new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)),
+                Usage.Position | Usage.Normal);
 
         waterInstance = new ModelInstance(waterModel);
     }
-    
+
     private float getSandHeight(float x, float y) {
         return (float) (Math.sin(x * 0.1f) + Math.cos(y * 0.1f));
     }
-    
+
     private float getHeight(float x, float y) {
         // Compute the expression sqrt((sin(x) + cos(y))^2)
         double result = Math.sqrt(Math.pow(Math.sin(x) + Math.cos(y), 2));
         return (float) result; // Convert double to float
     }
-    
 
     public void render(ModelBatch modelBatch, Environment environment) {
         // Render the terrain
         modelBatch.render(terrainInstance, environment);
-        
+
         // Enable blending for transparent objects
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        
+
         // Render the water
-        modelBatch.render(waterInstance, environment); 
-        
+        modelBatch.render(waterInstance, environment);
+
         // Render the sand spots
         if (sandInstance != null) {
             modelBatch.render(sandInstance, environment);
         }
-        
+
         // Disable blending
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
-    
 
     public void dispose() {
         terrainModel.dispose();

@@ -44,6 +44,9 @@ public class GameControl extends ApplicationAdapter {
     //target
     private Vector3 targetposition = new Vector3(4.0f,0.0f,1.0f);
     private float targetRadius = 0.15f;
+    //background
+    private Texture backgroundTexture;
+    private SpriteBatch spriteBatch;
 
     @Override
     public void create() {
@@ -52,6 +55,9 @@ public class GameControl extends ApplicationAdapter {
         modelBatch = new ModelBatch();
         environment = new Environment();
         terrain = new Terrain(width, depth, scale);
+
+        backgroundTexture = new Texture("assets/clouds.jpg");
+        spriteBatch = new SpriteBatch();
 
         setupCamera();
         setupLights();
@@ -139,8 +145,12 @@ public class GameControl extends ApplicationAdapter {
     
         // Clear the screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        Gdx.gl.glClearColor(0.0f, 0.5f, 0.5f, 1); // Adjust clear color if needed
-    
+        
+        // Draw the background texture
+        spriteBatch.begin();
+        spriteBatch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.end();
+
         // Update camera and input controller
         camController.update();
     
@@ -184,5 +194,11 @@ public class GameControl extends ApplicationAdapter {
             ball.dispose();
         if (camera != null)
             camera = null;
+        if (backgroundTexture != null) {
+            backgroundTexture.dispose();
+        }
+        if (spriteBatch != null) {
+            spriteBatch.dispose();
+        }
     }
 }

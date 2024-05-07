@@ -90,10 +90,10 @@ public class GameControl extends ApplicationAdapter {
     }
 
     private void setupLights() {
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 5.0f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -3f, -10f, -0f));
-        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, 3f, 10f, -0f));
-        environment.add(new PointLight().set(0.6f, 0.6f, 0.6f, new Vector3(0, 30, 0), 300f));
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 5.0f));
+        environment.add(new DirectionalLight().set(0.9f, 0.9f, 0.9f, -3f, -10f, -0f));
+        environment.add(new DirectionalLight().set(0.9f, 0.9f, 0.9f, 3f, 10f, -0f));
+        environment.add(new PointLight().set(0.8f, 0.8f, 0.8f, new Vector3(0, 30, 0), 500f));
     }
 
     private void setupInput() {

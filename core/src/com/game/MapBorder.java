@@ -3,9 +3,8 @@ package com.game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -15,43 +14,45 @@ public class MapBorder {
     private Model borderModel;
     private ModelInstance borderInstance;
 
+    private int width;
+    private int depth;
+    private float scale;
+
     public MapBorder(int width, int depth, float scale) {
-        createBorder(width, depth, scale);
+        this.width = width;
+        this.depth = depth;
+        this.scale = scale;
+
+        addBorder();
     }
 
-    private void createBorder(int width, int depth, float scale) {
+    public void addBorder() {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
 
-        float halfWidth = width * scale * 0.5f;
-        float halfDepth = depth * scale * 0.5f;
+        Material material = new Material(ColorAttribute.createDiffuse(new Color(0, 0, 0, 0))); // Transparent border
 
-        Material material = new Material(ColorAttribute.createDiffuse(Color.BROWN));
-
-        MeshPartBuilder borderBuilder = modelBuilder.part("borders", GL20.GL_TRIANGLES,
+        MeshPartBuilder mpb = modelBuilder.part("border", GL20.GL_TRIANGLES,
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, material);
 
-        // Create borders along the edges of the map
-        createBorderAlongEdge(borderBuilder, new Vector3(-halfWidth, 100, halfDepth), new Vector3(-halfWidth, 0, -halfDepth), scale, depth);
-        createBorderAlongEdge(borderBuilder, new Vector3(halfWidth, 100, halfDepth), new Vector3(-halfWidth, 0, halfDepth), scale, width);
-        createBorderAlongEdge(borderBuilder, new Vector3(-halfWidth, 100, -halfDepth), new Vector3(halfWidth, 0, -halfDepth), scale, depth);
-        createBorderAlongEdge(borderBuilder, new Vector3(halfWidth, 100, -halfDepth), new Vector3(halfWidth, 0, halfDepth), scale, width);
+        // Define border vertices
+        float halfWidth = width * scale * 0.5f;
+        float halfDepth = depth * scale * 0.5f;
+        float borderWidth = 0.7f; // Adjust border width as needed
+
+        Vector3 topLeft = new Vector3(-halfWidth - borderWidth, 0, halfDepth + borderWidth);
+        Vector3 topRight = new Vector3(halfWidth + borderWidth, 0, halfDepth + borderWidth);
+        Vector3 bottomRight = new Vector3(halfWidth + borderWidth, 0, -halfDepth - borderWidth);
+        Vector3 bottomLeft = new Vector3(-halfWidth - borderWidth, 0, -halfDepth - borderWidth);
+
+        // Create border geometry
+        mpb.rect(
+                topLeft, topRight, bottomRight, bottomLeft,
+                Vector3.Y
+        );
 
         borderModel = modelBuilder.end();
         borderInstance = new ModelInstance(borderModel);
-    }
-
-    private void createBorderAlongEdge(MeshPartBuilder builder, Vector3 start, Vector3 end, float scale, int steps) {
-        Vector3 current = new Vector3(start);
-        Vector3 step = new Vector3(end).sub(start).scl(1f / steps);
-        for (int i = 0; i < steps; i++) {
-            Vector3 next = new Vector3(current).add(step);
-            Vector3 top = new Vector3(next).add(0, scale, 0);
-            Vector3 topNext = new Vector3(next).add(step).add(0, scale, 0);
-            builder.triangle(current, top, next);
-            builder.triangle(next, top, topNext);
-            current.set(next);
-        }
     }
 
     public ModelInstance getBorderInstance() {

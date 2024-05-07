@@ -14,6 +14,7 @@ public class Target {
     private Vector3 position;
     private float radius;
     private ModelInstance sphereModel;
+    private ModelInstance flagModel;
 
     public Target(float x, float z, float radius) {
         
@@ -31,8 +32,17 @@ public class Target {
         sphereModel.transform.setToTranslation(position.x, position.y, position.z);
     }
 
+    private void createFlag() {
+        ModelBuilder modelBuilder = new ModelBuilder();
+        flagModel = new ModelInstance(modelBuilder.createCylinder(0.1f, 2f, 0.1f, 24,
+                new Material(ColorAttribute.createDiffuse(Color.RED)),
+                Usage.Position | Usage.Normal));
+        flagModel.transform.setToTranslation(position.x, position.y + 1, position.z);
+    }
+
     public void render(ModelBatch modelBatch, Environment environment) {
         modelBatch.render(sphereModel, environment);
+        modelBatch.render(flagModel, environment);
     }
 
     public double getRadius() {

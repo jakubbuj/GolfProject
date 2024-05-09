@@ -199,12 +199,19 @@ public class PhysicsEngine {
         }
     }
     
-    
     private boolean isWithinSandArea(double x, double z) {
-        // Assume a method that checks if coordinates are in a sand area
-        return false; // Placeholder: Implement the actual area check based on your game map
+
+        float sand = TerrainV2.getSandHeight((float) x+50, (float) z+50);
+
+        if(sand > 0.5) {
+           //System.out.println("x: " + x + ",z: " + z + " SAND:" + sand);
+            return true;
+        }
+        //System.out.println("x: " + x + ",z: " + z + " GRASS " + sand);
+        return false;
     }
     
+
     // Check if the ball is immobile based on the static friction exceeding the force due to slope
     // public boolean isImmobile(double x, double z) {
     //     double slopeX = calculateDerivativeX(x, z);

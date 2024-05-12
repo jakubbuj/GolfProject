@@ -3,8 +3,8 @@ package com.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -36,16 +36,18 @@ public class GameControl extends ApplicationAdapter {
     // balls
     private GolfBall ball;
     private GolfBall AIball;
+    private GolfBall RBball;
     private GolfBallMovement ballMovement;
     private GolfAI golfAI;
+    private RuleBasedBot ruleBasedBot;
     // game parameters
     public static String functionTerrain = " sqrt ( ( sin x + cos y ) ^ 2 )";
     private int width = 100;
     private int depth = 100;
-    private float scale = 0.9f;
+    private float scale = 0.7f;
     // target
-    private Vector3 targetposition = new Vector3(4.0f, 0.0f, 1.0f);
-    private float targetRadius = 0.15f;
+    private Vector3 targetPosition = new Vector3(16.0f, 0.0f, -15.0f);
+    private float targetRadius = 1.0f;
     // background
     private Texture backgroundTexture;
     private SpriteBatch spriteBatch;
@@ -65,16 +67,18 @@ public class GameControl extends ApplicationAdapter {
         setupLights();
         setupInput();
 
-        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, 4, 1, targetRadius, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
+        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, targetPosition.x, targetPosition.z, targetRadius, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
 
         // Initialize the ball and physics engine with some arbitrary parameters for now
         ball = new GolfBall(new Vector3(10, 20, 10), Color.WHITE);
         AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
+        RBball = new GolfBall(new Vector3(10, 20, 12), Color.GOLD);
 
         ballMovement = new GolfBallMovement(ball, physicsEngine);
-        golfAI = new GolfAI(AIball, targetposition, targetRadius, physicsEngine);
+        golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
+        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
 
-        target = new Target(4, 1, 1f); // Example values
+        target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain);
 
     }
@@ -133,6 +137,12 @@ public class GameControl extends ApplicationAdapter {
         golfAI.update(); // This makes the ball move
     }
 
+    public void triggerRuleBasedBotPlay(){
+        Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
+        RBball.setVelocity(newShotVelocity);
+        ruleBasedBot.update(); //Bot makes one shot
+    }
+
     private void applyForceBasedOnCharge() {
         // Apply the force in the direction you want, for example, forwards from the
         // camera's perspective
@@ -164,6 +174,7 @@ public class GameControl extends ApplicationAdapter {
         terrain.render(modelBatch, environment);
         AIball.render(modelBatch, environment);
         ball.render(modelBatch, environment);
+        RBball.render(modelBatch, environment);
         target.render(modelBatch, environment);
         modelBatch.end();
 
@@ -173,6 +184,7 @@ public class GameControl extends ApplicationAdapter {
     private void update() {
         ballMovement.update(); // moke a golfbal move
         golfAI.update(); // make aiball move
+        ruleBasedBot.update(); //make rule based bot play
         // game rules
         gameRules.checkGameStatus();
     }

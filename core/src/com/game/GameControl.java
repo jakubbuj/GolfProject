@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -42,10 +43,10 @@ public class GameControl extends ApplicationAdapter {
     private int width = 100;
     private int depth = 100;
     private float scale = 0.9f;
-    //target
-    private Vector3 targetposition = new Vector3(4.0f,0.0f,1.0f);
+    // target
+    private Vector3 targetposition = new Vector3(4.0f, 0.0f, 1.0f);
     private float targetRadius = 0.15f;
-    //background
+    // background
     private Texture backgroundTexture;
     private SpriteBatch spriteBatch;
 
@@ -67,12 +68,11 @@ public class GameControl extends ApplicationAdapter {
         physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, 4, 1, targetRadius, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
 
         // Initialize the ball and physics engine with some arbitrary parameters for now
-        ball = new GolfBall(new Vector3(10, 20, 10),Color.WHITE);
-        AIball = new GolfBall(new Vector3(10,20,11),Color.MAGENTA);
-
+        ball = new GolfBall(new Vector3(10, 20, 10), Color.WHITE);
+        AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
 
         ballMovement = new GolfBallMovement(ball, physicsEngine);
-        golfAI = new GolfAI(AIball, targetposition , targetRadius, physicsEngine);
+        golfAI = new GolfAI(AIball, targetposition, targetRadius, physicsEngine);
 
         target = new Target(4, 1, 1f); // Example values
         gameRules = new GameRules(target, ball, functionTerrain);
@@ -99,14 +99,15 @@ public class GameControl extends ApplicationAdapter {
 
     private void setupInput() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        // Add UI stage first to ensure UI events are processed before anything else
+        inputMultiplexer.addProcessor(ui.getStage());
         inputMultiplexer.addProcessor(camController);
         inputMultiplexer.addProcessor(new InputAdapter() {
-
             @Override
             public boolean keyDown(int keycode) {
                 if (keycode == Keys.SPACE) {
-                    isCharging = true; // Start charging when space is pressed
-                    return true; // done with this evvent or task
+                    isCharging = true;
+                    return true; // Event handled
                 }
                 return false;
             }
@@ -115,9 +116,9 @@ public class GameControl extends ApplicationAdapter {
             public boolean keyUp(int keycode) {
                 if (keycode == Keys.SPACE) {
                     isCharging = false;
-                    applyForceBasedOnCharge(); // Apply force when space is released
-                    chargePower = 0; // Reset charge
-                    return true; // done with this evvent or task
+                    applyForceBasedOnCharge();
+                    chargePower = 0;
+                    return true; // Event handled
                 }
                 return false;
             }
@@ -129,7 +130,7 @@ public class GameControl extends ApplicationAdapter {
     public void triggerAIShot() {
         Vector3 aiShot = golfAI.findBestShot();
         AIball.setVelocity(aiShot);
-        golfAI.update();  // This makes the ball move
+        golfAI.update(); // This makes the ball move
     }
 
     private void applyForceBasedOnCharge() {
@@ -143,45 +144,35 @@ public class GameControl extends ApplicationAdapter {
     @Override
     public void render() {
         float deltaTime = Gdx.graphics.getDeltaTime();
-    
-        // Clear the screen
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        
-        // Draw the background texture
+
         spriteBatch.begin();
         spriteBatch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         spriteBatch.end();
 
-        // Update camera and input controller
         camController.update();
-    
-        // Handle game logic updates
+
         if (isCharging) {
-            chargePower += deltaTime; // Increase charge power over time
-            chargePower = Math.min(chargePower, MAX_CHARGE); // Clamp to max charge
+            chargePower += deltaTime;
+            chargePower = Math.min(chargePower, MAX_CHARGE);
         }
-    
-        ui.setChargePower(chargePower); // Update UI to visualize charge power
-    
+
         update(); // Update game logic
-    
-        // Begin model batch and render all models
+
         modelBatch.begin(camera);
         terrain.render(modelBatch, environment);
         AIball.render(modelBatch, environment);
         ball.render(modelBatch, environment);
-        target.render(modelBatch, environment); // Ensure target is rendered within the batch cycle
-        modelBatch.end(); // Make sure to end the batch after all rendering calls
-    
-        // Render the UI elements
-        ui.render();
+        target.render(modelBatch, environment);
+        modelBatch.end();
+
+        ui.render(); // Make sure UI elements are drawn last
     }
-    
-    
 
     private void update() {
         ballMovement.update(); // moke a golfbal move
-        golfAI.update();    // make aiball move
+        golfAI.update(); // make aiball move
         // game rules
         gameRules.checkGameStatus();
     }

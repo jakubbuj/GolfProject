@@ -1,6 +1,5 @@
 package com.game;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 
 public class GolfAI {
@@ -11,33 +10,44 @@ public class GolfAI {
 
     public GolfAI(GolfBall AIball, Vector3 targetPosition, float targetRadius, PhysicsEngine physicsEngine) {
         this.AIball = AIball;
-        this.targetPosition = targetPosition;
+        GolfAI.targetPosition = targetPosition;
         this.targetRadius = targetRadius;
         this.physicsEngine = physicsEngine;
     }
 
     public Vector3 findBestShot() {
         System.out.println("GolfAI: Calculating best shot...");
-        Vector3 initialVelocity = new Vector3(5, 0, 5); // Start with some reasonable initial velocity
-        float tolerance = 0.01f;
+        Vector3 initialVelocity = new Vector3(1, 0, 1); // Start with a smaller and more realistic initial velocity
+        float tolerance = 0.01f; // Convergence threshold
         Vector3 currentVelocity = new Vector3(initialVelocity);
-        while (true) {
-            Vector3 F = calculateFunction(currentVelocity);
-            if (F.len() < tolerance)
+        float damping = 0.8f; // Damping factor to prevent overshooting
+
+        int iteration = 0;
+        while (iteration < 100) {
+            Vector3 deviation = calculateFunction(currentVelocity);
+            if (deviation.len() < tolerance) {
+                System.out.println("Converged to the best shot.");
                 break;
+            }
 
             float[][] J = calculateJacobian(currentVelocity);
             float[][] J_inv = invertMatrix(J);
             if (J_inv == null) {
-                System.out.println("GolfAI: Unable to proceed with inversion, skipping adjustment.");
+                System.out.println("Jacobian inversion failed. Adjustments cannot be made.");
                 break;
             }
-            Vector3 delta = multiplyMatrixVector(J_inv, F);
-            currentVelocity.sub(delta);
-            System.out.println("GolfAI: Adjusting velocity by " + delta);
+
+            Vector3 adjustment = multiplyMatrixVector(J_inv, deviation);
+            adjustment.scl(damping); // Apply damping to the adjustment
+
+            currentVelocity.sub(adjustment);
+            System.out.println("Iteration: " + iteration + ", Adjusting velocity by " + adjustment + ", New velocity: " + currentVelocity);
+            System.out.println();
+
+            iteration++;
         }
 
-        System.out.println("GolfAI: Best shot velocity found: " + currentVelocity);
+        System.out.println("Best shot velocity found: " + currentVelocity);
         return currentVelocity;
     }
 
@@ -53,21 +63,34 @@ public class GolfAI {
 
     private float[][] calculateJacobian(Vector3 velocity) {
         System.out.println("GolfAI: Calculating Jacobian for velocity: " + velocity);
-        float h = 0.01f; // small perturbation for finite difference
-        // Perturb velocity in the x and z directions separately
+        float h = 0.2f; // small perturbation for finite difference
+
         Vector3 vxPlus = new Vector3(velocity.x + h, 0, velocity.z);
         Vector3 vxMinus = new Vector3(velocity.x - h, 0, velocity.z);
         Vector3 vzPlus = new Vector3(velocity.x, 0, velocity.z + h);
         Vector3 vzMinus = new Vector3(velocity.x, 0, velocity.z - h);
 
-        // Calculate deviations for perturbed velocities
-        Vector3 dfdx = calculateFunction(vxPlus).sub(calculateFunction(vxMinus)).scl(1 / (2 * h));
-        Vector3 dfdz = calculateFunction(vzPlus).sub(calculateFunction(vzMinus)).scl(1 / (2 * h));
+        Vector3 f_vxPlus = calculateFunction(vxPlus);
+        Vector3 f_vxMinus = calculateFunction(vxMinus);
+        Vector3 f_vzPlus = calculateFunction(vzPlus);
+        Vector3 f_vzMinus = calculateFunction(vzMinus);
+
+        Vector3 dfdx = new Vector3(
+            (f_vxPlus.x - f_vxMinus.x) / (2 * h),
+            0,
+            (f_vxPlus.z - f_vxMinus.z) / (2 * h)
+        );
+        Vector3 dfdz = new Vector3(
+            (f_vzPlus.x - f_vzMinus.x) / (2 * h),
+            0,
+            (f_vzPlus.z - f_vzMinus.z) / (2 * h)
+        );
 
         float[][] J = new float[][] {
                 { dfdx.x, dfdx.z },
                 { dfdz.x, dfdz.z }
         };
+
         return J;
     }
 
@@ -95,24 +118,17 @@ public class GolfAI {
     }
 
     public void update() {
-        // Get the current position and velocity of the ball
         Vector3 currentPosition = AIball.getPosition();
         Vector3 currentVelocity = AIball.getVelocity();
 
-        // Set the current state in the physics engine
         physicsEngine.setState(currentPosition.x, currentPosition.z, currentVelocity.x, currentVelocity.z);
 
-        // Run the physics simulation for one timestep
         double[] newState = physicsEngine.runSingleStep(currentPosition, currentVelocity);
 
-        // Update the ball's position based on the physics engine output
         AIball.setPosition(new Vector3((float) newState[0], AIball.getPosition().y, (float) newState[1]));
 
-        // Update the ball's velocity based on the physics engine output
         AIball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
 
-        // Adjust the ball's vertical position based on the terrain height
-        AIball.getPosition().y = (float) (physicsEngine.terrainHeight + 0.2f); // Keeping the ball slightly above the
-                                                                               // terrain
+        AIball.getPosition().y = (float) (physicsEngine.terrainHeight + 0.2f);
     }
 }

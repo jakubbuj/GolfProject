@@ -39,7 +39,7 @@ public class GameControl extends ApplicationAdapter {
     private GolfBallMovement ballMovement;
     private GolfAI golfAI;
     // game parameters
-    public static String functionTerrain = " sqrt ( ( sin x + cos y ) ^ 2 )";
+    public static String functionTerrain = " sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y ) ";
     private int width = 100;
     private int depth = 100;
     private float scale = 0.9f;

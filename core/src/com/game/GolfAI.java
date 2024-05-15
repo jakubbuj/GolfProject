@@ -20,7 +20,7 @@ public class GolfAI {
         Vector3 initialVelocity = new Vector3(1, 0, 1); // Start with a smaller and more realistic initial velocity
         float tolerance = 0.01f; // Convergence threshold
         Vector3 currentVelocity = new Vector3(initialVelocity);
-        float damping = 0.8f; // Damping factor to prevent overshooting
+        float damping = 1.f; // Damping factor to prevent overshooting
 
         int iteration = 0;
         while (iteration < 100) {
@@ -63,7 +63,7 @@ public class GolfAI {
 
     private float[][] calculateJacobian(Vector3 velocity) {
         System.out.println("GolfAI: Calculating Jacobian for velocity: " + velocity);
-        float h = 0.2f; // small perturbation for finite difference
+        float h = 0.3f; // small perturbation for finite difference
 
         Vector3 vxPlus = new Vector3(velocity.x + h, 0, velocity.z);
         Vector3 vxMinus = new Vector3(velocity.x - h, 0, velocity.z);

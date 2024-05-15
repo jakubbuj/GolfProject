@@ -1,5 +1,6 @@
 package com.game;
 
+
 import com.badlogic.gdx.math.Vector3;
 
 public class PhysicsEngine {
@@ -16,7 +17,7 @@ public class PhysicsEngine {
 
     final double g = 9.80665;
     final double LIMIT_ZERO = 0.0000001;
-    final double h = 0.0001; // Reduced step size for better precision
+    final double h = 0.005; // Reduced step size for better precision
 
     double[] stateVector = new double[4];
     double[] systemFunction = new double[4];
@@ -75,8 +76,8 @@ public class PhysicsEngine {
         double[] previousState = new double[4];
         System.arraycopy(stateVector, 0, previousState, 0, stateVector.length);
 
-        double positionThreshold = 0.00001; // Increased precision
-        double velocityThreshold = 0.00001; // Increased precision
+        double positionThreshold = 0.0001; // Increased precision
+        double velocityThreshold = 0.0001; // Increased precision
 
         // Simulation loop: run until both velocities are close to zero or max iterations reached
         while (true) {
@@ -101,6 +102,11 @@ public class PhysicsEngine {
             // Early stopping if changes are very small
             if (positionChange < positionThreshold && velocityChange < velocityThreshold) {
                 System.out.println("Early stopping due to small changes in state.");
+                break;
+            }
+
+            if(Math.abs(stateVector[2]) <0.01 && Math.abs(stateVector[3]) <0.01){
+                System.out.println("fast end");
                 break;
             }
 

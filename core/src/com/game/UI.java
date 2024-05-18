@@ -53,7 +53,6 @@ public class UI {
     public void render() {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        System.out.println("UI: Stage rendered."); // This will confirm that render is being called
     }
 
     public void resize(int width, int height) {

@@ -23,13 +23,13 @@ public class GameControl extends ApplicationAdapter {
     private UI ui;
     private ModelBatch modelBatch;
     static Environment environment;
-    private Terrain terrain;
+    private TerrainV2 terrain;
     public static PerspectiveCamera camera;
     private CameraInputController camController;
     private PhysicsEngine physicsEngine;
     private GameRules gameRules;
     private Target target;
-    // used in applaying force to ball
+    // used in applying force to ball
     private boolean isCharging;
     private float chargePower;
     static final float MAX_CHARGE = 5.0f;
@@ -44,7 +44,7 @@ public class GameControl extends ApplicationAdapter {
     private int depth = 100;
     private float scale = 0.9f;
     // target
-    private Vector3 targetposition = new Vector3(4.0f, 0.0f, 1.0f);
+    private Vector3 targetPosition = new Vector3(4.0f, 0.0f, 1.0f);
     private float targetRadius = 0.15f;
     // background
     private Texture backgroundTexture;
@@ -56,7 +56,7 @@ public class GameControl extends ApplicationAdapter {
         ui = new UI(this);
         modelBatch = new ModelBatch();
         environment = new Environment();
-        terrain = new Terrain(width, depth, scale);
+        terrain = new TerrainV2(width, depth, scale);
 
         backgroundTexture = new Texture("assets/clouds.jpg");
         spriteBatch = new SpriteBatch();
@@ -71,12 +71,12 @@ public class GameControl extends ApplicationAdapter {
         ball = new GolfBall(new Vector3(10, 20, 10), Color.WHITE);
         AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
 
-        ballMovement = new GolfBallMovement(ball, physicsEngine);
-        golfAI = new GolfAI(AIball, targetposition, targetRadius, physicsEngine);
-
         target = new Target(4, 1, 1f); // Example values
-        gameRules = new GameRules(target, ball, functionTerrain);
+        gameRules = new GameRules(target, ball, functionTerrain, terrain);
 
+        // Now that gameRules is initialized, pass it to ballMovement
+        ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
+        golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
     }
 
     private void setupCamera() {
@@ -134,8 +134,7 @@ public class GameControl extends ApplicationAdapter {
     }
 
     private void applyForceBasedOnCharge() {
-        // Apply the force in the direction you want, for example, forwards from the
-        // camera's perspective
+        // Apply the force in the direction you want, for example, forwards from the camera's perspective
         Vector3 direction = new Vector3(camera.direction).nor(); // Normalized direction vector
         Vector3 hitForce = direction.scl(chargePower); // Scale direction by the charged power
         ballMovement.applyForce(hitForce);
@@ -171,8 +170,8 @@ public class GameControl extends ApplicationAdapter {
     }
 
     private void update() {
-        ballMovement.update(); // moke a golfbal move
-        golfAI.update(); // make aiball move
+        ballMovement.update(); // make golf ball move
+        golfAI.update(); // make AI ball move
         // game rules
         gameRules.checkGameStatus();
     }

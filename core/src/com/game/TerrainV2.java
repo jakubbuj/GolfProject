@@ -49,6 +49,19 @@ public class TerrainV2 {
         mapBorder = new MapBorder(width, depth, scale);
     }
 
+    // Getter methods for terrain dimensions
+    public int getWidth() {
+        return width;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
     public void addTerrain() {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
@@ -132,7 +145,7 @@ public class TerrainV2 {
         waterInstance = new ModelInstance(waterModel);
     }
 
-    private float getSandHeight(float x, float y) {
+    protected float getSandHeight(float x, float y) {
         return (float) (Math.sin(x * 0.1f) + Math.cos(y * 0.1f));
     }
 

@@ -23,7 +23,6 @@ public class UI {
         stage = new Stage();
         setupLoadingBar();
         setupAIShotButton();
-        setupRuleBasedBotButton();
         Gdx.input.setInputProcessor(stage); // Set this after all UI elements are added
         System.out.println("UI: Input processor set for UI stage.");
     }

@@ -45,8 +45,8 @@ public class GameControl implements Screen {
     private RuleBasedBot ruleBasedBot;
     // game parameters
     public static String functionTerrain = SettingsScreen.terrainFunction;
-    public static Double X0 = SettingsScreen.InitialX;
-    public static Double Y0 = SettingsScreen.InitialY;
+    public static float X0 = SettingsScreen.InitialX.floatValue();
+    public static float Y0 = SettingsScreen.InitialY.floatValue();
     public static Double GRASS_K = SettingsScreen.grassK;
     public static Double GRASS_S = SettingsScreen.grassS;
     public static Double SAND_K = SettingsScreen.sandK;
@@ -85,9 +85,9 @@ public class GameControl implements Screen {
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
 
-        ball = new GolfBall(new Vector3(10, 20, 10), Color.WHITE);
-        AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
-        RBball = new GolfBall(new Vector3(10, 20, 12), Color.GOLD);
+        ball = new GolfBall(new Vector3(X0, 20, Y0), Color.WHITE);
+        AIball = new GolfBall(new Vector3(X0+2, 20, Y0), Color.MAGENTA);
+        RBball = new GolfBall(new Vector3(X0+4, 20, Y0), Color.BLACK);
 
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain, terrain);

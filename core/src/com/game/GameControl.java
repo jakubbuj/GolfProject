@@ -51,13 +51,13 @@ public class GameControl implements Screen {
     public static Double GRASS_S = SettingsScreen.grassS;
     public static Double SAND_K = SettingsScreen.sandK;
     public static Double SAND_S = SettingsScreen.sandS;
-    // public static Double targetposition.x = SettingsScreen.TargetXo;
-    // public static Double targetposition.y = SettingsScreen.TargetYo;
+    public static float Tx = SettingsScreen.TargetXo.floatValue();
+    public static float Tz = SettingsScreen.TargetYo.floatValue();
     static int width = 100;
     static int depth = 100;
     static float scale = 0.9f;
     // target
-    private Vector3 targetPosition = new Vector3(4.0f, 0.0f, 1.0f);
+    private Vector3 targetPosition = new Vector3(Tx, 0.0f, Tz);
     private float targetRadius = 0.15f;
     // background
     private Texture backgroundTexture;

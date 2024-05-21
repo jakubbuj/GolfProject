@@ -349,6 +349,7 @@ public class SettingsScreen implements Screen {
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
                 }
+                game.setScreen(new MainMenu(game));
 
             }
         });

@@ -168,6 +168,10 @@ public class GameControl implements Screen {
         ballMovement.applyForce(hitForce);
     }
 
+    public float getChargePower() {
+        return chargePower;
+    }
+
     @Override
     public void render(float delta) {
         float deltaTime = Gdx.graphics.getDeltaTime();
@@ -195,6 +199,7 @@ public class GameControl implements Screen {
         target.render(modelBatch, environment);
         modelBatch.end();
 
+        ui.setChargePower(chargePower);
         ui.render();
     }
 

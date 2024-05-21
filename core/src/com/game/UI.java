@@ -67,6 +67,7 @@ public class UI {
     }
 
     public void render() {
+        progressBar.setValue(gameControl.getChargePower());
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         // System.out.println("UI: Stage rendered."); // This will confirm that render

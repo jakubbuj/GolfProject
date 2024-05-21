@@ -1,6 +1,7 @@
-package com.game;
+package com.game; 
+import com.GUI.GolfGame;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -17,13 +18,15 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
+import com.GUI.SettingsScreen; // Import the SettingsScreen class
 
-public class GameControl extends ApplicationAdapter {
+
+public class GameControl implements Screen {
 
     private UI ui;
     private ModelBatch modelBatch;
     static Environment environment;
-    private TerrainV2 terrain;
+    private Terrain terrain;
     public static PerspectiveCamera camera;
     private CameraInputController camController;
     private PhysicsEngine physicsEngine;
@@ -41,7 +44,15 @@ public class GameControl extends ApplicationAdapter {
     private GolfAI golfAI;
     private RuleBasedBot ruleBasedBot;
     // game parameters
-    public static String functionTerrain = " sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y ) ";
+    public static String functionTerrain = SettingsScreen.terrainFunction;
+    public static Double X0 = SettingsScreen.InitialX;
+    public static Double Y0 = SettingsScreen.InitialY;
+    public static Double GRASS_K = SettingsScreen.grassK;
+    public static Double GRASS_S = SettingsScreen.grassS;
+    public static Double SAND_K = SettingsScreen.sandK;
+    public static Double SAND_S = SettingsScreen.sandS;
+    // public static Double targetposition.x = SettingsScreen.TargetXo;
+    // public static Double targetposition.y = SettingsScreen.TargetYo;
     static int width = 100;
     static int depth = 100;
     static float scale = 0.9f;
@@ -51,14 +62,18 @@ public class GameControl extends ApplicationAdapter {
     // background
     private Texture backgroundTexture;
     private SpriteBatch spriteBatch;
+    private GolfGame game;
+
+    public GameControl(GolfGame game) {
+        this.game = game;
+    }
 
     @Override
-    public void create() {
-
+    public void show() {
         ui = new UI(this);
         modelBatch = new ModelBatch();
         environment = new Environment();
-        terrain = new TerrainV2(width, depth, scale);
+        terrain = new Terrain(width, depth, scale);
 
         backgroundTexture = new Texture("assets/clouds.jpg");
         spriteBatch = new SpriteBatch();
@@ -67,10 +82,8 @@ public class GameControl extends ApplicationAdapter {
         setupLights();
         setupInput();
 
-        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, targetPosition.x, targetPosition.z, targetRadius, 0.6,
-                0.6, 0.3, 0.4, 0.0, 0.0);
+        physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius, GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
 
-        // Initialize the ball and physics engine with some arbitrary parameters for now
         ball = new GolfBall(new Vector3(10, 20, 10), Color.WHITE);
         AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
         RBball = new GolfBall(new Vector3(10, 20, 12), Color.GOLD);
@@ -84,6 +97,10 @@ public class GameControl extends ApplicationAdapter {
         // Now that gameRules is initialized, pass it to ballMovement
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
         golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
+        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
+
+        target = new Target(targetPosition.x, targetPosition.z, targetRadius); 
+        gameRules = new GameRules(target, ball, functionTerrain);
     }
 
     private void setupCamera() {
@@ -106,7 +123,6 @@ public class GameControl extends ApplicationAdapter {
 
     private void setupInput() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        // Add UI stage first to ensure UI events are processed before anything else
         inputMultiplexer.addProcessor(ui.getStage());
         inputMultiplexer.addProcessor(camController);
         inputMultiplexer.addProcessor(new InputAdapter() {
@@ -114,7 +130,7 @@ public class GameControl extends ApplicationAdapter {
             public boolean keyDown(int keycode) {
                 if (keycode == Keys.SPACE) {
                     isCharging = true;
-                    return true; // Event handled
+                    return true; 
                 }
                 return false;
             }
@@ -125,7 +141,7 @@ public class GameControl extends ApplicationAdapter {
                     isCharging = false;
                     applyForceBasedOnCharge();
                     chargePower = 0;
-                    return true; // Event handled
+                    return true; 
                 }
                 return false;
             }
@@ -137,7 +153,13 @@ public class GameControl extends ApplicationAdapter {
     public void triggerAIShot() {
         Vector3 aiShot = golfAI.findBestShot();
         AIball.setVelocity(aiShot);
-        golfAI.update(); // This makes the ball move
+        golfAI.update(); 
+    }
+
+    public void triggerRuleBasedBotPlay(){
+        Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
+        RBball.setVelocity(newShotVelocity);
+        ruleBasedBot.update();
     }
 
     public void triggerRuleBasedBotPlay() {
@@ -147,15 +169,13 @@ public class GameControl extends ApplicationAdapter {
     }
 
     private void applyForceBasedOnCharge() {
-        // Apply the force in the direction you want, for example, forwards from the
-        // camera's perspective
-        Vector3 direction = new Vector3(camera.direction).nor(); // Normalized direction vector
-        Vector3 hitForce = direction.scl(chargePower); // Scale direction by the charged power
+        Vector3 direction = new Vector3(camera.direction).nor(); 
+        Vector3 hitForce = direction.scl(chargePower); 
         ballMovement.applyForce(hitForce);
     }
 
     @Override
-    public void render() {
+    public void render(float delta) {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -171,7 +191,7 @@ public class GameControl extends ApplicationAdapter {
             chargePower = Math.min(chargePower, MAX_CHARGE);
         }
 
-        update(); // Update game logic
+        update(); 
 
         modelBatch.begin(camera);
         terrain.render(modelBatch, environment);
@@ -181,7 +201,7 @@ public class GameControl extends ApplicationAdapter {
         target.render(modelBatch, environment);
         modelBatch.end();
 
-        ui.render(); // Make sure UI elements are drawn last
+        ui.render(); 
     }
 
     private void update() {
@@ -191,6 +211,18 @@ public class GameControl extends ApplicationAdapter {
         // game rules
         gameRules.checkGameStatus();
     }
+
+    @Override
+    public void resize(int width, int height) {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+
+    @Override
+    public void hide() {}
 
     @Override
     public void dispose() {

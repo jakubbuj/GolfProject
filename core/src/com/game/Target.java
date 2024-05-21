@@ -17,7 +17,10 @@ public class Target {
     private ModelInstance flagModel;
 
     public Target(float x, float z, float radius) {
-        this.position = new Vector3(x, 0, z);  // Set y = 0 for simplicity, adjust based on terrain height later
+
+        float terrainheight = (float) GetHeight.getHeight(GameControl.functionTerrain, x, z);
+        this.position = new Vector3(x, terrainheight + 0.5f, z); // Set y = 0 for simplicity, adjust based on terrain
+                                                                 // height later
         this.radius = radius;
         createSphere();
         createFlag();

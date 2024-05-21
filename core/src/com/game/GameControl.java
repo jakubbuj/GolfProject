@@ -67,19 +67,19 @@ public class GameControl extends ApplicationAdapter {
         setupLights();
         setupInput();
 
-        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, targetPosition.x, targetPosition.z, targetRadius, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
+        physicsEngine = new PhysicsEngine(functionTerrain, 3, 0, targetPosition.x, targetPosition.z, targetRadius, 0.6,
+                0.6, 0.3, 0.4, 0.0, 0.0);
 
         // Initialize the ball and physics engine with some arbitrary parameters for now
         ball = new GolfBall(new Vector3(10, 20, 10), Color.WHITE);
         AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
         RBball = new GolfBall(new Vector3(10, 20, 12), Color.GOLD);
 
-        ballMovement = new GolfBallMovement(ball, physicsEngine);
+        target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
+        gameRules = new GameRules(target, ball, functionTerrain, terrain);
+        ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
         golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
-
-        target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
-        gameRules = new GameRules(target, ball, functionTerrain);
 
         // Now that gameRules is initialized, pass it to ballMovement
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
@@ -140,14 +140,15 @@ public class GameControl extends ApplicationAdapter {
         golfAI.update(); // This makes the ball move
     }
 
-    public void triggerRuleBasedBotPlay(){
+    public void triggerRuleBasedBotPlay() {
         Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
         RBball.setVelocity(newShotVelocity);
-        ruleBasedBot.update(); //Bot makes one shot
+        ruleBasedBot.update(); // Bot makes one shot
     }
 
     private void applyForceBasedOnCharge() {
-        // Apply the force in the direction you want, for example, forwards from the camera's perspective
+        // Apply the force in the direction you want, for example, forwards from the
+        // camera's perspective
         Vector3 direction = new Vector3(camera.direction).nor(); // Normalized direction vector
         Vector3 hitForce = direction.scl(chargePower); // Scale direction by the charged power
         ballMovement.applyForce(hitForce);
@@ -186,7 +187,7 @@ public class GameControl extends ApplicationAdapter {
     private void update() {
         ballMovement.update(); // moke a golfbal move
         golfAI.update(); // make aiball move
-        ruleBasedBot.update(); //make rule based bot play
+        ruleBasedBot.update(); // make rule based bot play
         // game rules
         gameRules.checkGameStatus();
     }

@@ -23,6 +23,7 @@ public class UI {
         stage = new Stage();
         setupLoadingBar();
         setupAIShotButton();
+        setupRuleBasedBotButton();
         Gdx.input.setInputProcessor(stage); // Set this after all UI elements are added
         System.out.println("UI: Input processor set for UI stage.");
     }
@@ -65,11 +66,11 @@ public class UI {
         stage.addActor(rbbButton);
     }
 
-
     public void render() {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        //System.out.println("UI: Stage rendered."); // This will confirm that render is being called
+        // System.out.println("UI: Stage rendered."); // This will confirm that render
+        // is being called
     }
 
     public void resize(int width, int height) {

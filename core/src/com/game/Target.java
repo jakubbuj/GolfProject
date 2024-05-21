@@ -32,10 +32,11 @@ public class Target {
     }
 
     private void createFlag() {
-        ModelBuilder modelBuilder = new ModelBuilder();
-        flagModel = new ModelInstance(modelBuilder.createCylinder(0.1f, 2f, 0.1f, 24,
-                new Material(ColorAttribute.createDiffuse(Color.RED)),
-                Usage.Position | Usage.Normal));
+        // Loads the flag pole OBJ file
+        ObjLoader loader = new ObjLoader();
+        Model flagPoleModel = loader.loadModel(Gdx.files.internal("assets/yourMesh (3).obj"));
+
+        flagModel = new ModelInstance(flagPoleModel);
         flagModel.transform.setToTranslation(position.x, position.y + 1, position.z);
     }
 

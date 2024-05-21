@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.game.GameControl;
+import com.GUI.GolfGame;
+
 
 public class OptionsScreen implements Screen {
 
@@ -141,6 +143,7 @@ public class OptionsScreen implements Screen {
                         stage.addActor(errorIcon);
                         stage.addActor(errorLabel);
                     }
+                    
 
                 game.setScreen(new GameControl(game));
             // System.out.println(name);

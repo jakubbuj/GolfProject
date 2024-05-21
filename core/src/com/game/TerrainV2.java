@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
-
 public class TerrainV2 {
     private Model terrainModel; // model class like schemat
     private ModelInstance terrainInstance; // instance
@@ -108,8 +107,6 @@ public class TerrainV2 {
         return material;
     }
 
-    
-
     private void createVerticesAndTriangles(ModelBuilder modelBuilder, float adjustedX, float adjustedY, float height,
             Material material, int x, int y, boolean[][] grassTiles) {
         Vector3 bottomLeft = new Vector3(adjustedX, height, adjustedY);
@@ -151,7 +148,7 @@ public class TerrainV2 {
 
     private float getHeight(float x, float y) {
         // Compute the expression sqrt((sin(x) + cos(y))^2)
-        double result = Math.sqrt(Math.pow(Math.sin(x) + Math.cos(y), 2));
+        double result = GetHeight.getHeight(GameControl.functionTerrain, x, y);
         return (float) result; // Convert double to float
     }
 

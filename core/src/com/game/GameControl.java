@@ -1,5 +1,6 @@
-package com.game; 
-import com.GUI.GolfGame;
+package com.game;
+
+import com.game.GolfGame;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
@@ -18,15 +19,14 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
-import com.GUI.SettingsScreen; // Import the SettingsScreen class
-
+import com.game.SettingsScreen; // Import the SettingsScreen class
 
 public class GameControl implements Screen {
 
     private UI ui;
     private ModelBatch modelBatch;
     static Environment environment;
-    private Terrain terrain;
+    private TerrainV2 terrain;
     public static PerspectiveCamera camera;
     private CameraInputController camController;
     private PhysicsEngine physicsEngine;
@@ -73,7 +73,7 @@ public class GameControl implements Screen {
         ui = new UI(this);
         modelBatch = new ModelBatch();
         environment = new Environment();
-        terrain = new Terrain(width, depth, scale);
+        terrain = new TerrainV2(width, depth, scale);
 
         backgroundTexture = new Texture("assets/clouds.jpg");
         spriteBatch = new SpriteBatch();
@@ -82,7 +82,8 @@ public class GameControl implements Screen {
         setupLights();
         setupInput();
 
-        physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius, GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
+        physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
+                GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
 
         ball = new GolfBall(new Vector3(10, 20, 10), Color.WHITE);
         AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
@@ -90,6 +91,7 @@ public class GameControl implements Screen {
 
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain, terrain);
+
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
         golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
@@ -99,8 +101,6 @@ public class GameControl implements Screen {
         golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
 
-        target = new Target(targetPosition.x, targetPosition.z, targetRadius); 
-        gameRules = new GameRules(target, ball, functionTerrain);
     }
 
     private void setupCamera() {
@@ -130,7 +130,7 @@ public class GameControl implements Screen {
             public boolean keyDown(int keycode) {
                 if (keycode == Keys.SPACE) {
                     isCharging = true;
-                    return true; 
+                    return true;
                 }
                 return false;
             }
@@ -141,7 +141,7 @@ public class GameControl implements Screen {
                     isCharging = false;
                     applyForceBasedOnCharge();
                     chargePower = 0;
-                    return true; 
+                    return true;
                 }
                 return false;
             }
@@ -153,13 +153,7 @@ public class GameControl implements Screen {
     public void triggerAIShot() {
         Vector3 aiShot = golfAI.findBestShot();
         AIball.setVelocity(aiShot);
-        golfAI.update(); 
-    }
-
-    public void triggerRuleBasedBotPlay(){
-        Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
-        RBball.setVelocity(newShotVelocity);
-        ruleBasedBot.update();
+        golfAI.update();
     }
 
     public void triggerRuleBasedBotPlay() {
@@ -169,8 +163,8 @@ public class GameControl implements Screen {
     }
 
     private void applyForceBasedOnCharge() {
-        Vector3 direction = new Vector3(camera.direction).nor(); 
-        Vector3 hitForce = direction.scl(chargePower); 
+        Vector3 direction = new Vector3(camera.direction).nor();
+        Vector3 hitForce = direction.scl(chargePower);
         ballMovement.applyForce(hitForce);
     }
 
@@ -191,7 +185,7 @@ public class GameControl implements Screen {
             chargePower = Math.min(chargePower, MAX_CHARGE);
         }
 
-        update(); 
+        update();
 
         modelBatch.begin(camera);
         terrain.render(modelBatch, environment);
@@ -201,7 +195,7 @@ public class GameControl implements Screen {
         target.render(modelBatch, environment);
         modelBatch.end();
 
-        ui.render(); 
+        ui.render();
     }
 
     private void update() {
@@ -213,16 +207,20 @@ public class GameControl implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+    }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
-    public void hide() {}
+    public void hide() {
+    }
 
     @Override
     public void dispose() {

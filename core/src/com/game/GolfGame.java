@@ -1,14 +1,12 @@
-package com.GUI;
+package com.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 
 public class GolfGame extends Game {
 
     public static final int WIDTH = 720;
     public static final int HEIGHT = 720;
-
 
     public SpriteBatch batch;
 
@@ -21,5 +19,5 @@ public class GolfGame extends Game {
     public void render() {
         super.render();
     }
-    
+
 }

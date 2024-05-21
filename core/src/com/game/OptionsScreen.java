@@ -1,4 +1,4 @@
-package com.GUI;
+package com.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -16,8 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.game.GameControl;
-import com.GUI.GolfGame;
-
+import com.game.GolfGame;
 
 public class OptionsScreen implements Screen {
 
@@ -34,8 +33,8 @@ public class OptionsScreen implements Screen {
     private Label errorLabel;
     private Label NameLabel;
     private Label gameTypeLabel;
- 
-    // Textures 
+
+    // Textures
     private Texture backButtonActive;
     private Texture backButtonInactive;
 
@@ -49,8 +48,7 @@ public class OptionsScreen implements Screen {
     private Texture backgroundTexture = new Texture("assets/clouds.jpg");
     private Skin skin = new Skin(Gdx.files.internal("assets/skins/visui/assets/uiskin.json"));
 
-
-    public OptionsScreen (GolfGame game) {
+    public OptionsScreen(GolfGame game) {
         this.game = game;
         stage = new Stage(new StretchViewport(GolfGame.WIDTH, GolfGame.HEIGHT));
         Gdx.input.setInputProcessor(stage);
@@ -59,10 +57,10 @@ public class OptionsScreen implements Screen {
         setUpNamebox();
         setUpSelectBox();
         handlePlayButton();
-       
-     }
 
-     // method for setting up a textfield for the player's name
+    }
+
+    // method for setting up a textfield for the player's name
     public void setUpNamebox() {
 
         nameBox = new TextField("name", skin);
@@ -74,7 +72,6 @@ public class OptionsScreen implements Screen {
 
         stage.addActor(nameBox);
         stage.addActor(NameLabel);
-
 
     }
 
@@ -90,12 +87,12 @@ public class OptionsScreen implements Screen {
         gameTypeBox.setSize(200, 30);
         gameTypeBox.setItems("multiplayer", "against AI", "singleplayer");
 
-
         stage.addActor(gameTypeBox);
         stage.addActor(gameTypeLabel);
     }
 
-    // method for handling the play button. Updates the variables "GT" (game type) and "name". Sets the screen to the GameControl class.
+    // method for handling the play button. Updates the variables "GT" (game type)
+    // and "name". Sets the screen to the GameControl class.
     public void handlePlayButton() {
         playButton = new TextButton("SUBMIT AND PLAY", skin);
         playButton.setPosition(500, 100);
@@ -103,7 +100,7 @@ public class OptionsScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                //ERROR HANDLING
+                // ERROR HANDLING
                 if (errorLabel != null) {
                     errorLabel.remove();
                     errorLabel = null;
@@ -126,38 +123,37 @@ public class OptionsScreen implements Screen {
                         stage.addActor(errorIcon);
                         stage.addActor(errorLabel);
                     }
-                } catch  (NumberFormatException e) {
-                    
+                } catch (NumberFormatException e) {
+
                 }
 
                 try {
-                      GT = gameTypeBox.getSelected();
+                    GT = gameTypeBox.getSelected();
 
                 } catch (NumberFormatException e) {
-                        errorLabel = new Label("please enter your name", skin);
-                        errorIcon = new Image(new Texture("assets/Error.png"));
-                        errorLabel.setColor(Color.RED);
-                        errorLabel.setPosition(300, 400);
-                        errorIcon.setPosition(350, 400);
-                        errorIcon.setSize(20, 30);
-                        stage.addActor(errorIcon);
-                        stage.addActor(errorLabel);
-                    }
-                    
+                    errorLabel = new Label("please enter your name", skin);
+                    errorIcon = new Image(new Texture("assets/Error.png"));
+                    errorLabel.setColor(Color.RED);
+                    errorLabel.setPosition(300, 400);
+                    errorIcon.setPosition(350, 400);
+                    errorIcon.setSize(20, 30);
+                    stage.addActor(errorIcon);
+                    stage.addActor(errorLabel);
+                }
 
                 game.setScreen(new GameControl(game));
-            // System.out.println(name);
-            // System.out.println(GT);
-            
-            }});
-                
+                // System.out.println(name);
+                // System.out.println(GT);
 
-    stage.addActor(playButton);
+            }
+        });
+
+        stage.addActor(playButton);
     }
 
     @Override
     public void show() {
-       
+
     }
 
     @Override
@@ -169,21 +165,23 @@ public class OptionsScreen implements Screen {
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        // Setting up the back button using textures. (The back button sets the screen
+        // to MainMenu class)
 
-        // Setting up the back button using textures. (The back button sets the screen to MainMenu class)
-    
         int x = 30;
-        if (Gdx.input.getX() >= x && Gdx.input.getX() <= x + BACK_BUTTON_WIDTH && GolfGame.HEIGHT - Gdx.input.getY() >= BACK_BUTTON_Y && GolfGame.HEIGHT - Gdx.input.getY() <= BACK_BUTTON_Y + BACK_BUTTON_HEIGHT) {
+        if (Gdx.input.getX() >= x && Gdx.input.getX() <= x + BACK_BUTTON_WIDTH
+                && GolfGame.HEIGHT - Gdx.input.getY() >= BACK_BUTTON_Y
+                && GolfGame.HEIGHT - Gdx.input.getY() <= BACK_BUTTON_Y + BACK_BUTTON_HEIGHT) {
             game.batch.draw(backButtonActive, x, BACK_BUTTON_Y, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT);
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new MainMenu(game));
-        }
+            if (Gdx.input.isTouched()) {
+                game.setScreen(new MainMenu(game));
+            }
         } else {
             game.batch.draw(backButtonInactive, x, BACK_BUTTON_Y, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT);
         }
 
         game.batch.end();
-    
+
         // Draw the stage
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
@@ -192,22 +190,22 @@ public class OptionsScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-       
+
     }
 
     @Override
     public void pause() {
-        
+
     }
 
     @Override
     public void resume() {
-        
+
     }
 
     @Override
     public void hide() {
-        
+
     }
 
     @Override
@@ -216,5 +214,4 @@ public class OptionsScreen implements Screen {
         skin.dispose();
     }
 
-    
 }

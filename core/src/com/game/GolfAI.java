@@ -41,7 +41,8 @@ public class GolfAI {
             adjustment.scl(damping); // Apply damping to the adjustment
 
             currentVelocity.sub(adjustment);
-            System.out.println("Iteration: " + iteration + ", Adjusting velocity by " + adjustment + ", New velocity: " + currentVelocity);
+            System.out.println("Iteration: " + iteration + ", Adjusting velocity by " + adjustment + ", New velocity: "
+                    + currentVelocity);
             System.out.println();
 
             iteration++;
@@ -76,15 +77,13 @@ public class GolfAI {
         Vector3 f_vzMinus = calculateFunction(vzMinus);
 
         Vector3 dfdx = new Vector3(
-            (f_vxPlus.x - f_vxMinus.x) / (2 * h),
-            0,
-            (f_vxPlus.z - f_vxMinus.z) / (2 * h)
-        );
+                (f_vxPlus.x - f_vxMinus.x) / (2 * h),
+                0,
+                (f_vxPlus.z - f_vxMinus.z) / (2 * h));
         Vector3 dfdz = new Vector3(
-            (f_vzPlus.x - f_vzMinus.x) / (2 * h),
-            0,
-            (f_vzPlus.z - f_vzMinus.z) / (2 * h)
-        );
+                (f_vzPlus.x - f_vzMinus.x) / (2 * h),
+                0,
+                (f_vzPlus.z - f_vzMinus.z) / (2 * h));
 
         float[][] J = new float[][] {
                 { dfdx.x, dfdx.z },

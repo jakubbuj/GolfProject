@@ -12,25 +12,25 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 
 public class Terrain {
-    private Model terrainModel;  // model class like schemat
-    private ModelInstance terrainInstance;  // instance
+    private Model terrainModel; // model class like schemat
+    private ModelInstance terrainInstance; // instance
     private Model waterModel;
     private ModelInstance waterInstance;
     private MapBorder mapBorder;
     private Texture grassTexture;
     private Texture waterTexture;
 
-    private static final String GRASS_TEXTURE_PATH = "assets/grass.jpg"; 
-    private static final String WATER_TEXTURE_PATH = "assets/water.jpg"; 
+    private static final String GRASS_TEXTURE_PATH = "assets/grass.jpg";
+    private static final String WATER_TEXTURE_PATH = "assets/water.jpg";
     // Define size of the terrain
-    private  int width = 0;  // Number of vertices along the x-axis
-    private  int depth = 0;  // Number of vertices along the y-axis
-    private  float scale = 0;  // Scale of the terrain
+    private int width = 0; // Number of vertices along the x-axis
+    private int depth = 0; // Number of vertices along the y-axis
+    private float scale = 0; // Scale of the terrain
 
     public Terrain(int width, int depth, float scale) {
-        this.width=width;
-        this.depth=depth;
-        this.scale=scale;
+        this.width = width;
+        this.depth = depth;
+        this.scale = scale;
 
         // initialize the terrain ( grass field )
         addGrass();
@@ -42,8 +42,8 @@ public class Terrain {
         mapBorder = new MapBorder(width, depth, scale);
     }
 
-//    method add grass
-    public void addGrass(){
+    // method add grass
+    public void addGrass() {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
 
@@ -56,7 +56,7 @@ public class Terrain {
 
         Material material = new Material(TextureAttribute.createDiffuse(grassTexture));
         MeshPartBuilder mpb = modelBuilder.part("terrain", GL20.GL_TRIANGLES,
-            VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | Usage.TextureCoordinates, material);
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | Usage.TextureCoordinates, material);
 
         // Generate a grid of vertices for the terrain
         for (int y = 0; y < depth - 1; y++) {
@@ -83,14 +83,9 @@ public class Terrain {
             }
         }
 
-
         terrainModel = modelBuilder.end();
         terrainInstance = new ModelInstance(terrainModel);
     }
-
-
-
-
 
     // Method to add water
     public void addWater(float alpha) {
@@ -108,21 +103,19 @@ public class Terrain {
                 new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
         waterModel = modelBuilder.createRect(
-            -halfWidth, 0, halfDepth,
-            halfWidth, 0, halfDepth,
-            halfWidth, 0, -halfDepth,
-            -halfWidth, 0, -halfDepth,
-            0, 1, 0,
-            material,
-            Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+                -halfWidth, 0, halfDepth,
+                halfWidth, 0, halfDepth,
+                halfWidth, 0, -halfDepth,
+                -halfWidth, 0, -halfDepth,
+                0, 1, 0,
+                material,
+                Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 
         waterInstance = new ModelInstance(waterModel);
-}
-
+    }
 
     private float getHeight(float x, float z) {
 
-        
         // This is a simple example using a sine function for the height
         return (float) GetHeight.getHeight(GameControl.functionTerrain, x, z);
     }

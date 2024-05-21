@@ -203,11 +203,4 @@ public class GetHeight {
         return stack.pop();
     }
 
-    public static void main(String[] args) {
-        double x = 0.49;
-        double y = 1.5666;
-        String function = "sin ( e ^ y ) - sqrt ( x + y - 2 )";
-
-        System.out.println(getHeight(function, x, y));
-    }
 }

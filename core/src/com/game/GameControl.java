@@ -88,7 +88,14 @@ public class GameControl implements Screen {
         AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
         RBball = new GolfBall(new Vector3(10, 20, 12), Color.GOLD);
 
-        ballMovement = new GolfBallMovement(ball, physicsEngine);
+        target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
+        gameRules = new GameRules(target, ball, functionTerrain, terrain);
+        ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
+        golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
+        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
+
+        // Now that gameRules is initialized, pass it to ballMovement
+        ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
         golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
 
@@ -155,6 +162,12 @@ public class GameControl implements Screen {
         ruleBasedBot.update();
     }
 
+    public void triggerRuleBasedBotPlay() {
+        Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
+        RBball.setVelocity(newShotVelocity);
+        ruleBasedBot.update(); // Bot makes one shot
+    }
+
     private void applyForceBasedOnCharge() {
         Vector3 direction = new Vector3(camera.direction).nor(); 
         Vector3 hitForce = direction.scl(chargePower); 
@@ -192,9 +205,10 @@ public class GameControl implements Screen {
     }
 
     private void update() {
-        ballMovement.update(); 
-        golfAI.update(); 
-        ruleBasedBot.update(); 
+        ballMovement.update(); // moke a golfbal move
+        golfAI.update(); // make aiball move
+        ruleBasedBot.update(); // make rule based bot play
+        // game rules
         gameRules.checkGameStatus();
     }
 

@@ -23,13 +23,13 @@ public class GameControl extends ApplicationAdapter {
     private UI ui;
     private ModelBatch modelBatch;
     static Environment environment;
-    private Terrain terrain;
+    private TerrainV2 terrain;
     public static PerspectiveCamera camera;
     private CameraInputController camController;
     private PhysicsEngine physicsEngine;
     private GameRules gameRules;
     private Target target;
-    // used in applaying force to ball
+    // used in applying force to ball
     private boolean isCharging;
     private float chargePower;
     static final float MAX_CHARGE = 5.0f;
@@ -46,7 +46,7 @@ public class GameControl extends ApplicationAdapter {
     static int depth = 100;
     static float scale = 0.9f;
     // target
-    private Vector3 targetposition = new Vector3(4.0f, 0.0f, 1.0f);
+    private Vector3 targetPosition = new Vector3(4.0f, 0.0f, 1.0f);
     private float targetRadius = 0.15f;
     // background
     private Texture backgroundTexture;
@@ -58,7 +58,7 @@ public class GameControl extends ApplicationAdapter {
         ui = new UI(this);
         modelBatch = new ModelBatch();
         environment = new Environment();
-        terrain = new Terrain(width, depth, scale);
+        terrain = new TerrainV2(width, depth, scale);
 
         backgroundTexture = new Texture("assets/clouds.jpg");
         spriteBatch = new SpriteBatch();
@@ -81,6 +81,9 @@ public class GameControl extends ApplicationAdapter {
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain);
 
+        // Now that gameRules is initialized, pass it to ballMovement
+        ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
+        golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
     }
 
     private void setupCamera() {
@@ -144,8 +147,7 @@ public class GameControl extends ApplicationAdapter {
     }
 
     private void applyForceBasedOnCharge() {
-        // Apply the force in the direction you want, for example, forwards from the
-        // camera's perspective
+        // Apply the force in the direction you want, for example, forwards from the camera's perspective
         Vector3 direction = new Vector3(camera.direction).nor(); // Normalized direction vector
         Vector3 hitForce = direction.scl(chargePower); // Scale direction by the charged power
         ballMovement.applyForce(hitForce);

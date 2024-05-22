@@ -3,6 +3,7 @@ package com.game;
 import com.game.GolfGame;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -23,6 +24,10 @@ import com.game.SettingsScreen; // Import the SettingsScreen class
 
 public class GameControl implements Screen {
 
+    private Sound soundwinning;
+    private boolean gameOverSoundPlayed = false;
+    private Sound soundFellInWater;
+    private boolean fellInWaterSoundPlayed = false; 
     private UI ui;
     private ModelBatch modelBatch;
     static Environment environment;
@@ -45,19 +50,19 @@ public class GameControl implements Screen {
     private RuleBasedBot ruleBasedBot;
     // game parameters
     public static String functionTerrain = SettingsScreen.terrainFunction;
-    public static Double X0 = SettingsScreen.InitialX;
-    public static Double Y0 = SettingsScreen.InitialY;
+    public static float X0 = SettingsScreen.InitialX.floatValue();
+    public static float Y0 = SettingsScreen.InitialY.floatValue();
     public static Double GRASS_K = SettingsScreen.grassK;
     public static Double GRASS_S = SettingsScreen.grassS;
     public static Double SAND_K = SettingsScreen.sandK;
     public static Double SAND_S = SettingsScreen.sandS;
-    // public static Double targetposition.x = SettingsScreen.TargetXo;
-    // public static Double targetposition.y = SettingsScreen.TargetYo;
+    public static float Tx = SettingsScreen.TargetXo.floatValue();
+    public static float Tz = SettingsScreen.TargetYo.floatValue();
     static int width = 100;
     static int depth = 100;
     static float scale = 0.9f;
     // target
-    private Vector3 targetPosition = new Vector3(4.0f, 0.0f, 1.0f);
+    private Vector3 targetPosition = new Vector3(Tx, 0.0f, Tz);
     private float targetRadius = 0.15f;
     // background
     private Texture backgroundTexture;
@@ -74,8 +79,10 @@ public class GameControl implements Screen {
         modelBatch = new ModelBatch();
         environment = new Environment();
         terrain = new TerrainV2(width, depth, scale);
-
+        soundwinning = Gdx.audio.newSound(Gdx.files.internal("assets/winsound.wav"));
+        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/losingsound.wav"));
         backgroundTexture = new Texture("assets/clouds.jpg");
+
         spriteBatch = new SpriteBatch();
 
         setupCamera();
@@ -85,20 +92,20 @@ public class GameControl implements Screen {
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
 
-        ball = new GolfBall(new Vector3(10, 20, 10), Color.WHITE);
-        AIball = new GolfBall(new Vector3(10, 20, 11), Color.MAGENTA);
-        RBball = new GolfBall(new Vector3(10, 20, 12), Color.GOLD);
+        ball = new GolfBall(new Vector3(X0, 20, Y0), Color.WHITE);
+        AIball = new GolfBall(new Vector3(X0+2, 20, Y0), Color.MAGENTA);
+        RBball = new GolfBall(new Vector3(X0+4, 20, Y0), Color.BLACK);
 
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain, terrain);
 
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
-        golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
+        golfAI = new GolfAI(AIball, targetPosition, physicsEngine);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
 
         // Now that gameRules is initialized, pass it to ballMovement
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
-        golfAI = new GolfAI(AIball, targetPosition, targetRadius, physicsEngine);
+        golfAI = new GolfAI(AIball, targetPosition, physicsEngine);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
 
     }
@@ -178,6 +185,7 @@ public class GameControl implements Screen {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        
         spriteBatch.begin();
         spriteBatch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         spriteBatch.end();
@@ -209,6 +217,25 @@ public class GameControl implements Screen {
         ruleBasedBot.update(); // make rule based bot play
         // game rules
         gameRules.checkGameStatus();
+
+        //Check if game is over 
+        if (gameRules.isGameOver() && !gameOverSoundPlayed) {
+            ui.setGameOverLabelVisible(true);
+            soundwinning.play();
+            gameOverSoundPlayed = true;
+        }
+         //Check if game is over 
+         if (gameRules.fellInWater() && !fellInWaterSoundPlayed) {
+            ui.setFellInWaterLabelVisible(true);
+            soundFellInWater.play();
+            fellInWaterSoundPlayed = true;
+        }
+        //check if ball fell out of bounds
+        if (gameRules.outOfBorder() && !fellInWaterSoundPlayed) {
+            ui.setFellOutOfBoundsLabelVisible(true);
+            soundFellInWater.play();
+            fellInWaterSoundPlayed = true;
+        }
     }
 
     @Override
@@ -225,6 +252,27 @@ public class GameControl implements Screen {
 
     @Override
     public void hide() {
+    }
+
+    public void restartGame() {
+        // Reset all relevant variables to their initial values
+        chargePower = 0;
+        isCharging = false;
+        // Reset ball positions
+        ball.setPosition(new Vector3(X0, 20, Y0));
+        AIball.setPosition(new Vector3(X0 + 2, 20, Y0));
+        RBball.setPosition(new Vector3(X0 + 4, 20, Y0));
+
+        gameOverSoundPlayed = false;
+        ui.setGameOverLabelVisible(false);
+        fellInWaterSoundPlayed = false;
+        ui.setFellInWaterLabelVisible(false);
+        ui.setFellOutOfBoundsLabelVisible(false);
+
+    }
+
+    public void backToMainMenu() {
+        game.setScreen(new MainMenu(game));
     }
 
     @Override

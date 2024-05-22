@@ -11,7 +11,7 @@ public class GameRules {
     private float borderZMin;
     private float borderZMax;
     private boolean gameOver;
-    private int shotCounter;
+    public int shotCounter;
 
     public GameRules(Target target, GolfBall ball, String functionTerrain, TerrainV2 terrain) {
         this.target = target;
@@ -58,6 +58,10 @@ public class GameRules {
         shotCounter++;
     }
 
+    public int getShotCounter() {
+        return shotCounter;
+    }
+
     public void checkGameStatus() {
         if(!gameOver){
             if (isGameOver()) {
@@ -67,10 +71,10 @@ public class GameRules {
                 stopBallMovement();
             } else if (fellInWater()) {
                 System.out.println("Game Over! Ball fell into water.");
-                revertBallPosition();
+                stopBallMovement();
             } else if (outOfBorder()) {
                 System.out.println("Game Over! Ball went out of bounds.");
-                revertBallPosition();
+                stopBallMovement();
             }
         }
     }

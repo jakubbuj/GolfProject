@@ -16,6 +16,11 @@ public class UI {
     private Skin skin;
     private Button aiShotButton;
     private Button rbbButton;
+    private TextButton gameOverLabel;
+    private TextButton fellInWaterLabel;
+    private TextButton backLabel;
+    private TextButton outOfBoundsLabel;
+
 
     public UI(GameControl gameControl) {
         this.gameControl = gameControl;
@@ -24,6 +29,9 @@ public class UI {
         setupLoadingBar();
         setupAIShotButton();
         setupRuleBasedBotButton();
+        setupGameOverLabel();
+        setupFellInWaterLabel();
+        setupBallOutOfBoundsLabel();
         Gdx.input.setInputProcessor(stage); // Set this after all UI elements are added
         System.out.println("UI: Input processor set for UI stage.");
     }
@@ -65,6 +73,99 @@ public class UI {
         });
         stage.addActor(rbbButton);
     }
+
+   
+
+    private void setupGameOverLabel() {
+        gameOverLabel = new TextButton("You win! Ball reached the target! Number of shots taken: #  RESTART ", skin);
+        gameOverLabel.setPosition(Gdx.graphics.getWidth() / 2 - 300, Gdx.graphics.getHeight() / 2); 
+        gameOverLabel.setSize(600, 30);
+        gameOverLabel.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameControl.restartGame();
+            }
+        });
+        backLabel = new TextButton("Back to main menu", skin);
+        backLabel.setPosition(Gdx.graphics.getWidth() / 2 - 100, (Gdx.graphics.getHeight() / 2) - 30);
+        backLabel.setSize(400, 30);
+        backLabel.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameControl.backToMainMenu();
+            }
+        });
+        gameOverLabel.setVisible(false); // Initially hide the game over label
+        backLabel.setVisible(false);
+        stage.addActor(gameOverLabel);
+        stage.addActor(backLabel);
+    }
+
+    public void setGameOverLabelVisible(boolean visible) {
+        gameOverLabel.setVisible(visible);
+        backLabel.setVisible(visible);
+    }
+
+    private void setupFellInWaterLabel() {
+        fellInWaterLabel = new TextButton("Game Over! Ball fell in water! RESTART", skin); 
+        fellInWaterLabel.setPosition(Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2);
+        fellInWaterLabel.setSize(400, 30);
+        fellInWaterLabel.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameControl.restartGame();
+            }
+        });
+        backLabel = new TextButton("Back to main menu", skin);
+        backLabel.setPosition(Gdx.graphics.getWidth() / 2 - 100, (Gdx.graphics.getHeight() / 2) - 30);
+        backLabel.setSize(400, 30);
+        backLabel.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameControl.backToMainMenu();
+            }
+        });
+        fellInWaterLabel.setVisible(false); // Initially hide the game over label
+        backLabel.setVisible(false);
+        stage.addActor(fellInWaterLabel);
+        stage.addActor(backLabel);
+    }
+
+    public void setFellInWaterLabelVisible(boolean visible) {
+        fellInWaterLabel.setVisible(visible);
+        backLabel.setVisible(visible);
+    }
+
+    public void setupBallOutOfBoundsLabel() {
+        outOfBoundsLabel = new TextButton("Game Over! Ball fell out of bounds! RESTART", skin); 
+        outOfBoundsLabel.setPosition(Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2);
+        outOfBoundsLabel.setSize(400, 30);
+        outOfBoundsLabel.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameControl.restartGame();
+            }
+        });
+        backLabel = new TextButton("Back to main menu", skin);
+        backLabel.setPosition(Gdx.graphics.getWidth() / 2 - 100, (Gdx.graphics.getHeight() / 2) - 30);
+        backLabel.setSize(400, 30);
+        backLabel.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                gameControl.backToMainMenu();
+            }
+        });
+        outOfBoundsLabel.setVisible(false); // Initially hide the game over label
+        backLabel.setVisible(false);
+        stage.addActor(outOfBoundsLabel);
+        stage.addActor(backLabel);
+    }
+
+    public void setFellOutOfBoundsLabelVisible(boolean visible) {
+        outOfBoundsLabel.setVisible(visible);
+        backLabel.setVisible(visible);
+    }
+
 
     public void render() {
         progressBar.setValue(gameControl.getChargePower());

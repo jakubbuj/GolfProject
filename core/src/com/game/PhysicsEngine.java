@@ -17,7 +17,7 @@ public class PhysicsEngine {
 
     final double g = 9.80665;
     final double LIMIT_ZERO = 0.0000001;
-    final double h = 0.005; // Reduced step size for better precision
+    final double h = 0.003; // Reduced step size for better precision
 
     double[] stateVector = new double[4];
     double[] systemFunction = new double[4];
@@ -67,8 +67,8 @@ public class PhysicsEngine {
         stateVector[2] = xInitialVelocity;
         stateVector[3] = yInitialVelocity;
 
-        System.out.println(
-                "Initial State: X0=" + X0 + ", Y0=" + Y0 + ", Vx0=" + xInitialVelocity + ", Vy0=" + yInitialVelocity);
+        // System.out.println(
+        //         "Initial State: X0=" + X0 + ", Y0=" + Y0 + ", Vx0=" + xInitialVelocity + ", Vy0=" + yInitialVelocity);
 
         int maxIterations = 10000; // Set a reasonable limit for iterations
         int iteration = 0;
@@ -106,7 +106,7 @@ public class PhysicsEngine {
             }
 
             if(Math.abs(stateVector[2]) <0.01 && Math.abs(stateVector[3]) <0.01){
-                System.out.println("fast end");
+                //System.out.println("fast end");
                 break;
             }
 
@@ -120,7 +120,7 @@ public class PhysicsEngine {
             }
         }
 
-        System.out.println("Updated State: X=" + stateVector[0] + ", Z=" + stateVector[1] + ", Vx=" + stateVector[2] + ", Vz=" + stateVector[3]);
+       // System.out.println("Updated State: X=" + stateVector[0] + ", Z=" + stateVector[1] + ", Vx=" + stateVector[2] + ", Vz=" + stateVector[3]);
 
         return stateVector;
     }

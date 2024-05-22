@@ -17,7 +17,6 @@
             "request": "launch",
             "mainClass": "com.game.PhysicsEngine",
             "projectName": "project-1.2-ken-17-core",
-            "vmArgs": "-XstartOnFirstThread"
         },
         {
             "type": "java",
@@ -25,7 +24,7 @@
             "request": "launch",
             "mainClass": "com.game.PhysicsEngine",
             "projectName": "core",
-            "vmArgs": "-XstartOnFirstThread"
+
         },
         {
             "type": "java",
@@ -33,7 +32,7 @@
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",
             "projectName": "desktop",
-            "vmArgs": "-XstartOnFirstThread"
+
         },
         {
             "type": "java",
@@ -41,7 +40,6 @@
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",
             "projectName": "project-1.2-ken-17-desktop",
-            "vmArgs": "-XstartOnFirstThread"
         }
     ]
 }

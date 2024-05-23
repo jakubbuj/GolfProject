@@ -234,8 +234,15 @@ public class PhysicsEngine {
     }
 
     private boolean isWithinSandArea(double x, double z) {
-        // Assume a method that checks if coordinates are in a sand area
-        return false; // Placeholder: Implement the actual area check based on your game map
+
+        float sand = TerrainV2.getSandHeight((float) x+50, (float) z+50);
+
+        if(sand > 0.5) {
+           System.out.println("x: " + x + ",z: " + z + " SAND:" + sand);
+            return true;
+        }
+        //System.out.println("x: " + x + ",z: " + z + " GRASS " + sand);
+        return false;
     }
 
     private double calculateDerivativeX(double x, double y) {

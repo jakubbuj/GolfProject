@@ -31,6 +31,10 @@ public class GolfGame extends Game {
     public void playmusic() {
         music.play();
     }
+
+    public void stopMusic() {
+        music.stop();
+    }
     
 
 }

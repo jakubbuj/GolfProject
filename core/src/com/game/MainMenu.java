@@ -23,7 +23,12 @@ public class MainMenu implements Screen {
     private static final int SETTINGS_BUTTON_WIDTH = 50;
     private static final int SETTINGS_BUTTON_HEIGHT = 50;
     private static final int SETTINGS_BUTTON_Y = 30;
+    private static final int MUSIC_BUTTON_WIDTH = 50;
+    private static final int MUSIC_BUTTON_HEIGHT = 50;
+    private static final int MUSIC_BUTTON_Y = 400;
+    private boolean isMusicOn = true;
     public static Sound clicksound;
+    
 
     // Textures and skins
     private Texture exitButtonActive;
@@ -32,6 +37,8 @@ public class MainMenu implements Screen {
     private Texture playButtonInactive;
     private Texture settingsButtonActive;
     private Texture settingsButtonInactive;
+    private Texture musicButtonActive;
+    private Texture musicButtonInactive;
     private Texture backgroundTexture = new Texture("assets/clouds.jpg");
 
     // Lables
@@ -54,6 +61,8 @@ public class MainMenu implements Screen {
         settingsButtonActive = new Texture("assets/settingsactive.png");
         settingsButtonInactive = new Texture("assets/settingsinactive.png");
         clicksound = Gdx.audio.newSound(Gdx.files.internal("assets/click.wav"));
+        musicButtonActive = new Texture("assets/soundon.png");
+        musicButtonInactive = new Texture("assets/soundoff.png");
         setupsettingslabel();
     }
 
@@ -115,11 +124,33 @@ public class MainMenu implements Screen {
             if (Gdx.input.isTouched()) {
                 clicksound.play();
                 game.setScreen(new SettingsScreen(game));
+                
             }
         } else {
             game.batch.draw(settingsButtonInactive, GolfGame.WIDTH / 2 - SETTINGS_BUTTON_WIDTH / 2, SETTINGS_BUTTON_Y,
                     SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
         }
+
+        // Handling music button
+x = GolfGame.WIDTH / 2 - MUSIC_BUTTON_WIDTH / 2;
+float mouseX = Gdx.input.getX();
+float mouseY = GolfGame.HEIGHT - Gdx.input.getY();
+
+boolean isHovering = mouseX < x + MUSIC_BUTTON_WIDTH && mouseX > x && mouseY < MUSIC_BUTTON_Y + MUSIC_BUTTON_HEIGHT && mouseY > MUSIC_BUTTON_Y;
+
+// Draw the button (active or inactive) based on music state
+game.batch.draw(isMusicOn ? musicButtonActive : musicButtonInactive, x, MUSIC_BUTTON_Y, MUSIC_BUTTON_WIDTH, MUSIC_BUTTON_HEIGHT);
+
+// Check if the button is clicked
+if (isHovering && Gdx.input.justTouched()) {
+    clicksound.play();
+    isMusicOn = !isMusicOn;
+    if (isMusicOn) {
+        game.playmusic();
+    } else {
+        game.stopMusic();
+    }
+}
 
         game.batch.end();
 

@@ -2,6 +2,7 @@ package com.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -39,6 +40,7 @@ public class MainMenu implements Screen {
     GolfGame game;
     private Stage stage;
     private Skin skin = new Skin(Gdx.files.internal("assets/skins/visui/assets/uiskin.json"));
+  
 
     public MainMenu(GolfGame game) {
         this.game = game;
@@ -67,6 +69,7 @@ public class MainMenu implements Screen {
         // Draw the background texture
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, GolfGame.WIDTH, GolfGame.HEIGHT);
+
 
         // handling exit button - exits game
         int x = GolfGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2;

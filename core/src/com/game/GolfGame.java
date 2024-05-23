@@ -1,12 +1,16 @@
 package com.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GolfGame extends Game {
 
     public static final int WIDTH = 720;
     public static final int HEIGHT = 720;
+    private Sound music;
+
 
     public SpriteBatch batch;
 
@@ -14,10 +18,19 @@ public class GolfGame extends Game {
     public void create() {
         batch = new SpriteBatch();
         this.setScreen(new MainMenu(this));
+        music = Gdx.audio.newSound(Gdx.files.internal("assets/Polka.mp3"));
+        playmusic();
+
+        
     }
 
     public void render() {
         super.render();
     }
+
+    public void playmusic() {
+        music.play();
+    }
+    
 
 }

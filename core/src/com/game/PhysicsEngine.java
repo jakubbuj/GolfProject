@@ -238,7 +238,7 @@ public class PhysicsEngine {
         float sand = TerrainV2.getSandHeight((float) x+50, (float) z+50);
 
         if(sand > 0.5) {
-           System.out.println("x: " + x + ",z: " + z + " SAND:" + sand);
+           //System.out.println("x: " + x + ",z: " + z + " SAND:" + sand);
             return true;
         }
         //System.out.println("x: " + x + ",z: " + z + " GRASS " + sand);

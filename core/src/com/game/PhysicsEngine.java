@@ -17,7 +17,7 @@ public class PhysicsEngine {
 
     final double g = 9.80665;
     final double LIMIT_ZERO = 0.0000001;
-    final double h = 0.003; // Reduced step size for better precision
+    final double h = 0.005; // Reduced step size for better precision
 
     double[] stateVector = new double[4];
     double[] systemFunction = new double[4];
@@ -70,7 +70,7 @@ public class PhysicsEngine {
         // System.out.println(
         //         "Initial State: X0=" + X0 + ", Y0=" + Y0 + ", Vx0=" + xInitialVelocity + ", Vy0=" + yInitialVelocity);
 
-        int maxIterations = 10000; // Set a reasonable limit for iterations
+        int maxIterations = 1000; // Set a reasonable limit for iterations
         int iteration = 0;
 
         double[] previousState = new double[4];
@@ -115,7 +115,7 @@ public class PhysicsEngine {
 
             iteration++;
             if (iteration >= maxIterations) {
-                System.out.println("Max iterations reached. Stopping simulation.");
+                //System.out.println("Max iterations reached. Stopping simulation.");
                 break;
             }
         }

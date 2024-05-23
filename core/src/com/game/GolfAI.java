@@ -10,7 +10,7 @@ public class GolfAI {
     private static final double INITIAL_EPSILON_GRAD = 0.5; // Initial epsilon for gradient approximation
     private static final double MIN_EPSILON_GRAD = 1e-4; // Minimum epsilon for gradient approximation
     private static final int MAX_ITERATIONS = 1000; // Max iterations for convergence
-    private static final double INITIAL_LEARNING_RATE = 0.5; // Initial learning rate for large steps
+    private static final double INITIAL_LEARNING_RATE = 0.8; // Initial learning rate for large steps
     private static final double MIN_LEARNING_RATE = 0.005; // Minimum learning rate for fine adjustments
     private static final double TOLERANCE = 0.3; // Tolerance for stopping condition
     private static final double BETA1 = 0.9; // Decay rate for the first moment estimate
@@ -47,8 +47,8 @@ public class GolfAI {
                 break;
             }
 
-            Vector3 gradient = approximateGradient(currentVelocity);
-            System.out.println("Gradient: " + gradient);
+            Vector3 gradient = approximateGradient(currentVelocity,deviation);
+            //System.out.println("Gradient: " + gradient);
 
             // Update time step
             t++;
@@ -78,7 +78,7 @@ public class GolfAI {
             clipVelocity(currentVelocity);
 
             // Update learning rate and epsilon for gradient approximation
-            learningRate = Math.max(MIN_LEARNING_RATE, learningRate * 0.99);
+            learningRate = Math.max(MIN_LEARNING_RATE, learningRate * 0.98);
             epsilonGrad = Math.max(MIN_EPSILON_GRAD, epsilonGrad * 0.99);
         }
 
@@ -92,9 +92,8 @@ public class GolfAI {
         return new Vector3(finalPosition.x - targetPosition.x, 0, finalPosition.z - targetPosition.z);
     }
 
-    private Vector3 approximateGradient(Vector3 velocity) {
+    private Vector3 approximateGradient(Vector3 velocity, Vector3 originalDeviation) {
         Vector3 gradient = new Vector3();
-        Vector3 originalDeviation = calculateFunction(velocity);
 
         // Perturbation for x velocity
         Vector3 perturbedVelocityX = new Vector3(velocity);
@@ -113,7 +112,7 @@ public class GolfAI {
 
     private void gradientClip(Vector3 gradient) {
         // Clipping the gradient to ensure it doesn't overshoot
-        double maxGradient = 1.0; // Example value, adjust as needed
+        double maxGradient = 2.0; // Example value, adjust as needed
         if (gradient.len() > maxGradient) {
             gradient.scl((float) (maxGradient / gradient.len()));
         }
@@ -121,7 +120,7 @@ public class GolfAI {
 
     private void clipVelocity(Vector3 velocity) {
         // Clipping the velocity to ensure it doesn't overshoot
-        double maxVelocity = 20.0; // Example value, adjust as needed
+        double maxVelocity = 70.0; // Example value, adjust as needed
         if (velocity.len() > maxVelocity) {
             velocity.scl((float) (maxVelocity / velocity.len()));
         }

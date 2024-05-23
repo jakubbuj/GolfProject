@@ -9,15 +9,20 @@ public class RuleBasedBot {
     private float targetRadius;
     private PhysicsEngine physicsEngine;
     private static GolfBall RBball;
+    private static GameRules gameRules;
 
     //Vector3 initialVelocity = new Vector3 (10, 0, 10);
 
 
-    public RuleBasedBot(GolfBall RBball, Vector3 targetPosition, float targetRadius, PhysicsEngine physicsEngine) {
+    public RuleBasedBot(GolfBall RBball, Vector3 targetPosition, float targetRadius, PhysicsEngine physicsEngine, GameRules gameRules) {
         this.RBball = RBball;
         this.targetPosition = targetPosition;
         this.targetRadius = targetRadius;
         this.physicsEngine = physicsEngine;
+        if (gameRules == null) {
+            throw new IllegalArgumentException("gameRules cannot be null");
+        }
+        this.gameRules = gameRules;
     }
 
     public Vector3 calculateNewVelocity(){
@@ -89,7 +94,7 @@ public class RuleBasedBot {
         PhysicsEngine physicsEngine = new PhysicsEngine(" 0.4 * ( 0.9 - e ^ ( -1 * ( x ^ 2 + y ^ 2 ) / 8 ) )", 3, 0, 4, 1, 1, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
         RBball = new GolfBall(new Vector3(10, 20, 12), Color.GOLD);
         Vector3 targetposition = new Vector3(4.0f,0.0f,1.0f);
-        RuleBasedBot ruleBasedBot = new RuleBasedBot(RBball,targetposition, 1, physicsEngine);
+        RuleBasedBot ruleBasedBot = new RuleBasedBot(RBball,targetposition, 1, physicsEngine, gameRules);
         System.out.println("Initial position: " + RuleBasedBot.RBball.getPosition());
         ruleBasedBot.update();
         System.out.println("New position after update: " + RuleBasedBot.RBball.getPosition());

@@ -18,7 +18,7 @@ public class GolfGame extends Game {
     public void create() {
         batch = new SpriteBatch();
         this.setScreen(new MainMenu(this));
-        music = Gdx.audio.newSound(Gdx.files.internal("assets/Minecraft.mp3")); // you can change the music to "assets/Minecraft.mp3"
+        music = Gdx.audio.newSound(Gdx.files.internal("assets/Calm.mp3")); // you can change the music to "assets/Minecraft.mp3" or "assets/Polka.mp3" or "assets/Calm.mp3"
         playmusic();
 
         

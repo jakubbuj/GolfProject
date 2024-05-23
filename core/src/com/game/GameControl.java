@@ -84,7 +84,7 @@ public class GameControl implements Screen {
         environment = new Environment();
         terrain = new TerrainV2(width, depth, scale);
         soundwinning = Gdx.audio.newSound(Gdx.files.internal("assets/winsound.wav"));
-        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/losingsound.wav"));
+        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/ninagameoverrr.mp3"));
         backgroundTexture = new Texture("assets/clouds.jpg");
 
         spriteBatch = new SpriteBatch();

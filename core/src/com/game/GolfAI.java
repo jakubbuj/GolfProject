@@ -21,8 +21,9 @@ public class GolfAI {
     private double learningRate; // Current learning rate
     private double epsilonGrad; // Current epsilon for gradient approximation
     private int t; // Time step
+    private GameRules gameRules; // Game rules
 
-    public GolfAI(GolfBall AIball, Vector3 targetPosition, PhysicsEngine physicsEngine) {
+    public GolfAI(GolfBall AIball, Vector3 targetPosition, PhysicsEngine physicsEngine, GameRules gameRules) {
         this.AIball = AIball;
         GolfAI.targetPosition = targetPosition;
         this.physicsEngine = physicsEngine;
@@ -31,6 +32,10 @@ public class GolfAI {
         this.learningRate = INITIAL_LEARNING_RATE;
         this.epsilonGrad = INITIAL_EPSILON_GRAD;
         this.t = 0;
+        if (gameRules == null) {
+            throw new IllegalArgumentException("gameRules cannot be null");
+        }
+        this.gameRules = gameRules;
     }
 
     public Vector3 findBestShot() {

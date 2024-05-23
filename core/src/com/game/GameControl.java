@@ -36,6 +36,8 @@ public class GameControl implements Screen {
     private CameraInputController camController;
     private PhysicsEngine physicsEngine;
     private GameRules gameRules;
+    private GameRules gameRulesRB;
+    private GameRules gameRulesAI;
     private Target target;
     // used in applying force to ball
     private boolean isCharging;
@@ -69,6 +71,8 @@ public class GameControl implements Screen {
     private SpriteBatch spriteBatch;
     private GolfGame game;
 
+    
+
     public GameControl(GolfGame game) {
         this.game = game;
     }
@@ -98,15 +102,17 @@ public class GameControl implements Screen {
 
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain, terrain);
+        gameRulesRB = new GameRules(target, RBball, functionTerrain, terrain);
+        gameRulesAI = new GameRules(target, AIball, functionTerrain, terrain);
 
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
-        golfAI = new GolfAI(AIball, targetPosition, physicsEngine);
-        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
+        golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI);
+        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB);
 
         // Now that gameRules is initialized, pass it to ballMovement
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
-        golfAI = new GolfAI(AIball, targetPosition, physicsEngine);
-        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine);
+        golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI);
+        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB);
 
     }
 
@@ -219,19 +225,19 @@ public class GameControl implements Screen {
         gameRules.checkGameStatus();
 
         //Check if game is over 
-        if (gameRules.isGameOver() && !gameOverSoundPlayed) {
+        if ((gameRules.isGameOver() || gameRulesRB.isGameOver() || gameRulesAI.isGameOver()) && !gameOverSoundPlayed) {
             ui.setGameOverLabelVisible(true);
             soundwinning.play();
             gameOverSoundPlayed = true;
         }
          //Check if game is over 
-         if (gameRules.fellInWater() && !fellInWaterSoundPlayed) {
+         if ((gameRules.fellInWater() || gameRulesRB.fellInWater() || gameRulesAI.fellInWater()) && !fellInWaterSoundPlayed) {
             ui.setFellInWaterLabelVisible(true);
             soundFellInWater.play();
             fellInWaterSoundPlayed = true;
         }
         //check if ball fell out of bounds
-        if (gameRules.outOfBorder() && !fellInWaterSoundPlayed) {
+        if ((gameRules.outOfBorder() || gameRulesRB.outOfBorder() || gameRulesAI.outOfBorder()) && !fellInWaterSoundPlayed) {
             ui.setFellOutOfBoundsLabelVisible(true);
             soundFellInWater.play();
             fellInWaterSoundPlayed = true;
@@ -292,3 +298,4 @@ public class GameControl implements Screen {
         }
     }
 }
+

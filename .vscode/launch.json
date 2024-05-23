@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "RuleBasedBot",
+            "request": "launch",
+            "mainClass": "com.game.RuleBasedBot",
+            "projectName": "core"
+        },
+        {
+            "type": "java",
             "name": "GolfAI",
             "request": "launch",
             "mainClass": "com.game.GolfAI",
@@ -27,7 +34,6 @@
             "mainClass": "com.game.PhysicsEngine",
             "projectName": "core",
             "vmArgs": "-XstartOnFirstThread"
-
         },
         {
             "type": "java",
@@ -36,7 +42,6 @@
             "mainClass": "com.game.DesktopLauncher",
             "projectName": "desktop",
             "vmArgs": "-XstartOnFirstThread"
-
         },
         {
             "type": "java",

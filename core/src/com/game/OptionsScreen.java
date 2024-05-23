@@ -139,6 +139,7 @@ public class OptionsScreen implements Screen {
                     stage.addActor(errorLabel);
                 }
 
+                MainMenu.clicksound.play();
                 game.setScreen(new GameControl(game));
                 // System.out.println(name);
                 // System.out.println(GT);
@@ -172,6 +173,7 @@ public class OptionsScreen implements Screen {
                 && GolfGame.HEIGHT - Gdx.input.getY() <= BACK_BUTTON_Y + BACK_BUTTON_HEIGHT) {
             game.batch.draw(backButtonActive, x, BACK_BUTTON_Y, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT);
             if (Gdx.input.isTouched()) {
+                MainMenu.clicksound.play();
                 game.setScreen(new MainMenu(game));
             }
         } else {

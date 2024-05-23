@@ -100,6 +100,7 @@ public class SettingsScreen implements Screen {
                 && GolfGame.HEIGHT - Gdx.input.getY() <= BACK_BUTTON_Y + BACK_BUTTON_HEIGHT) {
             game.batch.draw(backButtonActive, x, BACK_BUTTON_Y, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT);
             if (Gdx.input.isTouched()) {
+                MainMenu.clicksound.play();
                 game.setScreen(new MainMenu(game));
             }
         } else {
@@ -349,6 +350,7 @@ public class SettingsScreen implements Screen {
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
                 }
+                MainMenu.clicksound.play();
                 game.setScreen(new MainMenu(game));
 
             }
@@ -389,6 +391,7 @@ public class SettingsScreen implements Screen {
                 TargetXo = Double.parseDouble(TargetXBox.getText());
                 TargetYo = Double.parseDouble(TargetYBox.getText());
 
+                MainMenu.clicksound.play();
             }
         });
 

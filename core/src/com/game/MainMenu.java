@@ -23,6 +23,7 @@ public class MainMenu implements Screen {
     private static final int SETTINGS_BUTTON_WIDTH = 50;
     private static final int SETTINGS_BUTTON_HEIGHT = 50;
     private static final int SETTINGS_BUTTON_Y = 30;
+    public static Sound clicksound;
 
     // Textures and skins
     private Texture exitButtonActive;
@@ -52,6 +53,7 @@ public class MainMenu implements Screen {
         playButtonInactive = new Texture("assets/play_button_inactive.png");
         settingsButtonActive = new Texture("assets/settingsactive.png");
         settingsButtonInactive = new Texture("assets/settingsinactive.png");
+        clicksound = Gdx.audio.newSound(Gdx.files.internal("assets/click.wav"));
         setupsettingslabel();
     }
 
@@ -79,6 +81,7 @@ public class MainMenu implements Screen {
             game.batch.draw(exitButtonActive, GolfGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2, EXIT_BUTTON_Y,
                     EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
             if (Gdx.input.isTouched()) {
+                clicksound.play();
                 Gdx.app.exit();
             }
         } else {
@@ -94,6 +97,7 @@ public class MainMenu implements Screen {
             game.batch.draw(playButtonActive, GolfGame.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2, PLAY_BUTTON_Y,
                     PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
             if (Gdx.input.isTouched()) {
+                clicksound.play();
                 game.setScreen(new OptionsScreen(game));
             }
         } else {
@@ -109,6 +113,7 @@ public class MainMenu implements Screen {
             game.batch.draw(settingsButtonActive, GolfGame.WIDTH / 2 - SETTINGS_BUTTON_WIDTH / 2, SETTINGS_BUTTON_Y,
                     SETTINGS_BUTTON_WIDTH, SETTINGS_BUTTON_HEIGHT);
             if (Gdx.input.isTouched()) {
+                clicksound.play();
                 game.setScreen(new SettingsScreen(game));
             }
         } else {

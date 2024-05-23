@@ -43,7 +43,7 @@ public class OptionsScreen implements Screen {
     // other
     GolfGame game;
     private Stage stage;
-    private Texture backgroundTexture = new Texture("assets/clouds.jpg");
+    private Texture backgroundTexture = new Texture("assets/nina.jpg");
     private Skin skin = new Skin(Gdx.files.internal("assets/skins/visui/assets/uiskin.json"));
 
     public OptionsScreen(GolfGame game) {

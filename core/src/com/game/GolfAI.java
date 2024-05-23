@@ -10,7 +10,7 @@ public class GolfAI {
     private static final double INITIAL_EPSILON_GRAD = 0.5; // Initial epsilon for gradient approximation
     private static final double MIN_EPSILON_GRAD = 1e-4; // Minimum epsilon for gradient approximation
     private static final int MAX_ITERATIONS = 1000; // Max iterations for convergence
-    private static final double INITIAL_LEARNING_RATE = 0.8; // Initial learning rate for large steps
+    private static final double INITIAL_LEARNING_RATE = 1; // Initial learning rate for large steps
     private static final double MIN_LEARNING_RATE = 0.005; // Minimum learning rate for fine adjustments
     private static final double TOLERANCE = 0.3; // Tolerance for stopping condition
     private static final double BETA1 = 0.9; // Decay rate for the first moment estimate

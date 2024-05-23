@@ -81,7 +81,7 @@ public class PhysicsEngine {
 
         // Simulation loop: run until both velocities are close to zero or max iterations reached
         while (true) {
-            updateStateVectorRungeKutta(false);
+            updateStateVectorEuler(false);
 
             // Check for small changes in position and velocity
             double positionChange = Math.sqrt(

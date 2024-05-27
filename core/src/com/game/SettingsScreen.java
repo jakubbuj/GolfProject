@@ -39,6 +39,7 @@ public class SettingsScreen implements Screen {
     private TextField GRASS_K;
     private TextField GRASS_S;
     private TextField TargetXBox, TargetYBox;
+    private TextField TRBox;
 
     // labels
     private Label Xo;
@@ -49,6 +50,7 @@ public class SettingsScreen implements Screen {
     private Label TXoLabel, TYoLabel;
     private Image errorIcon;
     private Label errorLabel;
+    private Label RadiusLabel;
 
     // other
     GolfGame game;
@@ -63,6 +65,7 @@ public class SettingsScreen implements Screen {
     public static Double grassK, grassS;
     public static Double sandK, sandS;
     public static Double TargetXo, TargetYo;
+    public static Double Radius;
 
     public SettingsScreen(GolfGame game) {
         this.game = game;
@@ -121,82 +124,90 @@ public class SettingsScreen implements Screen {
 
         // handling X initial coordinates label and textfield
         Xo = new Label("Initial start x coordinate", skin);
-        Xo.setPosition(200, 630);
+        Xo.setPosition(200, 650);
         Xo.setColor(Color.MAGENTA);
 
         InitialCoordinateX = new TextField("Enter initial X coordinate for golf ball", skin);
-        InitialCoordinateX.setPosition(200, 600);
+        InitialCoordinateX.setPosition(200, 620);
         InitialCoordinateX.setSize(300, 30);
 
         // handling Y initial coordinates label and textfield
         Yo = new Label("Initial start y coordinate", skin);
-        Yo.setPosition(200, 580);
+        Yo.setPosition(200, 600);
         Yo.setColor(Color.MAGENTA);
 
         InitialCoordinateY = new TextField("Enter initial Y coordinate for golf ball", skin);
-        InitialCoordinateY.setPosition(200, 550);
+        InitialCoordinateY.setPosition(200, 570);
         InitialCoordinateY.setSize(300, 30);
 
         // handling function label and textfield
         F = new Label("Terrain function", skin);
-        F.setPosition(200, 130);
+        F.setPosition(200, 150);
         F.setColor(Color.MAGENTA);
 
         function = new TextField("Type in function", skin);
-        function.setPosition(180, 100);
+        function.setPosition(180, 120);
         function.setSize(250, 30);
 
         // handling Grass static and kinetic friction
         Gk = new Label("Grass kinetic", skin);
-        Gk.setPosition(80, 430);
+        Gk.setPosition(80, 450);
         Gk.setColor(Color.MAGENTA);
 
         GRASS_K = new TextField("Type in the kinetic friction of grass", skin);
-        GRASS_K.setPosition(80, 400);
+        GRASS_K.setPosition(80, 420);
         GRASS_K.setSize(250, 30);
 
         Gs = new Label("Grass static", skin);
-        Gs.setPosition(370, 430);
+        Gs.setPosition(370, 450);
         Gs.setColor(Color.MAGENTA);
 
         GRASS_S = new TextField("Type in the static friction of grass", skin);
-        GRASS_S.setPosition(370, 400);
+        GRASS_S.setPosition(370, 420);
         GRASS_S.setSize(250, 30);
 
         // handling Sand static and kinetic friction
         Sk = new Label("Sand kinetic", skin);
-        Sk.setPosition(80, 500);
+        Sk.setPosition(80, 520);
         Sk.setColor(Color.MAGENTA);
 
         SAND_K = new TextField("Type in the kinetic friction of sand", skin);
-        SAND_K.setPosition(80, 470);
+        SAND_K.setPosition(80, 490);
         SAND_K.setSize(250, 30);
 
         Ss = new Label("Sand static", skin);
-        Ss.setPosition(370, 500);
+        Ss.setPosition(370, 520);
         Ss.setColor(Color.MAGENTA);
 
         SAND_S = new TextField("Type in the static friction of sand", skin);
-        SAND_S.setPosition(370, 470);
+        SAND_S.setPosition(370, 490);
         SAND_S.setSize(250, 30);
 
         // Target coordinates
         TXoLabel = new Label("Coordinate X of target", skin);
-        TXoLabel.setPosition(200, 330);
+        TXoLabel.setPosition(200, 380);
         TXoLabel.setColor(Color.MAGENTA);
 
         TargetXBox = new TextField("Type in the coordinate X of the target", skin);
-        TargetXBox.setPosition(200, 300);
+        TargetXBox.setPosition(200, 350);
         TargetXBox.setSize(300, 30);
 
         TYoLabel = new Label("Coordinate Y of target", skin);
-        TYoLabel.setPosition(200, 280);
+        TYoLabel.setPosition(200, 310);
         TYoLabel.setColor(Color.MAGENTA);
 
         TargetYBox = new TextField("Type in the coordinate Y of the target", skin);
-        TargetYBox.setPosition(200, 250);
+        TargetYBox.setPosition(200, 280);
         TargetYBox.setSize(300, 30);
+        
+        RadiusLabel = new Label("radius target", skin);
+        RadiusLabel.setPosition(200, 240);
+        RadiusLabel.setColor(Color.MAGENTA);
 
+        TRBox = new TextField("Type in the radius of target", skin);
+        TRBox.setPosition(200, 210);
+        TRBox.setSize(300, 30);
+        
         stage.addActor(Xo);
         stage.addActor(InitialCoordinateX);
         stage.addActor(Yo);
@@ -215,6 +226,8 @@ public class SettingsScreen implements Screen {
         stage.addActor(TargetXBox);
         stage.addActor(TYoLabel);
         stage.addActor(TargetYBox);
+        stage.addActor(RadiusLabel);
+        stage.addActor(TRBox);
 
     }
 
@@ -244,8 +257,8 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("please enter a number", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(17, 605);
-                    errorIcon.setPosition(170, 600);
+                    errorLabel.setPosition(17, 625);
+                    errorIcon.setPosition(170, 620);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
@@ -257,8 +270,8 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("please enter a number", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(17, 555);
-                    errorIcon.setPosition(170, 550);
+                    errorLabel.setPosition(17, 575);
+                    errorIcon.setPosition(170, 570);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
@@ -270,8 +283,8 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("incorrect function", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(17, 405);
-                    errorIcon.setPosition(170, 400);
+                    errorLabel.setPosition(17, 425);
+                    errorIcon.setPosition(170, 420);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
@@ -283,8 +296,8 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("type in number", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(20, 380);
-                    errorIcon.setPosition(40, 400);
+                    errorLabel.setPosition(20, 400);
+                    errorIcon.setPosition(40, 420);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
@@ -295,8 +308,8 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("type in number", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(600, 380);
-                    errorIcon.setPosition(630, 400);
+                    errorLabel.setPosition(600, 400);
+                    errorIcon.setPosition(630, 420);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
@@ -308,8 +321,8 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("type in number", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(20, 450);
-                    errorIcon.setPosition(40, 470);
+                    errorLabel.setPosition(20, 470);
+                    errorIcon.setPosition(40, 490);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
@@ -320,8 +333,8 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("type in number", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(600, 450);
-                    errorIcon.setPosition(630, 470);
+                    errorLabel.setPosition(600, 470);
+                    errorIcon.setPosition(630, 490);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
@@ -332,8 +345,8 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("type in number", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(65, 305);
-                    errorIcon.setPosition(170, 300);
+                    errorLabel.setPosition(65, 345);
+                    errorIcon.setPosition(170, 340);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
@@ -344,17 +357,33 @@ public class SettingsScreen implements Screen {
                     errorLabel = new Label("type in number", skin);
                     errorIcon = new Image(new Texture("assets/Error.png"));
                     errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(65, 255);
-                    errorIcon.setPosition(170, 250);
+                    errorLabel.setPosition(65, 275);
+                    errorIcon.setPosition(170, 270);
                     errorIcon.setSize(20, 30);
                     stage.addActor(errorIcon);
                     stage.addActor(errorLabel);
                 }
+                try {
+                    Radius = Double.parseDouble(TRBox.getText());
+                } catch (NumberFormatException e) {
+                    errorLabel = new Label("type in number", skin);
+                    errorIcon = new Image(new Texture("assets/Error.png"));
+                    errorLabel.setColor(Color.RED);
+                    errorLabel.setPosition(65, 215);
+                    errorIcon.setPosition(170, 210);
+                    errorIcon.setSize(20, 30);
+                    stage.addActor(errorIcon);
+                    stage.addActor(errorLabel);
+                }
+                if (errorLabel == null && errorIcon == null) {
+                    game.setScreen(new MainMenu(game));
+                }
+               
                 MainMenu.clicksound.play();
-                game.setScreen(new MainMenu(game));
 
             }
         });
+
 
         stage.addActor(submitButton); // Add the submit button to the stage
 
@@ -379,6 +408,7 @@ public class SettingsScreen implements Screen {
                 SAND_S.setText("0.4");
                 TargetXBox.setText("4.0");
                 TargetYBox.setText("1.0");
+                TRBox.setText("0.5");
 
                 // Update corresponding static variables
                 terrainFunction = function.getText();
@@ -390,6 +420,7 @@ public class SettingsScreen implements Screen {
                 sandS = Double.parseDouble(SAND_S.getText());
                 TargetXo = Double.parseDouble(TargetXBox.getText());
                 TargetYo = Double.parseDouble(TargetYBox.getText());
+                Radius = Double.parseDouble(TRBox.getText());
 
                 MainMenu.clicksound.play();
             }

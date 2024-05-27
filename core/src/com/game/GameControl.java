@@ -65,7 +65,7 @@ public class GameControl implements Screen {
     static float scale = 0.9f;
     // target
     private Vector3 targetPosition = new Vector3(Tx, 0.0f, Tz);
-    private float targetRadius = 0.15f;
+    private float targetRadius = SettingsScreen.Radius.floatValue();
     // background
     private Texture backgroundTexture;
     private SpriteBatch spriteBatch;
@@ -84,7 +84,7 @@ public class GameControl implements Screen {
         environment = new Environment();
         terrain = new TerrainV2(width, depth, scale);
         soundwinning = Gdx.audio.newSound(Gdx.files.internal("assets/winsound.wav"));
-        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/ninagameoverrr.mp3"));
+        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/losingsound.wav"));
         backgroundTexture = new Texture("assets/clouds.jpg");
 
         spriteBatch = new SpriteBatch();

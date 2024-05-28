@@ -16,8 +16,9 @@ public class PhysicsEngine {
     double terrainHeight = 0;
 
     final double g = 9.80665;
-    final double LIMIT_ZERO = 0.0000001;
+    final static double LIMIT_ZERO = 0.0000001;
     final double h = 0.005; // Reduced step size for better precision
+    private double currentTime = 0.0;
 
     double[] stateVector = new double[4];
     double[] systemFunction = new double[4];
@@ -125,17 +126,17 @@ public class PhysicsEngine {
         return stateVector;
     }
 
-    public void updateStateVectorRungeKutta(boolean isImmobile) {
+    public void updateStateVectorRungeKutta(double time, boolean isImmobile) {
         double x = stateVector[0];
         double z = stateVector[1];
 
         double kineticCoefficient = isWithinSandArea(x, z) ? SAND_K : GRASS_K;
         // Calculate the next state vector using the Runge-Kutta method
 
-        double[] stateVector1 = returnUpdatedVector(isImmobile, x, z, kineticCoefficient);
-        double[] stateVector2 = returnUpdatedVector(isImmobile, x + 0.5 * h, z + 0.5 * h, kineticCoefficient);
-        double[] stateVector3 = returnUpdatedVector(isImmobile, x + 0.5 * h, z + 0.5 * h, kineticCoefficient);
-        double[] stateVector4 = returnUpdatedVector(isImmobile, x + h, z + h, kineticCoefficient);
+        double[] stateVector1 = returnUpdatedVector(time, isImmobile, x, z, kineticCoefficient);
+        double[] stateVector2 = returnUpdatedVector(time + 0.5 * h, isImmobile, x + 0.5 * h, z + 0.5 * h, kineticCoefficient);
+        double[] stateVector3 = returnUpdatedVector(time + 0.5 * h, isImmobile, x + 0.5 * h, z + 0.5 * h, kineticCoefficient);
+        double[] stateVector4 = returnUpdatedVector(time + h, isImmobile, x + h, z + h, kineticCoefficient);
 
         for (int i = 0; i < stateVector.length; i++) {
             stateVector[i] += (1.0 / 6.0) * h * (stateVector1[i] + 2 * stateVector2[i] + 2 * stateVector3[i] + stateVector4[i]);
@@ -148,7 +149,7 @@ public class PhysicsEngine {
         }
     }
 
-    public double[] returnUpdatedVector(boolean isImmobile, double x, double z, double kineticCoefficient) {
+    public double[] returnUpdatedVector(double t, boolean isImmobile, double x, double z, double kineticCoefficient) {
         double xVelocity = stateVector[2];
         double zVelocity = stateVector[3];
 
@@ -178,6 +179,9 @@ public class PhysicsEngine {
         // Calculate total acceleration
         double xAcceleration = xFirstTerm + xSecondTerm;
         double zAcceleration = zFirstTerm + zSecondTerm;
+
+        //double windForceX = 0.1 * Math.sin(t); 
+        //double windForceZ = 0.1 * Math.cos(t);
 
         // Update system function array
         systemFunction[0] = stateVector[2]; // xVelocity
@@ -245,13 +249,13 @@ public class PhysicsEngine {
         return false;
     }
 
-    private double calculateDerivativeX(double x, double y) {
+    public static double calculateDerivativeX(double x, double y) {
         double forwardHeight = GetHeight.getHeight(heightFunction, x + LIMIT_ZERO, y);
         double backwardHeight = GetHeight.getHeight(heightFunction, x - LIMIT_ZERO, y);
         return (forwardHeight - backwardHeight) / (2 * LIMIT_ZERO);
     }
 
-    private double calculateDerivativeZ(double x, double z) {
+    public static double calculateDerivativeZ(double x, double z) {
         double forwardHeight = GetHeight.getHeight(heightFunction, x, z + LIMIT_ZERO);
         double backwardHeight = GetHeight.getHeight(heightFunction, x, z - LIMIT_ZERO);
         return (forwardHeight - backwardHeight) / (2 * LIMIT_ZERO);
@@ -264,8 +268,10 @@ public class PhysicsEngine {
         stateVector[2] = ballVelocity.x;
         stateVector[3] = ballVelocity.z;
 
+        double time = 0.0;
+
         // updating state vectors
-        updateStateVectorRungeKutta(false);
+        updateStateVectorRungeKutta(currentTime, false);
 
         // checking if any of the states in NaN
         boolean hasNaN = false;
@@ -287,6 +293,7 @@ public class PhysicsEngine {
         // Update height to keep the ball on the terrain
         terrainHeight = (float) GetHeight.getHeight(heightFunction, ballPosition.x, ballPosition.z);
 
+        currentTime += h;
         return stateVector;
     }
 

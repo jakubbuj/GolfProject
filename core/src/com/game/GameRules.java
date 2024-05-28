@@ -71,10 +71,10 @@ public class GameRules {
                 stopBallMovement();
             } else if (fellInWater()) {
                 System.out.println("Game Over! Ball fell into water.");
-                stopBallMovement();
+                revertBallPosition();
             } else if (outOfBorder()) {
                 System.out.println("Game Over! Ball went out of bounds.");
-                stopBallMovement();
+                revertBallPosition();
             }
         }
     }

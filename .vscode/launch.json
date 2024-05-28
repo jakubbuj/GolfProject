@@ -6,50 +6,38 @@
     "configurations": [
         {
             "type": "java",
-            "name": "RuleBasedBot",
+            "name": "GolfAI",
             "request": "launch",
-            "mainClass": "com.game.RuleBasedBot",
+            "mainClass": "com.game.GolfAI",
             "projectName": "core"
         },
         {
             "type": "java",
-            "name": "GolfAI",
+            "name": "PhysicsEngine",
             "request": "launch",
-            "mainClass": "com.game.GolfAI",
-            "projectName": "core",
-            "vmArgs": "-XstartOnFirstThread"
+            "mainClass": "com.game.PhysicsEngine",
+            "projectName": "project-1.2-ken-17-core"
         },
         {
             "type": "java",
             "name": "PhysicsEngine",
             "request": "launch",
             "mainClass": "com.game.PhysicsEngine",
-            "projectName": "project-1.2-ken-17-core",
-            "vmArgs": "-XstartOnFirstThread"
-        },
-        {
-            "type": "java",
-            "name": "PhysicsEngine",
-            "request": "launch",
-            "mainClass": "com.game.PhysicsEngine",
-            "projectName": "core",
-            "vmArgs": "-XstartOnFirstThread"
+            "projectName": "core"
         },
         {
             "type": "java",
             "name": "DesktopLauncher",
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",
-            "projectName": "desktop",
-            "vmArgs": "-XstartOnFirstThread"
+            "projectName": "desktop"
         },
         {
             "type": "java",
             "name": "Launch DesktopLauncher",
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",
-            "projectName": "project-1.2-ken-17-desktop",
-            "vmArgs": "-XstartOnFirstThread"
+            "projectName": "project-1.2-ken-17-desktop"
         }
     ]
 }

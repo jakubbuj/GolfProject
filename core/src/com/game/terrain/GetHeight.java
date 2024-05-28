@@ -1,4 +1,4 @@
-package com.game;
+package com.game.terrain;
 
 import java.util.LinkedList;
 import java.util.List;

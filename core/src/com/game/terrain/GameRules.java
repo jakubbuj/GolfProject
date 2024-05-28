@@ -1,6 +1,7 @@
-package com.game;
+package com.game.terrain;
 
 import com.badlogic.gdx.math.Vector3;
+import com.game.golfball.GolfBall;
 
 public class GameRules {
     private Target target;

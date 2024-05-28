@@ -1,4 +1,4 @@
-package com.game;
+package com.game.terrain;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;

@@ -1,4 +1,4 @@
-package com.game;
+package com.game.terrain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.game.main.GameControl;
+import com.game.main.SettingsScreen;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 public class Target {

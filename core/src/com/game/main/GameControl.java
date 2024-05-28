@@ -1,6 +1,4 @@
-package com.game;
-
-import com.game.GolfGame;
+package com.game.main;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -20,7 +18,15 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
-import com.game.SettingsScreen; // Import the SettingsScreen class
+import com.game.golfball.GolfAI;
+import com.game.golfball.GolfBall;
+import com.game.golfball.GolfBallMovement;
+import com.game.golfball.PhysicsEngine;
+import com.game.golfball.RuleBasedBot;
+import com.game.terrain.GameRules;
+import com.game.terrain.Target;
+import com.game.terrain.TerrainV2;
+import com.game.ui.UI;
 
 public class GameControl implements Screen {
 
@@ -42,7 +48,7 @@ public class GameControl implements Screen {
     // used in applying force to ball
     private boolean isCharging;
     private float chargePower;
-    static final float MAX_CHARGE = 5.0f;
+    public static final float MAX_CHARGE = 5.0f;
     // balls
     private GolfBall ball;
     private GolfBall AIball;
@@ -51,7 +57,7 @@ public class GameControl implements Screen {
     private GolfAI golfAI;
     private RuleBasedBot ruleBasedBot;
     // game parameters
-    public String functionTerrain = SettingsScreen.terrainFunction;
+    public static String functionTerrain = SettingsScreen.terrainFunction;
     public float X0 = SettingsScreen.InitialX.floatValue();
     public float Y0 = SettingsScreen.InitialY.floatValue();
     public Double GRASS_K = SettingsScreen.grassK;

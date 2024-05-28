@@ -1,6 +1,7 @@
-package com.game;
+package com.game.golfball;
 
 import com.badlogic.gdx.math.Vector3;
+import com.game.terrain.GameRules;
 
 public class GolfAI {
     private static Vector3 targetPosition;

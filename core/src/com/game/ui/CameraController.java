@@ -1,4 +1,4 @@
-package com.game;
+package com.game.ui;
 
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;

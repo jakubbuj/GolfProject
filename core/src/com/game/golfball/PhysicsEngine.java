@@ -1,7 +1,9 @@
-package com.game;
+package com.game.golfball;
 
 
 import com.badlogic.gdx.math.Vector3;
+import com.game.terrain.GetHeight;
+import com.game.terrain.TerrainV2;
 
 public class PhysicsEngine {
 

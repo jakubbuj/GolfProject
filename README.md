@@ -1,3 +1,7 @@
+0.  Getting Started 
+
+   open file project-1.2-ken-17-main in ide and then to lunch application run the main class named DesktopLauncher.java
+
 1. Main Menu Screen:
 
 Before pressing "Play", press the "Settings" button at the bottom of the screen.

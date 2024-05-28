@@ -18,10 +18,11 @@ public class Target {
     private float radius;
     private ModelInstance sphereModel;
     private ModelInstance flagModel;
+    public String functionT = SettingsScreen.terrainFunction;
 
     public Target(float x, float z, float radius) {
 
-        float terrainheight = (float) GetHeight.getHeight(GameControl.functionTerrain, x, z);
+        float terrainheight = (float) GetHeight.getHeight(functionT, x, z);
         this.position = new Vector3(x, terrainheight + 0.5f, z); // Set y = 0 for simplicity, adjust based on terrain
                                                                  // height later
         this.radius = radius;

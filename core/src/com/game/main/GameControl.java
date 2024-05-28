@@ -105,8 +105,8 @@ public class GameControl implements Screen {
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
 
         ball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("2e3d49"));
-        AIball = new GolfBall(new Vector3(X0+2, 20, Y0), Color.valueOf("007d8d"));
-        RBball = new GolfBall(new Vector3(X0+4, 20, Y0), Color.valueOf("880808"));
+        AIball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("007d8d"));
+        RBball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("880808"));
 
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain, terrain);
@@ -274,8 +274,8 @@ public class GameControl implements Screen {
         isCharging = false;
         // Reset ball positions
         ball.setPosition(new Vector3(X0, 20, Y0));
-        AIball.setPosition(new Vector3(X0 + 2, 20, Y0));
-        RBball.setPosition(new Vector3(X0 + 4, 20, Y0));
+        AIball.setPosition(new Vector3(X0, 20, Y0));
+        RBball.setPosition(new Vector3(X0, 20, Y0));
 
         gameOverSoundPlayed = false;
         ui.setGameOverLabelVisible(false);

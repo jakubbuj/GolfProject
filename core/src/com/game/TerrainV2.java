@@ -148,7 +148,7 @@ public class TerrainV2 {
 
     private float getHeight(float x, float y) {
         // Compute the expression sqrt((sin(x) + cos(y))^2)
-        double result = GetHeight.getHeight(GameControl.functionTerrain, x, y);
+        double result = GetHeight.getHeight(SettingsScreen.terrainFunction, x, y);
         return (float) result; // Convert double to float
     }
 

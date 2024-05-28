@@ -1,5 +1,4 @@
 package com.game;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 public class RuleBasedBot {
@@ -27,35 +26,32 @@ public class RuleBasedBot {
 
     public Vector3 calculateNewVelocity(){
         ballPosition = RBball.getPosition();
-        // float xDirection; 
-        // float zDirection;
-        // // Determining in which direction the ball has to move to reach the target (x coordinates)
-        // if (targetPosition.x < ballPosition.x){
-        //     xDirection = -1;
-        // } else if (targetPosition.x > ballPosition.x){
-        //     xDirection = 1;
-        // } else {
-        //     xDirection = 0;
-        // }
-        // // Determining in which direction the ball has to move to reach the target (z coordinates)
-        // if (targetPosition.z < ballPosition.z){
-        //     xDirection = -1;
-        // } else if (targetPosition.z > ballPosition.z){
-        //     xDirection = 1;
-        // } else {
-        //     xDirection = 0;
-        // }
 
         Vector2 vectorBT = new Vector2(ballPosition.x - targetPosition.x, ballPosition.z - targetPosition.z); //vector from ball position to target position
         double magnitude = Math.sqrt(Math.pow(vectorBT.x, 2) + Math.pow(vectorBT.y, 2));
         //Normalizing vectorBT to get direction vector of the ball
         Vector2 direction = new Vector2((float)(-vectorBT.x / magnitude), (float)(-vectorBT.y / magnitude));
 
+        double slopeX = PhysicsEngine.calculateDerivativeX(ballPosition.x, ballPosition.z);
+        double slopeZ = PhysicsEngine.calculateDerivativeZ(ballPosition.x, ballPosition.z);
+        double slopeForceX = 1;
+        double slopeForceZ = 1;
+        if (slopeX > 0.2){ //We apply additional force only when the slope is big enough. 
+            slopeForceX = slopeX * 10;
+         } //else if (slopeX < 0.1){
+        //     slopeForceX = 0.7;
+        // }
+        if (slopeZ > 0.2){
+            slopeForceZ = slopeZ * 10;
+        } //else if (slopeZ < 0.1){
+        //     slopeForceZ = 0.8;
+        // }
+
         double force;
-        if (magnitude < 3 && magnitude > 1) force = 3.5;
-        else if (magnitude <= 1) force = 0.75;
-        else force = magnitude;
-        Vector3 newVelocity = new Vector3( (float)(direction.x * force), (float)(0.0), (float)(direction.y * force));
+        if (magnitude < 7 && magnitude > 1) force = magnitude * 1.5; //Close to the target, the magnitude will be small, so we need stronger force in comparison to the magnitude to move the ball significantly.
+        else if (magnitude <= 1) force = magnitude + 1; //Very close to the target, we need force to be stronger with respect to the magnitude, but not too strong to not overshoot the target.
+        else force = 0.75 * magnitude; 
+        Vector3 newVelocity = new Vector3( (float)(direction.x * force * slopeForceX), (float)(0.0), (float)(direction.y * force * slopeForceZ));
         return newVelocity;
     }
 
@@ -90,13 +86,4 @@ public class RuleBasedBot {
         return xPos && yPos;
     }
 
-    public static void main(String[] args) {
-        PhysicsEngine physicsEngine = new PhysicsEngine(" 0.4 * ( 0.9 - e ^ ( -1 * ( x ^ 2 + y ^ 2 ) / 8 ) )", 3, 0, 4, 1, 1, 0.6, 0.6, 0.3, 0.4, 0.0, 0.0);
-        RBball = new GolfBall(new Vector3(10, 20, 12), Color.GOLD);
-        Vector3 targetposition = new Vector3(4.0f,0.0f,1.0f);
-        RuleBasedBot ruleBasedBot = new RuleBasedBot(RBball,targetposition, 1, physicsEngine, gameRules);
-        System.out.println("Initial position: " + RuleBasedBot.RBball.getPosition());
-        ruleBasedBot.update();
-        System.out.println("New position after update: " + RuleBasedBot.RBball.getPosition());
-    }
 }

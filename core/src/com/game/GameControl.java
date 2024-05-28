@@ -24,7 +24,7 @@ import com.game.SettingsScreen; // Import the SettingsScreen class
 
 public class GameControl implements Screen {
 
-    private Sound soundwinning;
+    private static Sound soundwinning;
     private boolean gameOverSoundPlayed = false;
     private Sound soundFellInWater;
     private boolean fellInWaterSoundPlayed = false; 
@@ -51,15 +51,15 @@ public class GameControl implements Screen {
     private GolfAI golfAI;
     private RuleBasedBot ruleBasedBot;
     // game parameters
-    public static String functionTerrain = SettingsScreen.terrainFunction;
-    public static float X0 = SettingsScreen.InitialX.floatValue();
-    public static float Y0 = SettingsScreen.InitialY.floatValue();
-    public static Double GRASS_K = SettingsScreen.grassK;
-    public static Double GRASS_S = SettingsScreen.grassS;
-    public static Double SAND_K = SettingsScreen.sandK;
-    public static Double SAND_S = SettingsScreen.sandS;
-    public static float Tx = SettingsScreen.TargetXo.floatValue();
-    public static float Tz = SettingsScreen.TargetYo.floatValue();
+    public String functionTerrain = SettingsScreen.terrainFunction;
+    public float X0 = SettingsScreen.InitialX.floatValue();
+    public float Y0 = SettingsScreen.InitialY.floatValue();
+    public Double GRASS_K = SettingsScreen.grassK;
+    public Double GRASS_S = SettingsScreen.grassS;
+    public Double SAND_K = SettingsScreen.sandK;
+    public Double SAND_S = SettingsScreen.sandS;
+    public float Tx = SettingsScreen.TargetXo.floatValue();
+    public float Tz = SettingsScreen.TargetYo.floatValue();
     static int width = 100;
     static int depth = 100;
     static float scale = 0.9f;
@@ -70,6 +70,7 @@ public class GameControl implements Screen {
     private Texture backgroundTexture;
     private SpriteBatch spriteBatch;
     private GolfGame game;
+    private SettingsScreen settingsScreen;  // Reference to SettingsScreen instance
 
     
 
@@ -84,7 +85,7 @@ public class GameControl implements Screen {
         environment = new Environment();
         terrain = new TerrainV2(width, depth, scale);
         soundwinning = Gdx.audio.newSound(Gdx.files.internal("assets/winsound.wav"));
-        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/losingsound.wav"));
+        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/ninagameoverrr.mp3"));
         backgroundTexture = new Texture("assets/clouds.jpg");
 
         spriteBatch = new SpriteBatch();
@@ -92,6 +93,7 @@ public class GameControl implements Screen {
         setupCamera();
         setupLights();
         setupInput();
+
 
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);

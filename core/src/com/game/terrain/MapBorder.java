@@ -9,6 +9,11 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * The {@code MapBorder} class is responsible for creating and managing a border
+ * around the game map. The border is rendered as a transparent rectangle
+ * surrounding the map.
+ */
 public class MapBorder {
     private Model borderModel;
     private ModelInstance borderInstance;
@@ -17,6 +22,13 @@ public class MapBorder {
     private int depth;
     private float scale;
 
+    /**
+     * Constructs a {@code MapBorder} with the specified dimensions and scale.
+     *
+     * @param width  the width of the game map
+     * @param depth  the depth of the game map
+     * @param scale  the scale factor for the map and border
+     */
     public MapBorder(int width, int depth, float scale) {
         this.width = width;
         this.depth = depth;
@@ -25,6 +37,10 @@ public class MapBorder {
         addBorder();
     }
 
+    /**
+     * Creates the border model around the game map. The border is defined as a
+     * rectangle surrounding the map with a specified border width.
+     */
     public void addBorder() {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
@@ -54,10 +70,18 @@ public class MapBorder {
         borderInstance = new ModelInstance(borderModel);
     }
 
+    /**
+     * Returns the {@code ModelInstance} of the border, which can be used for rendering.
+     *
+     * @return the {@code ModelInstance} of the border
+     */
     public ModelInstance getBorderInstance() {
         return borderInstance;
     }
 
+    /**
+     * Disposes of the resources used by the border model.
+     */
     public void dispose() {
         borderModel.dispose();
     }

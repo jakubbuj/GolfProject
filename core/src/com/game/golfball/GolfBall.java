@@ -20,6 +20,12 @@ public class GolfBall {
 
     private static final float MOVEMENT_THRESHOLD = 0.05f; // Adjusted threshold to determine if the ball is moving
 
+    /**
+     * Constructs a GolfBall object with the specified start position and color.
+     *
+     * @param startPosition The initial position of the golf ball.
+     * @param color          The color of the golf ball.
+     */
     public GolfBall(Vector3 startPosition, Color color) {
         this.position = new Vector3(startPosition);
         this.velocity = new Vector3(0, 0, 0);
@@ -35,48 +41,100 @@ public class GolfBall {
         this.modelInstance = new ModelInstance(ballModel); // Create a ModelInstance from the Model
     }
 
+    /**
+     * Renders the golf ball using the specified model batch and environment.
+     *
+     * @param modelBatch   The ModelBatch used for rendering.
+     * @param environment  The Environment used for rendering.
+     */
     public void render(ModelBatch modelBatch, Environment environment) {
         modelInstance.transform.setToTranslation(position);
         modelBatch.render(modelInstance, environment);
     }
 
+    /**
+     * Returns the current position of the golf ball.
+     *
+     * @return The position vector of the golf ball.
+     */
     public Vector3 getPosition() {
         return position;
     }
 
+    /**
+     * Returns the current velocity of the golf ball.
+     *
+     * @return The velocity vector of the golf ball.
+     */
     public Vector3 getVelocity() {
         return velocity;
     }
 
+    /**
+     * Returns the mass of the golf ball.
+     *
+     * @return The mass of the golf ball.
+     */
     public double getMass() {
         return mass;
     }
 
+    /**
+     * Sets the position of the golf ball to the specified position.
+     *
+     * @param position The new position vector of the golf ball.
+     */
     public void setPosition(Vector3 position) {
         this.position = position;
     }
 
+    /**
+     * Sets the velocity of the golf ball to the specified velocity.
+     *
+     * @param velocity The new velocity vector of the golf ball.
+     */
     public void setVelocity(Vector3 velocity) {
         this.velocity = velocity;
     }
 
+    /**
+     * Returns the model instance of the golf ball.
+     *
+     * @return The model instance representing the golf ball.
+     */
     public ModelInstance getModelInstance() {
         return modelInstance;
     }
 
+    /**
+     * Updates the last valid position of the golf ball to the current position.
+     */
     public void updateLastValidPosition() {
         this.lastValidPosition.set(this.position);
     }
 
+    /**
+     * Returns the last valid position of the golf ball.
+     *
+     * @return The last valid position vector of the golf ball.
+     */
     public Vector3 getLastValidPosition() {
         return lastValidPosition;
     }
 
+    /**
+     * Checks if the golf ball is moving based on its velocity.
+     *
+     * @return True if the golf ball is moving, false otherwise.
+     */
     public boolean isMoving() {
         boolean moving = velocity.len2() > MOVEMENT_THRESHOLD;
         return moving;
     }
 
+    /**
+     * Disposes of resources associated with the golf ball.
+     */
     public void dispose() {
         modelInstance.model.dispose();
     }

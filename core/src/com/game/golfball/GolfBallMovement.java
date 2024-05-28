@@ -9,6 +9,13 @@ public class GolfBallMovement {
     private PhysicsEngine physicsEngine;
     private GameRules gameRules;
 
+    /**
+     * Constructs a GolfBallMovement object with the specified ball, physics engine, and game rules.
+     *
+     * @param ball          The golf ball to be moved.
+     * @param physicsEngine The physics engine used for simulating ball movement.
+     * @param gameRules     The game rules governing ball movement and game status.
+     */
     public GolfBallMovement(GolfBall ball, PhysicsEngine physicsEngine, GameRules gameRules) {
         this.ball = ball;
         this.physicsEngine = physicsEngine;
@@ -18,6 +25,11 @@ public class GolfBallMovement {
         this.gameRules = gameRules;
     }
 
+    /**
+     * Applies the given force to the golf ball, updating its velocity based on the force and mass.
+     *
+     * @param force The force vector to be applied to the ball.
+     */
     public void applyForce(Vector3 force) {
         if (gameRules == null || gameRules.isGameOver()) {
             System.out.println("Cannot make a shot. The game is over.");
@@ -40,6 +52,10 @@ public class GolfBallMovement {
         ball.setVelocity(velocity);
     }
 
+    /**
+     * Updates the position and velocity of the golf ball based on the current state and physics calculations.
+     * Also adjusts the ball's vertical position based on the terrain height and checks game status.
+     */
     public void update() {
         if (gameRules == null || gameRules.isGameOver()) {
             return;

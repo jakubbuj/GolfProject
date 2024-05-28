@@ -24,6 +24,14 @@ public class GolfAI {
     private int t; // Time step
     private GameRules gameRules; // Game rules
 
+    /**
+     * Constructs a GolfAI object with the specified parameters.
+     *
+     * @param AIball          The golf ball controlled by the AI.
+     * @param targetPosition The target position for the golf ball.
+     * @param physicsEngine  The physics engine used for simulations.
+     * @param gameRules      The game rules defining constraints and objectives.
+     */
     public GolfAI(GolfBall AIball, Vector3 targetPosition, PhysicsEngine physicsEngine, GameRules gameRules) {
         this.AIball = AIball;
         GolfAI.targetPosition = targetPosition;
@@ -39,6 +47,11 @@ public class GolfAI {
         this.gameRules = gameRules;
     }
 
+    /**
+     * Calculates the best shot for the golf ball to reach the target position.
+     *
+     * @return The velocity vector representing the best shot.
+     */
     public Vector3 findBestShot() {
         Vector3 currentVelocity = new Vector3(2f, 0f, -6f);
 
@@ -91,6 +104,13 @@ public class GolfAI {
         return currentVelocity;
     }
 
+    /**
+     * Calculates the function representing the deviation between the current shot
+     * and the target position.
+     *
+     * @param velocity The velocity vector representing the current shot.
+     * @return The deviation vector between the current shot and the target position.
+     */
     private Vector3 calculateFunction(Vector3 velocity) {
         physicsEngine.setState(AIball.getPosition().x, AIball.getPosition().z, velocity.x, velocity.z);
         double[] afterShot = physicsEngine.runSimulation(velocity.x, velocity.z);
@@ -98,6 +118,13 @@ public class GolfAI {
         return new Vector3(finalPosition.x - targetPosition.x, 0, finalPosition.z - targetPosition.z);
     }
 
+    /**
+     * Approximates the gradient of the deviation function with respect to the velocity.
+     *
+     * @param velocity         The velocity vector representing the current shot.
+     * @param originalDeviation The original deviation between the current shot and the target position.
+     * @return The gradient vector approximating the rate of change of deviation with respect to velocity.
+     */
     private Vector3 approximateGradient(Vector3 velocity, Vector3 originalDeviation) {
         Vector3 gradient = new Vector3();
 
@@ -116,6 +143,11 @@ public class GolfAI {
         return gradient;
     }
 
+    /**
+     * Clips the gradient vector to prevent overshooting during optimization.
+     *
+     * @param gradient The gradient vector to be clipped.
+     */
     private void gradientClip(Vector3 gradient) {
         // Clipping the gradient to ensure it doesn't overshoot
         double maxGradient = 2.0; // Example value, adjust as needed
@@ -124,6 +156,11 @@ public class GolfAI {
         }
     }
 
+    /**
+     * Clips the velocity vector to prevent overshooting during optimization.
+     *
+     * @param velocity The velocity vector to be clipped.
+     */
     private void clipVelocity(Vector3 velocity) {
         // Clipping the velocity to ensure it doesn't overshoot
         double maxVelocity = 70.0; // Example value, adjust as needed
@@ -132,6 +169,9 @@ public class GolfAI {
         }
     }
 
+    /**
+     * Updates the position and velocity of the golf ball according to the calculated shot.
+     */
     public void update() {
         Vector3 currentPosition = AIball.getPosition();
         Vector3 currentVelocity = AIball.getVelocity();

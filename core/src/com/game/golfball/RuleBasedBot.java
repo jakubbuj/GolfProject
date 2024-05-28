@@ -13,7 +13,15 @@ public class RuleBasedBot {
 
     //Vector3 initialVelocity = new Vector3 (10, 0, 10);
 
-
+    /**
+     * Constructs a RuleBasedBot object with the specified parameters.
+     *
+     * @param RBball           The golf ball object controlled by the bot.
+     * @param targetPosition   The position of the target.
+     * @param targetRadius     The radius of the target area.
+     * @param physicsEngine    The physics engine for simulating ball movement.
+     * @param gameRules        The game rules governing the bot's behavior.
+     */
     public RuleBasedBot(GolfBall RBball, Vector3 targetPosition, float targetRadius, PhysicsEngine physicsEngine, GameRules gameRules) {
         this.RBball = RBball;
         this.targetPosition = targetPosition;
@@ -25,6 +33,11 @@ public class RuleBasedBot {
         this.gameRules = gameRules;
     }
 
+    /**
+     * Calculates a new velocity vector for the ball to move towards the target position.
+     *
+     * @return A new velocity vector for the ball.
+     */
     public Vector3 calculateNewVelocity(){
         ballPosition = RBball.getPosition();
 
@@ -56,6 +69,9 @@ public class RuleBasedBot {
         return newVelocity;
     }
 
+    /**
+     * Updates the state of the bot and the ball's position and velocity.
+     */
     public void update() {
 
         //Vector3 currentVelocity = new Vector3(initialVelocity);
@@ -81,6 +97,11 @@ public class RuleBasedBot {
 
     }
 
+    /**
+     * Checks if the ball has reached the target position within the target radius.
+     *
+     * @return True if the ball has reached the target, false otherwise.
+     */
     private boolean reachedTarget(){
         boolean xPos = RBball.getPosition().x <= targetPosition.x + targetRadius && RBball.getPosition().x >= targetPosition.x - targetRadius;
         boolean yPos = RBball.getPosition().y <= targetPosition.y + targetRadius && RBball.getPosition().y >= targetPosition.y - targetRadius;

@@ -11,6 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * The main menu screen of the Golf Game.
+ * Handles user interactions for starting the game, exiting, accessing settings, and toggling music.
+ */
 public class MainMenu implements Screen {
 
     // buttons
@@ -49,7 +53,11 @@ public class MainMenu implements Screen {
     private Stage stage;
     private Skin skin = new Skin(Gdx.files.internal("assets/skins/visui/assets/uiskin.json"));
   
-
+    /**
+     * Constructs a new MainMenu screen.
+     * 
+     * @param game the main game instance
+     */
     public MainMenu(GolfGame game) {
         this.game = game;
         stage = new Stage(new StretchViewport(GolfGame.WIDTH, GolfGame.HEIGHT));
@@ -66,11 +74,19 @@ public class MainMenu implements Screen {
         setupsettingslabel();
     }
 
+    /**
+     * Called when this screen becomes the current screen for a Game.
+     */
     @Override
     public void show() {
 
     }
 
+    /**
+     * Called when the screen should render itself.
+     * 
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
 
@@ -159,7 +175,9 @@ if (isHovering && Gdx.input.justTouched()) {
         stage.draw();
     }
 
-    // method for setting up settings button
+    /**
+     * Sets up the settings label and adds it to the stage.
+     */
     public void setupsettingslabel() {
         settings = new Label("SETTINGS", skin);
         settings.setColor(Color.DARK_GRAY);

@@ -16,6 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/**
+ * SettingsScreen class for handling the settings of the game.
+ * Implements the Screen interface from libGDX.
+ */
 public class SettingsScreen implements Screen {
 
     // back button
@@ -67,6 +71,11 @@ public class SettingsScreen implements Screen {
     public static Double TargetXo, TargetYo;
     public static Double Radius;
 
+    /**
+     * Constructor for SettingsScreen.
+     * 
+     * @param game the main game instance
+     */
     public SettingsScreen(GolfGame game) {
         this.game = game;
 
@@ -118,7 +127,9 @@ public class SettingsScreen implements Screen {
 
     }
 
-    // method for setting up the textfield for user input
+    /**
+     * Sets up the text fields for user input.
+     */
     private void setupTextFields() {
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 
@@ -231,8 +242,10 @@ public class SettingsScreen implements Screen {
 
     }
 
-    // method for handling the submit button. Updates variables: InitialX, InitialY,
-    // terrainFunction, grassK, grassS, sandK, sandS, TargetXo, TargetYo
+    /**
+     * Handles the submit button. Updates variables: InitialX, InitialY, terrainFunction,
+     * grassK, grassS, sandK, sandS, TargetXo, TargetYo, Radius.
+     */
     private void handleSubmitButton() {
         submitButton = new TextButton("Submit", skin);
         submitButton.setPosition(530, 100);
@@ -389,8 +402,9 @@ public class SettingsScreen implements Screen {
 
     }
 
-    // method for handling the default button. It sets all the variables used in
-    // physics engine to default.
+    /**
+     * Handles the default button, which sets default values for all text fields.
+     */
     public void handleDefaultButton() {
         defaultButton = new TextButton("Default", skin);
         defaultButton.setPosition(30, 100);

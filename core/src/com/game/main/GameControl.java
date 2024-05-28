@@ -79,11 +79,19 @@ public class GameControl implements Screen {
     private SettingsScreen settingsScreen;  // Reference to SettingsScreen instance
 
     
-
+    /**
+     * Constructs a GameControl object with the specified GolfGame instance.
+     *
+     * @param game The instance of the GolfGame.
+     */
     public GameControl(GolfGame game) {
         this.game = game;
     }
 
+    /**
+     * Called when this screen becomes the current screen for a {@link com.badlogic.gdx.Game}.
+     * Initializes the UI, environment, terrain, sounds, background, camera, lights, and input processing.
+     */
     @Override
     public void show() {
         ui = new UI(this);
@@ -124,6 +132,9 @@ public class GameControl implements Screen {
 
     }
 
+    /**
+     * Sets up the camera for the game.
+     */
     private void setupCamera() {
         camera = new PerspectiveCamera(75, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(10f, 10f, 10f);
@@ -135,6 +146,9 @@ public class GameControl implements Screen {
         camController = new CameraInputController(camera);
     }
 
+    /**
+     * Sets up the lighting for the game environment.
+     */
     private void setupLights() {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 5.0f));
         environment.add(new DirectionalLight().set(0.9f, 0.9f, 0.9f, -3f, -10f, -0f));
@@ -142,6 +156,9 @@ public class GameControl implements Screen {
         environment.add(new PointLight().set(0.8f, 0.8f, 0.8f, new Vector3(0, 30, 0), 500f));
     }
 
+    /**
+     * Sets up the input processing for the game, including handling camera controls and charging shots.
+     */
     private void setupInput() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(ui.getStage());
@@ -171,28 +188,47 @@ public class GameControl implements Screen {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
+    /**
+     * Triggers a shot by the AI, setting its velocity and updating its state.
+     */
     public void triggerAIShot() {
         Vector3 aiShot = golfAI.findBestShot();
         AIball.setVelocity(aiShot);
         golfAI.update();
     }
 
+    /**
+     * Triggers the rule-based bot to play a shot, calculating the new velocity and updating its state.
+     */
     public void triggerRuleBasedBotPlay() {
         Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
         RBball.setVelocity(newShotVelocity);
         ruleBasedBot.update(); // Bot makes one shot
     }
 
+    /**
+     * Applies a force to the ball based on the current charge power.
+     */
     private void applyForceBasedOnCharge() {
         Vector3 direction = new Vector3(camera.direction).nor();
         Vector3 hitForce = direction.scl(chargePower);
         ballMovement.applyForce(hitForce);
     }
 
+    /**
+     * Gets the current charge power.
+     *
+     * @return The current charge power.
+     */
     public float getChargePower() {
         return chargePower;
     }
 
+    /**
+     * Called every frame to render the game screen.
+     *
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
         float deltaTime = Gdx.graphics.getDeltaTime();
@@ -225,6 +261,9 @@ public class GameControl implements Screen {
         ui.render();
     }
 
+    /**
+     * Updates the game state, including the ball movements and game rules checks.
+     */
     private void update() {
         ballMovement.update(); // moke a golfbal move
         golfAI.update(); // make aiball move
@@ -252,22 +291,40 @@ public class GameControl implements Screen {
         }
     }
 
+    /**
+     * Called when the screen is resized.
+     *
+     * @param width The new width of the screen.
+     * @param height The new height of the screen.
+     */
     @Override
     public void resize(int width, int height) {
     }
 
+    /**
+     * Called when the game is paused.
+     */
     @Override
     public void pause() {
     }
 
+    /**
+     * Called when the game is resumed after being paused.
+     */
     @Override
     public void resume() {
     }
 
+    /**
+     * Called when this screen is no longer the current screen for a {@link com.badlogic.gdx.Game}.
+     */
     @Override
     public void hide() {
     }
 
+    /**
+     * Restarts the game by resetting all relevant variables to their initial values.
+     */
     public void restartGame() {
         // Reset all relevant variables to their initial values
         chargePower = 0;
@@ -285,10 +342,16 @@ public class GameControl implements Screen {
 
     }
 
+    /**
+     * Navigates back to the main menu.
+     */
     public void backToMainMenu() {
         game.setScreen(new MainMenu(game));
     }
 
+    /**
+     * Disposes of resources used by this screen.
+     */
     @Override
     public void dispose() {
         modelBatch.dispose();

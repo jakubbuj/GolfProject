@@ -16,11 +16,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * The options screen of the Golf Game.
+ * Handles user interactions for entering the player's name, selecting the game type, and starting the game.
+ */
 public class OptionsScreen implements Screen {
 
     // Buttons and fields
     private TextField nameBox;
-    private SelectBox gameTypeBox;
+    private SelectBox<String> gameTypeBox;
     private TextButton playButton;
     private static final int BACK_BUTTON_WIDTH = 95;
     private static final int BACK_BUTTON_HEIGHT = 70;
@@ -29,7 +33,7 @@ public class OptionsScreen implements Screen {
     // Labels and images
     private Image errorIcon;
     private Label errorLabel;
-    private Label NameLabel;
+    private Label nameLabel;
     private Label gameTypeLabel;
 
     // Textures
@@ -46,6 +50,11 @@ public class OptionsScreen implements Screen {
     private Texture backgroundTexture = new Texture("assets/clouds.jpg");
     private Skin skin = new Skin(Gdx.files.internal("assets/skins/visui/assets/uiskin.json"));
 
+    /**
+     * Constructs a new OptionsScreen.
+     * 
+     * @param game the main game instance
+     */
     public OptionsScreen(GolfGame game) {
         this.game = game;
         stage = new Stage(new StretchViewport(GolfGame.WIDTH, GolfGame.HEIGHT));
@@ -55,27 +64,27 @@ public class OptionsScreen implements Screen {
         setUpNamebox();
         setUpSelectBox();
         handlePlayButton();
-
     }
 
-    // method for setting up a textfield for the player's name
+    /**
+     * Sets up a text field for the player's name.
+     */
     public void setUpNamebox() {
-
         nameBox = new TextField("name", skin);
         nameBox.setPosition(300, 500);
 
-        NameLabel = new Label("What is your name?", skin);
-        NameLabel.setPosition(300, 530);
-        NameLabel.setColor(Color.MAGENTA);
+        nameLabel = new Label("What is your name?", skin);
+        nameLabel.setPosition(300, 530);
+        nameLabel.setColor(Color.MAGENTA);
 
         stage.addActor(nameBox);
-        stage.addActor(NameLabel);
-
+        stage.addActor(nameLabel);
     }
 
-    // method for setting up the selection box with game mode options
+    /**
+     * Sets up the selection box with game mode options.
+     */
     public void setUpSelectBox() {
-
         gameTypeLabel = new Label("What mode do you want to play in?", skin);
         gameTypeLabel.setPosition(300, 360);
         gameTypeLabel.setColor(Color.MAGENTA);
@@ -89,15 +98,16 @@ public class OptionsScreen implements Screen {
         stage.addActor(gameTypeLabel);
     }
 
-    // method for handling the play button. Updates the variables "GT" (game type)
-    // and "name". Sets the screen to the GameControl class.
+    /**
+     * Handles the play button. Updates the variables "GT" (game type) and "name".
+     * Sets the screen to the GameControl class.
+     */
     public void handlePlayButton() {
         playButton = new TextButton("SUBMIT AND PLAY", skin);
         playButton.setPosition(500, 100);
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
                 // ERROR HANDLING
                 if (errorLabel != null) {
                     errorLabel.remove();
@@ -111,62 +121,73 @@ public class OptionsScreen implements Screen {
                 try {
                     name = nameBox.getText();
 
-                    if (name == null) {
-                        errorLabel = new Label("please enter your name", skin);
-                        errorIcon = new Image(new Texture("assets/Error.png"));
-                        errorLabel.setColor(Color.RED);
-                        errorLabel.setPosition(300, 400);
-                        errorIcon.setPosition(350, 400);
-                        errorIcon.setSize(20, 30);
-                        stage.addActor(errorIcon);
-                        stage.addActor(errorLabel);
+                    if (name == null || name.isEmpty()) {
+                        showError("please enter your name");
+                        return;
                     }
-                } catch (NumberFormatException e) {
-
+                } catch (Exception e) {
+                    showError("An error occurred while processing your name.");
+                    return;
                 }
 
                 try {
                     GT = gameTypeBox.getSelected();
 
-                } catch (NumberFormatException e) {
-                    errorLabel = new Label("please enter your name", skin);
-                    errorIcon = new Image(new Texture("assets/Error.png"));
-                    errorLabel.setColor(Color.RED);
-                    errorLabel.setPosition(300, 400);
-                    errorIcon.setPosition(350, 400);
-                    errorIcon.setSize(20, 30);
-                    stage.addActor(errorIcon);
-                    stage.addActor(errorLabel);
+                    if (GT == null) {
+                        showError("please select a game type");
+                        return;
+                    }
+                } catch (Exception e) {
+                    showError("An error occurred while processing the game type.");
+                    return;
                 }
 
                 MainMenu.clicksound.play();
                 game.setScreen(new GameControl(game));
-                // System.out.println(name);
-                // System.out.println(GT);
-
             }
         });
 
         stage.addActor(playButton);
     }
 
+    /**
+     * Shows an error message.
+     * 
+     * @param message the error message to display
+     */
+    private void showError(String message) {
+        errorLabel = new Label(message, skin);
+        errorIcon = new Image(new Texture("assets/Error.png"));
+        errorLabel.setColor(Color.RED);
+        errorLabel.setPosition(300, 400);
+        errorIcon.setPosition(350, 400);
+        errorIcon.setSize(20, 30);
+        stage.addActor(errorIcon);
+        stage.addActor(errorLabel);
+    }
+
+    /**
+     * Called when this screen becomes the current screen for a Game.
+     */
     @Override
     public void show() {
 
     }
 
+    /**
+     * Called when the screen should render itself.
+     * 
+     * @param delta The time in seconds since the last render.
+     */
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Draw the background texture
         game.batch.begin();
         game.batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Setting up the back button using textures. (The back button sets the screen
-        // to MainMenu class)
-
+        // Set up the back button using textures. (The back button sets the screen to MainMenu class)
         int x = 30;
         if (Gdx.input.getX() >= x && Gdx.input.getX() <= x + BACK_BUTTON_WIDTH
                 && GolfGame.HEIGHT - Gdx.input.getY() >= BACK_BUTTON_Y
@@ -185,33 +206,49 @@ public class OptionsScreen implements Screen {
         // Draw the stage
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
-
     }
 
+    /**
+     * Called when the screen is resized.
+     * 
+     * @param width  the new width
+     * @param height the new height
+     */
     @Override
     public void resize(int width, int height) {
 
     }
 
+    /**
+     * Called when the game is paused.
+     */
     @Override
     public void pause() {
 
     }
 
+    /**
+     * Called when the game is resumed from a paused state.
+     */
     @Override
     public void resume() {
 
     }
 
+    /**
+     * Called when this screen is no longer the current screen for a Game.
+     */
     @Override
     public void hide() {
 
     }
 
+    /**
+     * Releases all resources of this screen.
+     */
     @Override
     public void dispose() {
         stage.dispose();
         skin.dispose();
     }
-
 }

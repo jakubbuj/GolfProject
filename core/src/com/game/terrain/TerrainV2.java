@@ -17,6 +17,11 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * The {@code TerrainV2} class represents the terrain in the game, including
+ * grass, sand spots, water, and a border. It is responsible for generating and
+ * rendering the terrain.
+ */
 public class TerrainV2 {
     private Model terrainModel; // model class like schemat
     private ModelInstance terrainInstance; // instance
@@ -36,6 +41,14 @@ public class TerrainV2 {
     public final Material sandMaterial = new Material(ColorAttribute.createDiffuse(Color.YELLOW)); // Use yellow color
                                                                                                    // for sand
 
+    /**
+     * Constructs a {@code TerrainV2} object with the specified width, depth, and scale.
+     * Initializes the terrain and water, and creates a map border.
+     *
+     * @param width  the width of the terrain
+     * @param depth  the depth of the terrain
+     * @param scale  the scale of the terrain
+     */
     public TerrainV2(int width, int depth, float scale) {
         this.width = width;
         this.depth = depth;
@@ -49,19 +62,36 @@ public class TerrainV2 {
         mapBorder = new MapBorder(width, depth, scale);
     }
 
-    // Getter methods for terrain dimensions
+    /**
+     * Returns the width of the terrain.
+     *
+     * @return the width of the terrain
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Returns the depth of the terrain.
+     *
+     * @return the depth of the terrain
+     */
     public int getDepth() {
         return depth;
     }
 
+    /**
+     * Returns the scale of the terrain.
+     *
+     * @return the scale of the terrain
+     */
     public float getScale() {
         return scale;
     }
 
+    /**
+     * Creates and adds the terrain model.
+     */
     public void addTerrain() {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
@@ -79,6 +109,15 @@ public class TerrainV2 {
         terrainInstance = new ModelInstance(terrainModel);
     }
 
+    /**
+     * Generates the terrain by creating vertices and triangles for each tile.
+     *
+     * @param modelBuilder the {@code ModelBuilder} used to create the terrain
+     * @param halfWidth    half the width of the terrain
+     * @param halfDepth    half the depth of the terrain
+     * @param waterLevel   the height of the water level
+     * @param grassTiles   a 2D array to mark grass tiles
+     */
     private void generateTerrain(ModelBuilder modelBuilder, float halfWidth, float halfDepth, float waterLevel,
             boolean[][] grassTiles) {
         for (int y = 0; y < depth - 1; y++) {
@@ -95,6 +134,16 @@ public class TerrainV2 {
         }
     }
 
+    /**
+     * Determines the material for the terrain based on the height and water level.
+     *
+     * @param height     the height of the terrain at the current position
+     * @param waterLevel the height of the water level
+     * @param x          the x-coordinate of the current tile
+     * @param y          the y-coordinate of the current tile
+     * @param grassTiles a 2D array to mark grass tiles
+     * @return the material to be used for the current tile
+     */
     private Material determineMaterial(float height, float waterLevel, int x, int y, boolean[][] grassTiles) {
         Material material;
         float sandHeight = getSandHeight(x, y);
@@ -108,6 +157,18 @@ public class TerrainV2 {
         return material;
     }
 
+    /**
+     * Creates vertices and triangles for the current tile.
+     *
+     * @param modelBuilder the {@code ModelBuilder} used to create the terrain
+     * @param adjustedX    the adjusted x-coordinate of the current tile
+     * @param adjustedY    the adjusted y-coordinate of the current tile
+     * @param height       the height of the terrain at the current position
+     * @param material     the material to be used for the current tile
+     * @param x            the x-coordinate of the current tile
+     * @param y            the y-coordinate of the current tile
+     * @param grassTiles   a 2D array to mark grass tiles
+     */
     private void createVerticesAndTriangles(ModelBuilder modelBuilder, float adjustedX, float adjustedY, float height,
             Material material, int x, int y, boolean[][] grassTiles) {
         Vector3 bottomLeft = new Vector3(adjustedX, height, adjustedY);
@@ -122,7 +183,11 @@ public class TerrainV2 {
         mpb.triangle(topLeft, topRight, bottomRight);
     }
 
-    // Method to add water
+    /**
+     * Adds a water plane to the terrain with the specified transparency.
+     *
+     * @param alpha the alpha value for the water's transparency
+     */
     public void addWater(float alpha) {
         ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -143,16 +208,36 @@ public class TerrainV2 {
         waterInstance = new ModelInstance(waterModel);
     }
 
+    /**
+     * Returns the height of the sand at the specified coordinates.
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return the height of the sand at the specified coordinates
+     */
     public static float getSandHeight(float x, float y) {
         return (float) (Math.sin(x * 0.1f) + Math.cos(y * 0.1f));
     }
 
+    /**
+     * Returns the height of the terrain at the specified coordinates.
+     *
+     * @param x the x-coordinate
+     * @param y the y-coordinate
+     * @return the height of the terrain at the specified coordinates
+     */
     private float getHeight(float x, float y) {
         // Compute the expression sqrt((sin(x) + cos(y))^2)
         double result = GetHeight.getHeight(SettingsScreen.terrainFunction, x, y);
         return (float) result; // Convert double to float
     }
 
+    /**
+     * Renders the terrain, water, and sand using the given {@code ModelBatch} and {@code Environment}.
+     *
+     * @param modelBatch  the {@code ModelBatch} used for rendering
+     * @param environment the {@code Environment} providing lighting and other effects
+     */
     public void render(ModelBatch modelBatch, Environment environment) {
         // Render the terrain
         modelBatch.render(terrainInstance, environment);
@@ -173,6 +258,9 @@ public class TerrainV2 {
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
+    /**
+     * Disposes of the resources used by the terrain and water models.
+     */
     public void dispose() {
         terrainModel.dispose();
         if (waterModel != null) {

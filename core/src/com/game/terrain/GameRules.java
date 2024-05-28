@@ -3,6 +3,10 @@ package com.game.terrain;
 import com.badlogic.gdx.math.Vector3;
 import com.game.golfball.GolfBall;
 
+/**
+ * GameRules class handles the rules and logic of the game, including checking
+ * if the game is over, if the ball fell in water, or if it went out of bounds.
+ */
 public class GameRules {
     private Target target;
     private GolfBall ball;
@@ -14,6 +18,14 @@ public class GameRules {
     private boolean gameOver;
     public int shotCounter;
 
+    /**
+     * Constructor for GameRules.
+     * 
+     * @param target          the target object
+     * @param ball            the golf ball object
+     * @param functionTerrain the function describing the terrain
+     * @param terrain         the terrain object
+     */
     public GameRules(Target target, GolfBall ball, String functionTerrain, TerrainV2 terrain) {
         this.target = target;
         this.ball = ball;
@@ -27,12 +39,22 @@ public class GameRules {
         this.gameOver = false;
     }
 
+    /**
+     * Checks if the game is over by determining if the ball has reached the target.
+     * 
+     * @return true if the game is over, false otherwise
+     */
     public boolean isGameOver() {
         double distance = Math.sqrt(Math.pow((ball.getPosition().x - target.getX()), 2) +
                 Math.pow((ball.getPosition().z - target.getZ()), 2));
         return distance <= target.getRadius();
     }
 
+    /**
+     * Checks if the ball has fallen into water.
+     * 
+     * @return true if the ball fell in water, false otherwise
+     */
     public boolean fellInWater() {
         double positionx = ball.getPosition().x;
         double positiony = ball.getPosition().z;
@@ -40,31 +62,54 @@ public class GameRules {
         return height < 0;
     }
 
+    /**
+     * Checks if the ball is out of the defined game borders.
+     * 
+     * @return true if the ball is out of bounds, false otherwise
+     */
     public boolean outOfBorder() {
         float positionX = ball.getPosition().x;
         float positionZ = ball.getPosition().z;
         return (positionX < borderXMin || positionX > borderXMax || positionZ < borderZMin || positionZ > borderZMax);
     }
 
+    /**
+     * Stops the movement of the ball by setting its velocity to zero.
+     */
     private void stopBallMovement() {
         ball.setVelocity(new Vector3(0, 0, 0));
     }
 
+    /**
+     * Reverts the ball to its last valid position and stops its movement.
+     */
     private void revertBallPosition() {
         ball.setPosition(ball.getLastValidPosition());
         stopBallMovement();
     }
 
+    /**
+     * Increments the shot counter by one.
+     */
     public void incrementShotCounter() {
         shotCounter++;
     }
 
+    /**
+     * Gets the current shot counter.
+     * 
+     * @return the current shot counter
+     */
     public int getShotCounter() {
         return shotCounter;
     }
 
+    /**
+     * Checks the game status and determines if the game is over,
+     * if the ball fell into water, or if it went out of bounds.
+     */
     public void checkGameStatus() {
-        if(!gameOver){
+        if (!gameOver) {
             if (isGameOver()) {
                 gameOver = true;
                 System.out.println("Game Over! Ball has reached the target.");

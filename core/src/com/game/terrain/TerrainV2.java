@@ -36,9 +36,9 @@ public class TerrainV2 {
     private int depth = 100; 
     private float scale = 0.1f; 
 
-    public final Material grassMaterial = new Material(ColorAttribute.createDiffuse(Color.GREEN)); 
+    public final Material grassMaterial = new Material(ColorAttribute.createDiffuse(Color.valueOf("228B22")));
                                                                                                    
-    public final Material sandMaterial = new Material(ColorAttribute.createDiffuse(Color.YELLOW)); 
+    public final Material sandMaterial = new Material(ColorAttribute.createDiffuse(Color.valueOf("E1C16E")));
                                                                                                    
 
     /**

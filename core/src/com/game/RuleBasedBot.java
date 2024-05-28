@@ -76,7 +76,7 @@ public class RuleBasedBot {
         RBball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
 
         // Adjust the ball's vertical position based on the terrain height
-        RBball.getPosition().y = (float) (physicsEngine.terrainHeight + 0.2f); // Keeping the ball slightly above the terrain
+        RBball.getPosition().y = (float) (physicsEngine.terrainHeight); // Keeping the ball slightly above the terrain
 
     }
 

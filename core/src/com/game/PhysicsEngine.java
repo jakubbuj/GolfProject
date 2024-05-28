@@ -84,6 +84,12 @@ public class PhysicsEngine {
         while (true) {
             updateStateVectorEuler(false);
 
+            if (GetHeight.getHeight(heightFunction, stateVector[0], stateVector[1]) < 0){
+                stateVector[2] = 0;
+                stateVector[3] = 0;
+                break;
+            }
+
             // Check for small changes in position and velocity
             double positionChange = Math.sqrt(
                     Math.pow(stateVector[0] - previousState[0], 2) +

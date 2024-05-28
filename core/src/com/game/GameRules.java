@@ -34,7 +34,7 @@ public class GameRules {
 
     public boolean fellInWater() {
         double positionx = ball.getPosition().x;
-        double positiony = ball.getPosition().y;
+        double positiony = ball.getPosition().z;
         double height = GetHeight.getHeight(functionTerrain, positionx, positiony);
         return height < 0;
     }

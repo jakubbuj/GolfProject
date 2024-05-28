@@ -140,6 +140,6 @@ public class GolfAI {
 
         AIball.setPosition(new Vector3((float) newState[0], AIball.getPosition().y, (float) newState[1]));
         AIball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
-        AIball.getPosition().y = (float) (physicsEngine.terrainHeight + 0.2f);
+        AIball.getPosition().y = (float) (physicsEngine.terrainHeight);
     }
 }

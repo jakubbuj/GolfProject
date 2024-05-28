@@ -1,20 +1,42 @@
-How to use the app:
+1. Main Menu Screen:
 
-1st window:
-Specify number of dimensions of the system you want to solve (from 1 to 10)
+Before pressing "Play", press the "Settings" button at the bottom of the screen.
 
-2nd window:
-Choose one out of two solvers: Euler's solver (first order), Runge Kutta (fourth order)
+2. Settings Screen:
 
-3rd window: 
-Type in start time, end time, size step (when we type for example 0.1 we use a "." operator not ","),
-next derivatives (variables in alphabetical order from a) and dividing each symbol with space (except negative values). For example: 2 * a - 5 * -7 b, or sqrt ( a ^ 2 ) - b * 10 and initial values. Then submit, generate and you will see the results in terminal. If you want to see the scatter plot press "Show Evolution" button. In the left upper corner you can choose separate variable you want to see on the plot.
+In the provided text fields, input the following variables (use a "." for decimal points, not ","):
 
-Correspondences for inputting functions and constants
-constant e - E
-time - time 
-square root - sqrt
-sin - sin
-cos - cos
-log base e - ln
-log base 10 - log
+ Initial Coordinates: Enter the initial X and Y coordinates of the golf ball.
+ Friction Values:
+    - Kinetic and tatic friction of the sand.
+    - Kinetic and static friction of the grass.
+ Target Details:
+    - Enter the X and Y coordinates of the target.
+    - Enter the radius of the target.
+ Terrain Function:
+    - Enter the function of the terrain. Ensure variables are in alphabetical order (first x, then y), and separate each symbol with a space (except negative values).
+    - Example: sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y )
+Optionally, you can use the "Default" button to set all variables to their default values.
+
+After entering all values, click the "Submit" button. You will return to the Main Menu screen.
+
+3. Options Screen:
+
+Enter your name.
+Select the preferred game mode.
+Press the "Submit and Play" button.
+
+4. Game Control Screen:
+
+To apply force to the white golf ball, press, hold, and release the space bar.
+Press "Rule Based Bot Game" for the bot to take a shot.
+Press "AI Shot" for the bot to take a hole-in-one shot.
+
+Correspondences for Inputting Functions and Constants:
+Constant e: E
+Time: time
+Square root: sqrt
+Sine: sin
+Cosine: cos
+Natural log (base e): ln
+Logarithm (base 10): log

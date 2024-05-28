@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * The {@code MapBorder} class is responsible for creating and managing a border
+ * The MapBorder class is responsible for creating and managing a border
  * around the game map. The border is rendered as a transparent rectangle
  * surrounding the map.
  */
@@ -23,7 +23,7 @@ public class MapBorder {
     private float scale;
 
     /**
-     * Constructs a {@code MapBorder} with the specified dimensions and scale.
+     * Constructs a  MapBorder with the specified dimensions and scale
      *
      * @param width  the width of the game map
      * @param depth  the depth of the game map
@@ -45,7 +45,7 @@ public class MapBorder {
         ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
 
-        Material material = new Material(ColorAttribute.createDiffuse(new Color(0, 0, 0, 0))); // Transparent border
+        Material material = new Material(ColorAttribute.createDiffuse(new Color(0, 0, 0, 0))); 
 
         MeshPartBuilder mpb = modelBuilder.part("border", GL20.GL_TRIANGLES,
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal, material);
@@ -53,7 +53,7 @@ public class MapBorder {
         // Define border vertices
         float halfWidth = width * scale * 0.5f;
         float halfDepth = depth * scale * 0.5f;
-        float borderWidth = 0.7f; // Adjust border width as needed
+        float borderWidth = 0.7f; 
 
         Vector3 topLeft = new Vector3(-halfWidth - borderWidth, 0, halfDepth + borderWidth);
         Vector3 topRight = new Vector3(halfWidth + borderWidth, 0, halfDepth + borderWidth);
@@ -71,16 +71,16 @@ public class MapBorder {
     }
 
     /**
-     * Returns the {@code ModelInstance} of the border, which can be used for rendering.
+     * Returns the ModelInstance of the border, which can be used for rendering.
      *
-     * @return the {@code ModelInstance} of the border
+     * @return the  ModelInstance of the border
      */
     public ModelInstance getBorderInstance() {
         return borderInstance;
     }
 
     /**
-     * Disposes of the resources used by the border model.
+     * Disposes of the resources used by the border model
      */
     public void dispose() {
         borderModel.dispose();

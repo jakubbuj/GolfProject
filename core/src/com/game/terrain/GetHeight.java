@@ -80,10 +80,10 @@ public class GetHeight {
     }
 
     /**
-     * Determines the priority of an operator.
+     * Determines the priority of an operator
      *
-     * @param operator The operator.
-     * @return The priority value.
+     * @param operator The operator
+     * @return The priority value
      */
     private static int priority(String operator) {
         switch (operator) {
@@ -122,10 +122,10 @@ public class GetHeight {
     }
 
     /**
-     * Evaluates a mathematical expression in RPN format.
+     * Evaluates a mathematical expression in RPN format ( retuens solved expression in double )
      *
-     * @param rpn The expression in RPN format.
-     * @return The result of the evaluation.
+     * @param rpn The expression in RPN format
+     * @return The result of the evaluation
      */
     public static double rpnToDouble(List<String> rpn) {
         Stack<Double> stack = new Stack<>();

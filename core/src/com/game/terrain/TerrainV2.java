@@ -18,32 +18,32 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
 /**
- * The {@code TerrainV2} class represents the terrain in the game, including
+ * The TerrainV2 class represents the terrain in the game, including
  * grass, sand spots, water, and a border. It is responsible for generating and
  * rendering the terrain.
  */
 public class TerrainV2 {
-    private Model terrainModel; // model class like schemat
-    private ModelInstance terrainInstance; // instance
+    private Model terrainModel; 
+    private ModelInstance terrainInstance; 
     private Model waterModel;
     private ModelInstance waterInstance;
-    private Model sandModel; // Model for sand spots
-    private ModelInstance sandInstance; // Instance for rendering sand spots
+    private Model sandModel; 
+    private ModelInstance sandInstance; 
     private MapBorder mapBorder;
 
     // Define size of the terrain
-    private int width = 100; // Number of vertices along the x-axis
-    private int depth = 100; // Number of vertices along the y-axis
-    private float scale = 0.1f; // Scale of the terrain
+    private int width = 100; 
+    private int depth = 100; 
+    private float scale = 0.1f; 
 
-    public final Material grassMaterial = new Material(ColorAttribute.createDiffuse(Color.GREEN)); // Use green color
-                                                                                                   // for grass
-    public final Material sandMaterial = new Material(ColorAttribute.createDiffuse(Color.YELLOW)); // Use yellow color
-                                                                                                   // for sand
+    public final Material grassMaterial = new Material(ColorAttribute.createDiffuse(Color.GREEN)); 
+                                                                                                   
+    public final Material sandMaterial = new Material(ColorAttribute.createDiffuse(Color.YELLOW)); 
+                                                                                                   
 
     /**
-     * Constructs a {@code TerrainV2} object with the specified width, depth, and scale.
-     * Initializes the terrain and water, and creates a map border.
+     * Constructs a TerrainV2 object with the specified width, depth, and scale
+     * Initializes the terrain and water, and creates a map border
      *
      * @param width  the width of the terrain
      * @param depth  the depth of the terrain
@@ -57,13 +57,13 @@ public class TerrainV2 {
         addTerrain();
 
         // Add the water plane after the terrain has been created.
-        addWater(0.8f); // You can adjust the alpha for transparency
+        addWater(0.8f); // adjust the alpha for transparency ( working badly when u have applied texture to water)
 
         mapBorder = new MapBorder(width, depth, scale);
     }
 
     /**
-     * Returns the width of the terrain.
+     * Returns the width of the terrain
      *
      * @return the width of the terrain
      */
@@ -72,25 +72,25 @@ public class TerrainV2 {
     }
 
     /**
-     * Returns the depth of the terrain.
+     * Returns the depth of the terrain
      *
-     * @return the depth of the terrain
+     * @return the depth of the terrai
      */
     public int getDepth() {
         return depth;
     }
 
     /**
-     * Returns the scale of the terrain.
+     * Returns the scale of the terrain
      *
-     * @return the scale of the terrain
+     * @return the scale of the terrai
      */
     public float getScale() {
         return scale;
     }
 
     /**
-     * Creates and adds the terrain model.
+     * Creates and adds the terrain model
      */
     public void addTerrain() {
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -112,11 +112,11 @@ public class TerrainV2 {
     /**
      * Generates the terrain by creating vertices and triangles for each tile.
      *
-     * @param modelBuilder the {@code ModelBuilder} used to create the terrain
-     * @param halfWidth    half the width of the terrain
-     * @param halfDepth    half the depth of the terrain
+     * @param modelBuilder the  ModelBuilder used to create the terrain
+     * @param halfWidth       half the width of the terrain
+     * @param halfDepth   half the depth of the terrain
      * @param waterLevel   the height of the water level
-     * @param grassTiles   a 2D array to mark grass tiles
+     * @param grassTiles    a 2D array to mark grass tiles
      */
     private void generateTerrain(ModelBuilder modelBuilder, float halfWidth, float halfDepth, float waterLevel,
             boolean[][] grassTiles) {
@@ -135,12 +135,12 @@ public class TerrainV2 {
     }
 
     /**
-     * Determines the material for the terrain based on the height and water level.
+     * Determines the material for the terrain based on the height and water level
      *
      * @param height     the height of the terrain at the current position
      * @param waterLevel the height of the water level
-     * @param x          the x-coordinate of the current tile
-     * @param y          the y-coordinate of the current tile
+     * @param x         the x-coordinate of the current tile
+     * @param y        the y-coordinate of the current tile
      * @param grassTiles a 2D array to mark grass tiles
      * @return the material to be used for the current tile
      */
@@ -158,9 +158,9 @@ public class TerrainV2 {
     }
 
     /**
-     * Creates vertices and triangles for the current tile.
+     * Creates vertices and triangles for the current tile
      *
-     * @param modelBuilder the {@code ModelBuilder} used to create the terrain
+     * @param modelBuilder the ModelBuilder used to create the terrain
      * @param adjustedX    the adjusted x-coordinate of the current tile
      * @param adjustedY    the adjusted y-coordinate of the current tile
      * @param height       the height of the terrain at the current position
@@ -184,9 +184,9 @@ public class TerrainV2 {
     }
 
     /**
-     * Adds a water plane to the terrain with the specified transparency.
+     * Adds a water plane to the terrain with the specified transparency
      *
-     * @param alpha the alpha value for the water's transparency
+     * @param alpha the alpha value for the water transparency
      */
     public void addWater(float alpha) {
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -209,7 +209,7 @@ public class TerrainV2 {
     }
 
     /**
-     * Returns the height of the sand at the specified coordinates.
+     * Returns the height of the sand at the specified coordinates
      *
      * @param x the x-coordinate
      * @param y the y-coordinate
@@ -220,7 +220,7 @@ public class TerrainV2 {
     }
 
     /**
-     * Returns the height of the terrain at the specified coordinates.
+     * Returns the height of the terrain at the specified coordinates
      *
      * @param x the x-coordinate
      * @param y the y-coordinate
@@ -233,10 +233,10 @@ public class TerrainV2 {
     }
 
     /**
-     * Renders the terrain, water, and sand using the given {@code ModelBatch} and {@code Environment}.
+     * Renders the terrain, water, and sand using the given  ModelBatch and  Environment.
      *
-     * @param modelBatch  the {@code ModelBatch} used for rendering
-     * @param environment the {@code Environment} providing lighting and other effects
+     * @param modelBatch  the  ModelBatch used for rendering
+     * @param environment the  Environment providing lighting and other effects
      */
     public void render(ModelBatch modelBatch, Environment environment) {
         // Render the terrain
@@ -259,12 +259,12 @@ public class TerrainV2 {
     }
 
     /**
-     * Disposes of the resources used by the terrain and water models.
+     * Disposes of the resources used by the terrain and water models
      */
     public void dispose() {
         terrainModel.dispose();
         if (waterModel != null) {
-            waterModel.dispose(); // Dispose of the waterModel resources
+            waterModel.dispose(); 
         }
     }
 }

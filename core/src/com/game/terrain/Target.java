@@ -16,8 +16,8 @@ import com.game.main.SettingsScreen;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
 /**
- * The {@code Target} class represents a target in the game terrain. It consists
- * of a sphere at ground level and a flag model positioned on top of the sphere.
+ * The  Target} class represents a target in the game terrain it consists
+ * of a sphere at ground level and a flag model positioned on top of the sphere
  */
 public class Target {
     private Vector3 position;
@@ -27,8 +27,8 @@ public class Target {
     public String functionT = SettingsScreen.terrainFunction;
 
     /**
-     * Constructs a {@code Target} at the specified coordinates with the given radius.
-     * The target's height is adjusted based on the terrain function.
+     * Constructs a  Target at the specified coordinates with the given radius
+     * The target's height is adjusted based on the terrain function
      *
      * @param x      the x-coordinate of the target
      * @param z      the z-coordinate of the target
@@ -53,7 +53,7 @@ public class Target {
     }
 
     /**
-     * Creates the sphere model representing the base of the target.
+     * Creates the sphere model representing the base of the target
      */
     private void createSphere() {
         ModelBuilder modelBuilder = new ModelBuilder();
@@ -64,7 +64,7 @@ public class Target {
     }
 
     /**
-     * Creates the flag model positioned on top of the sphere.
+     * Creates the flag model positioned on top of the sphere
      */
     private void createFlag() {
         ObjLoader loader = new ObjLoader();
@@ -76,10 +76,10 @@ public class Target {
     }
 
     /**
-     * Renders the target models using the given {@code ModelBatch} and {@code Environment}.
+     * Renders the target models using the given ModelBatch and  Environment
      *
-     * @param modelBatch the {@code ModelBatch} used for rendering
-     * @param environment the {@code Environment} providing lighting and other effects
+     * @param modelBatch the  ModelBatch used for rendering
+     * @param environment the  Environment providing lighting and other effects
      */
     public void render(ModelBatch modelBatch, Environment environment) {
         modelBatch.render(sphereModel, environment);
@@ -87,7 +87,7 @@ public class Target {
     }
 
     /**
-     * Returns the radius of the target.
+     * Returns the radius of the target
      *
      * @return the radius of the target
      */
@@ -96,7 +96,7 @@ public class Target {
     }
 
     /**
-     * Returns the x-coordinate of the target.
+     * Returns the x-coordinate of the target
      *
      * @return the x-coordinate of the target
      */
@@ -105,7 +105,7 @@ public class Target {
     }
 
     /**
-     * Returns the z-coordinate of the target.
+     * Returns the z-coordinate of the target
      *
      * @return the z-coordinate of the target
      */

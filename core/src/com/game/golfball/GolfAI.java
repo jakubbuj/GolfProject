@@ -25,12 +25,12 @@ public class GolfAI {
     private GameRules gameRules; // Game rules
 
     /**
-     * Constructs a GolfAI object with the specified parameters.
+     * Constructs a GolfAI object with the specified parameters
      *
-     * @param AIball          The golf ball controlled by the AI.
-     * @param targetPosition The target position for the golf ball.
-     * @param physicsEngine  The physics engine used for simulations.
-     * @param gameRules      The game rules defining constraints and objectives.
+     * @param AIball         The golf ball controlled by the AI
+     * @param targetPosition The target position for the golf ball
+     * @param physicsEngine  The physics engine used for simulations
+     * @param gameRules      The game rules defining constraints and objectives
      */
     public GolfAI(GolfBall AIball, Vector3 targetPosition, PhysicsEngine physicsEngine, GameRules gameRules) {
         this.AIball = AIball;
@@ -48,10 +48,11 @@ public class GolfAI {
     }
 
     /**
-     * Calculates the best shot for the golf ball to reach the target position.
+     * Calculates the best shot ( figure out perfect velocity ) for the golf ball to reach the target position
      *
-     * @return The velocity vector representing the best shot.
+     * @return The velocity vector representing the best shot
      */
+
     public Vector3 findBestShot() {
         Vector3 currentVelocity = new Vector3(2f, 0f, -6f);
 
@@ -67,24 +68,20 @@ public class GolfAI {
             }
 
             Vector3 gradient = approximateGradient(currentVelocity,deviation);
-            //System.out.println("Gradient: " + gradient);
 
-            // Update time step
             t++;
 
-            // Update biased first moment estimate
             m.x = (float) (BETA1 * m.x + (1 - BETA1) * gradient.x);
             m.z = (float) (BETA1 * m.z + (1 - BETA1) * gradient.z);
 
-            // Update biased second moment estimate
             v.x = (float) (BETA2 * v.x + (1 - BETA2) * gradient.x * gradient.x);
             v.z = (float) (BETA2 * v.z + (1 - BETA2) * gradient.z * gradient.z);
 
-            // Compute bias-corrected first moment estimate
+
             float mHatX = (float) (m.x / (1 - Math.pow(BETA1, t)));
             float mHatZ = (float) (m.z / (1 - Math.pow(BETA1, t)));
 
-            // Compute bias-corrected second moment estimate
+
             float vHatX = (float) (v.x / (1 - Math.pow(BETA2, t)));
             float vHatZ = (float) (v.z / (1 - Math.pow(BETA2, t)));
 
@@ -92,11 +89,11 @@ public class GolfAI {
             currentVelocity.x -= learningRate * mHatX / (Math.sqrt(vHatX) + EPSILON_ADAM);
             currentVelocity.z -= learningRate * mHatZ / (Math.sqrt(vHatZ) + EPSILON_ADAM);
 
-            // Gradient and velocity clipping to prevent overshooting
+            //gradient and velocity clipping to prevent overshooting
             gradientClip(gradient);
             clipVelocity(currentVelocity);
 
-            // Update learning rate and epsilon for gradient approximation
+            //Update learning rate and epsilon for gradient approximation
             learningRate = Math.max(MIN_LEARNING_RATE, learningRate * 0.98);
             epsilonGrad = Math.max(MIN_EPSILON_GRAD, epsilonGrad * 0.99);
         }
@@ -105,10 +102,10 @@ public class GolfAI {
     }
 
     /**
-     * Calculates the function representing the deviation between the current shot
+     * Calculates   function representing the deviation between the current shot
      * and the target position.
      *
-     * @param velocity The velocity vector representing the current shot.
+     * @param velocity The velocity vector representing the current shot
      * @return The deviation vector between the current shot and the target position.
      */
     private Vector3 calculateFunction(Vector3 velocity) {
@@ -119,11 +116,11 @@ public class GolfAI {
     }
 
     /**
-     * Approximates the gradient of the deviation function with respect to the velocity.
+     * Approximates the gradient of the deviation function with respect to the velocity ( we do it this way to and not by caclulating derivative of distance function cuz we need to take terrain somehow into account)
      *
-     * @param velocity         The velocity vector representing the current shot.
-     * @param originalDeviation The original deviation between the current shot and the target position.
-     * @return The gradient vector approximating the rate of change of deviation with respect to velocity.
+     * @param velocity         The velocity vector representing the current shot
+     * @param originalDeviation The original deviation between the current shot and the target position
+     * @return The gradient vector approximating the rate of change of deviation with respect to velocity
      */
     private Vector3 approximateGradient(Vector3 velocity, Vector3 originalDeviation) {
         Vector3 gradient = new Vector3();
@@ -144,9 +141,9 @@ public class GolfAI {
     }
 
     /**
-     * Clips the gradient vector to prevent overshooting during optimization.
+     * Clips the gradient vector to prevent overshooting during optimization
      *
-     * @param gradient The gradient vector to be clipped.
+     * @param gradient  gradient vector to be clipped
      */
     private void gradientClip(Vector3 gradient) {
         // Clipping the gradient to ensure it doesn't overshoot
@@ -157,20 +154,20 @@ public class GolfAI {
     }
 
     /**
-     * Clips the velocity vector to prevent overshooting during optimization.
+     * Clips the velocity vector to prevent overshooting during optimization
      *
-     * @param velocity The velocity vector to be clipped.
+     * @param velocity The velocity vector to be clipped
      */
     private void clipVelocity(Vector3 velocity) {
-        // Clipping the velocity to ensure it doesn't overshoot
-        double maxVelocity = 70.0; // Example value, adjust as needed
+
+        double maxVelocity = 70.0; 
         if (velocity.len() > maxVelocity) {
             velocity.scl((float) (maxVelocity / velocity.len()));
         }
     }
 
     /**
-     * Updates the position and velocity of the golf ball according to the calculated shot.
+     * Updates the position and velocity of the golf ball according to the calculated shot (this is the shot we see on screan so it moves the  ball)
      */
     public void update() {
         Vector3 currentPosition = AIball.getPosition();

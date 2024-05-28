@@ -5,10 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-/**
- * The main class for the Golf Game, extending the libGDX Game class.
- * Manages the game's main resources, including the sprite batch and background music.
- */
 public class GolfGame extends Game {
 
     public static final int WIDTH = 720;
@@ -19,7 +15,7 @@ public class GolfGame extends Game {
 
     /**
      * Called when the game is first created.
-     * Initializes the sprite batch, sets the initial screen to the main menu,
+     * Initializes the sprite batch, sets the initial screen to the main menu
      * and starts playing the background music.
      */
     @Override
@@ -32,8 +28,8 @@ public class GolfGame extends Game {
     }
 
     /**
-     * Called every frame to render the game.
-     * Delegates the rendering to the active screen.
+     * Called every frame to render the game
+     * Delegates the rendering to the active screen
      */
     @Override
     public void render() {
@@ -41,14 +37,14 @@ public class GolfGame extends Game {
     }
 
     /**
-     * Plays the background music.
+     * Plays the background music
      */
     public void playmusic() {
         music.play();
     }
 
     /**
-     * Stops the background music.
+     * Stops the background music
      */
     public void stopMusic() {
         music.stop();

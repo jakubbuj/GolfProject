@@ -16,10 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
-/**
- * The options screen of the Golf Game.
- * Handles user interactions for entering the player's name, selecting the game type, and starting the game.
- */
+
 public class OptionsScreen implements Screen {
 
     // Buttons and fields
@@ -51,7 +48,7 @@ public class OptionsScreen implements Screen {
     private Skin skin = new Skin(Gdx.files.internal("assets/skins/visui/assets/uiskin.json"));
 
     /**
-     * Constructs a new OptionsScreen.
+     * Constructs a new OptionsScreen
      * 
      * @param game the main game instance
      */
@@ -67,7 +64,7 @@ public class OptionsScreen implements Screen {
     }
 
     /**
-     * Sets up a text field for the player's name.
+     * Sets up a text field for the player's name
      */
     public void setUpNamebox() {
         nameBox = new TextField("name", skin);
@@ -82,7 +79,7 @@ public class OptionsScreen implements Screen {
     }
 
     /**
-     * Sets up the selection box with game mode options.
+     * Sets up the selection box with game mode options
      */
     public void setUpSelectBox() {
         gameTypeLabel = new Label("What mode do you want to play in?", skin);
@@ -99,7 +96,7 @@ public class OptionsScreen implements Screen {
     }
 
     /**
-     * Handles the play button. Updates the variables "GT" (game type) and "name".
+     * Handles the play button. Updates the variables "GT" (game type) and "name"
      * Sets the screen to the GameControl class.
      */
     public void handlePlayButton() {

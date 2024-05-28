@@ -89,8 +89,8 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Called when this screen becomes the current screen for a {@link com.badlogic.gdx.Game}.
-     * Initializes the UI, environment, terrain, sounds, background, camera, lights, and input processing.
+     * Called when this screen becomes the current screen
+     * Initializes the UI, environment, terrain, sounds, background, camera, lights, and input processing
      */
     @Override
     public void show() {
@@ -111,16 +111,18 @@ public class GameControl implements Screen {
 
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
-
+        //create balls
         ball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("2e3d49"));
         AIball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("007d8d"));
         RBball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("880808"));
 
+        //target and rules
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain, terrain);
         gameRulesRB = new GameRules(target, RBball, functionTerrain, terrain);
         gameRulesAI = new GameRules(target, AIball, functionTerrain, terrain);
 
+        //movement of balls
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
         golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB);
@@ -133,7 +135,7 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Sets up the camera for the game.
+     * Sets up the camera for the game
      */
     private void setupCamera() {
         camera = new PerspectiveCamera(75, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -147,7 +149,7 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Sets up the lighting for the game environment.
+     * Sets up the lighting for the game environment
      */
     private void setupLights() {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 5.0f));
@@ -157,7 +159,7 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Sets up the input processing for the game, including handling camera controls and charging shots.
+     * Sets up the input processing for the game, including handling camera controls and charging bar
      */
     private void setupInput() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -189,7 +191,7 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Triggers a shot by the AI, setting its velocity and updating its state.
+     * Triggers a shot by the AI bot
      */
     public void triggerAIShot() {
         Vector3 aiShot = golfAI.findBestShot();
@@ -198,7 +200,7 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Triggers the rule-based bot to play a shot, calculating the new velocity and updating its state.
+     * Triggers the rule-based bot to play a shot, calculating the new velocity and updating its state
      */
     public void triggerRuleBasedBotPlay() {
         Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
@@ -207,7 +209,7 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Applies a force to the ball based on the current charge power.
+     * Applies a force to the ball based on the current charge power
      */
     private void applyForceBasedOnCharge() {
         Vector3 direction = new Vector3(camera.direction).nor();
@@ -216,18 +218,18 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Gets the current charge power.
+     * Gets the current charge power
      *
-     * @return The current charge power.
+     * @return The current charge power
      */
     public float getChargePower() {
         return chargePower;
     }
 
     /**
-     * Called every frame to render the game screen.
+     * Called every frame to render the game screen
      *
-     * @param delta The time in seconds since the last render.
+     * @param delta The time in seconds since the last render
      */
     @Override
     public void render(float delta) {
@@ -257,12 +259,13 @@ public class GameControl implements Screen {
         target.render(modelBatch, environment);
         modelBatch.end();
 
+        //ui
         ui.setChargePower(chargePower);
         ui.render();
     }
 
     /**
-     * Updates the game state, including the ball movements and game rules checks.
+     * Updates the game state, including the ball movements and game rules checks
      */
     private void update() {
         ballMovement.update(); // moke a golfbal move
@@ -292,38 +295,38 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Called when the screen is resized.
+     * Called when the screen is resized
      *
-     * @param width The new width of the screen.
-     * @param height The new height of the screen.
+     * @param width The new width of the screen
+     * @param height The new height of the screen
      */
     @Override
     public void resize(int width, int height) {
     }
 
     /**
-     * Called when the game is paused.
+     * Called when the game is paused
      */
     @Override
     public void pause() {
     }
 
     /**
-     * Called when the game is resumed after being paused.
+     * Called when the game is resumed after being paused
      */
     @Override
     public void resume() {
     }
 
     /**
-     * Called when this screen is no longer the current screen for a {@link com.badlogic.gdx.Game}.
+     * Called when this screen is no longer the current screen 
      */
     @Override
     public void hide() {
     }
 
     /**
-     * Restarts the game by resetting all relevant variables to their initial values.
+     * Restarts the game by resetting all relevant variables to their initial values
      */
     public void restartGame() {
         // Reset all relevant variables to their initial values
@@ -343,14 +346,14 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Navigates back to the main menu.
+     * Navigates back to the main menu
      */
     public void backToMainMenu() {
         game.setScreen(new MainMenu(game));
     }
 
     /**
-     * Disposes of resources used by this screen.
+     * Disposes of resources used by this screen
      */
     @Override
     public void dispose() {

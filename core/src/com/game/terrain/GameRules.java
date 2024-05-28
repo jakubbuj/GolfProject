@@ -40,7 +40,7 @@ public class GameRules {
     }
 
     /**
-     * Checks if the game is over by determining if the ball has reached the target.
+     * Checks if the game is over by determining if the ball has reached the target
      * 
      * @return true if the game is over, false otherwise
      */
@@ -51,7 +51,7 @@ public class GameRules {
     }
 
     /**
-     * Checks if the ball has fallen into water.
+     * Checks if the ball has fallen into water
      * 
      * @return true if the ball fell in water, false otherwise
      */
@@ -63,7 +63,7 @@ public class GameRules {
     }
 
     /**
-     * Checks if the ball is out of the defined game borders.
+     * Checks if the ball is out of the defined game borders
      * 
      * @return true if the ball is out of bounds, false otherwise
      */
@@ -81,7 +81,7 @@ public class GameRules {
     }
 
     /**
-     * Reverts the ball to its last valid position and stops its movement.
+     * Reverts the ball to its last valid position and stops its movement
      */
     private void revertBallPosition() {
         ball.setPosition(ball.getLastValidPosition());
@@ -89,14 +89,14 @@ public class GameRules {
     }
 
     /**
-     * Increments the shot counter by one.
+     * Increments the shot counter by one
      */
     public void incrementShotCounter() {
         shotCounter++;
     }
 
     /**
-     * Gets the current shot counter.
+     * Gets the current shot counter
      * 
      * @return the current shot counter
      */
@@ -105,8 +105,8 @@ public class GameRules {
     }
 
     /**
-     * Checks the game status and determines if the game is over,
-     * if the ball fell into water, or if it went out of bounds.
+     * Checks the game status and determines if the game is over
+     * if the ball fell into water, or if it went out of bounds
      */
     public void checkGameStatus() {
         if (!gameOver) {

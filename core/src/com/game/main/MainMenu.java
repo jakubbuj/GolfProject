@@ -11,10 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
-/**
- * The main menu screen of the Golf Game.
- * Handles user interactions for starting the game, exiting, accessing settings, and toggling music.
- */
+
 public class MainMenu implements Screen {
 
     // buttons
@@ -75,7 +72,7 @@ public class MainMenu implements Screen {
     }
 
     /**
-     * Called when this screen becomes the current screen for a Game.
+     * Called when this screen becomes the current screen for a Game
      */
     @Override
     public void show() {
@@ -83,9 +80,9 @@ public class MainMenu implements Screen {
     }
 
     /**
-     * Called when the screen should render itself.
+     * Called when the screen should render itself
      * 
-     * @param delta The time in seconds since the last render.
+     * @param delta The time in seconds since the last render
      */
     @Override
     public void render(float delta) {

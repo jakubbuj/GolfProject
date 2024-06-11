@@ -80,10 +80,10 @@ public class GetHeight {
     }
 
     /**
-     * Determines the priority of an operator
+     * Determines the priority of an operator.
      *
-     * @param operator The operator
-     * @return The priority value
+     * @param operator The operator.
+     * @return The priority value.
      */
     private static int priority(String operator) {
         switch (operator) {
@@ -92,6 +92,7 @@ public class GetHeight {
             case "ln":
             case "sin":
             case "cos":
+            case "abs":  // Add abs function here
                 return 4;
             case "^":
                 return 3;
@@ -122,10 +123,10 @@ public class GetHeight {
     }
 
     /**
-     * Evaluates a mathematical expression in RPN format ( retuens solved expression in double )
+     * Evaluates a mathematical expression in RPN format.
      *
-     * @param rpn The expression in RPN format
-     * @return The result of the evaluation
+     * @param rpn The expression in RPN format.
+     * @return The result of the evaluation.
      */
     public static double rpnToDouble(List<String> rpn) {
         Stack<Double> stack = new Stack<>();
@@ -144,7 +145,7 @@ public class GetHeight {
                     break;
                 case "ln":
                     if (stack.isEmpty())
-                        throw new IllegalArgumentException("Insufficient operands for log");
+                        throw new IllegalArgumentException("Insufficient operands for ln");
                     double value = stack.pop();
                     if (value <= 0)
                         throw new IllegalArgumentException("Logarithm of non-positive number");
@@ -159,34 +160,39 @@ public class GetHeight {
                     stack.push(Math.log10(v));
                     break;
                 case "sqrt":
-                    if (rpn.size() < 2)
+                    if (stack.isEmpty())
                         throw new IllegalArgumentException("Insufficient operands for sqrt");
                     stack.push(Math.sqrt(stack.pop()));
                     break;
+                case "abs": 
+                    if (stack.isEmpty())
+                        throw new IllegalArgumentException("Insufficient operands for abs");
+                    stack.push(Math.abs(stack.pop()));
+                    break;
                 case "^":
-                    if (rpn.size() < 2)
+                    if (stack.size() < 2)
                         throw new IllegalArgumentException("Insufficient operands for ^");
                     double expo = stack.pop();
                     stack.push(Math.pow(stack.pop(), expo));
                     break;
                 case "*":
-                    if (rpn.size() < 2)
+                    if (stack.size() < 2)
                         throw new IllegalArgumentException("Insufficient operands for *");
                     stack.push(stack.pop() * stack.pop());
                     break;
                 case "/":
-                    if (rpn.size() < 2)
+                    if (stack.size() < 2)
                         throw new IllegalArgumentException("Insufficient operands for /");
-                    double devider = stack.pop();
-                    stack.push((double) stack.pop() / (double) devider);
+                    double divisor = stack.pop();
+                    stack.push(stack.pop() / divisor);
                     break;
                 case "+":
-                    if (rpn.size() < 2)
+                    if (stack.size() < 2)
                         throw new IllegalArgumentException("Insufficient operands for +");
                     stack.push(stack.pop() + stack.pop());
                     break;
                 case "-":
-                    if (rpn.size() < 2)
+                    if (stack.size() < 2)
                         throw new IllegalArgumentException("Insufficient operands for -");
                     double a = stack.pop();
                     double b = stack.pop();
@@ -202,5 +208,4 @@ public class GetHeight {
         }
         return stack.pop();
     }
-
 }

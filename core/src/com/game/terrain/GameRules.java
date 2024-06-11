@@ -84,8 +84,8 @@ public class GameRules {
      * Reverts the ball to its last valid position and stops its movement
      */
     private void revertBallPosition() {
-        ball.setPosition(ball.getLastValidPosition());
         stopBallMovement();
+        ball.setPosition(ball.getLastValidPosition());
     }
 
     /**

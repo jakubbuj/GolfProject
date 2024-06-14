@@ -3,7 +3,8 @@ package com.game.golfball;
 
 import com.badlogic.gdx.math.Vector3;
 import com.game.terrain.GetHeight;
-import com.game.terrain.TerrainV2;
+import com.game.terrain.SandHeightCalculator;
+
 
 public class PhysicsEngine {
 
@@ -22,6 +23,7 @@ public class PhysicsEngine {
     final double h = 0.005; // Reduced step size for better precision
     final double ballMass = 0.5;
     private double currentTime = 0.0;
+    
 
     double[] stateVector = new double[4];
     double[] systemFunction = new double[4];
@@ -304,15 +306,8 @@ public class PhysicsEngine {
      * @return True if the position is within a sand area, false otherwise
      */
     private boolean isWithinSandArea(double x, double z) {
-
-        float sand = TerrainV2.getSandHeight((float) x+50, (float) z+50);
-
-        if(sand > 0.5) {
-      //debug      //System.out.println("x: " + x + ",z: " + z + " SAND:" + sand);
-            return true;
-        }
-    //debug     //System.out.println("x: " + x + ",z: " + z + " GRASS " + sand);
-        return false;
+        float sand = SandHeightCalculator.getSandHeight((float) x+50, (float) z+50);
+        return(sand > 0.5);
     }
 
     /**

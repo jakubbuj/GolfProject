@@ -20,6 +20,7 @@ public class PhysicsEngine {
     final double g = 9.80665;
     final static double LIMIT_ZERO = 0.0000001;
     final double h = 0.005; // Reduced step size for better precision
+    final double ballMass = 0.5;
     private double currentTime = 0.0;
 
     double[] stateVector = new double[4];
@@ -230,8 +231,8 @@ public class PhysicsEngine {
         }
 
         // Calculate total acceleration
-        double xAcceleration = xFirstTerm + xSecondTerm;
-        double zAcceleration = zFirstTerm + zSecondTerm;
+        double xAcceleration = (xFirstTerm + xSecondTerm) / ballMass;
+        double zAcceleration = (zFirstTerm + zSecondTerm) / ballMass;
 
         //double windForceX = 0.1 * Math.sin(t); 
         //double windForceZ = 0.1 * Math.cos(t);
@@ -277,8 +278,8 @@ public class PhysicsEngine {
                 : kineticCoefficient * g * (slopeZ / Math.sqrt(slopeX * slopeX + slopeZ * slopeZ));
 
         // Update accelerations by combining gravitational and frictional forces
-        double xAcceleration = gravityForceX - frictionForceX;
-        double zAcceleration = gravityForceZ - frictionForceZ;
+        double xAcceleration = (gravityForceX - frictionForceX) / ballMass;
+        double zAcceleration = (gravityForceZ - frictionForceZ) / ballMass;
 
         // Apply Euler's method to update velocities and positions
         stateVector[2] += xAcceleration * h; 

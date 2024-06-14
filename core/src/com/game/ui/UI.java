@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.game.golfball.AStarBot;
 import com.game.main.GameControl;
 
 /**
@@ -25,6 +26,7 @@ public class UI {
     private TextButton fellInWaterLabel;
     private TextButton backLabel;
     private TextButton outOfBoundsLabel;
+    private TextButton starButton;
 
     /**
      * Constructs a {@code UI} instance and initializes the UI elements.
@@ -41,6 +43,7 @@ public class UI {
         setupGameOverLabel();
         setupFellInWaterLabel();
         setupBallOutOfBoundsLabel();
+        setupStarButton();
         Gdx.input.setInputProcessor(stage); // Set this after all UI elements are added
         System.out.println("UI: Input processor set for UI stage.");
     }
@@ -90,6 +93,19 @@ public class UI {
             }
         });
         stage.addActor(rbbButton);
+    }
+    public void setupStarButton() {
+        starButton = new TextButton("Star", skin);
+        starButton.setSize(200, 30);
+        starButton.setPosition(Gdx.graphics.getWidth() - starButton.getWidth() - 10, 115);
+        starButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("starbutton pressed");
+            }
+        });
+        stage.addActor(starButton);
+        System.out.println("UI: Star button loading completed.");
     }
 
     /**

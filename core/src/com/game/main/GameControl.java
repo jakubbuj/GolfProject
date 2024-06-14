@@ -33,7 +33,7 @@ public class GameControl implements Screen {
     private static Sound soundwinning;
     private boolean gameOverSoundPlayed = false;
     private Sound soundFellInWater;
-    private boolean fellInWaterSoundPlayed = false; 
+    private boolean fellInWaterSoundPlayed = false;
     private UI ui;
     private ModelBatch modelBatch;
     static Environment environment;
@@ -76,9 +76,8 @@ public class GameControl implements Screen {
     private Texture backgroundTexture;
     private SpriteBatch spriteBatch;
     private GolfGame game;
-    private SettingsScreen settingsScreen;  // Reference to SettingsScreen instance
+    private SettingsScreen settingsScreen; // Reference to SettingsScreen instance
 
-    
     /**
      * Constructs a GameControl object with the specified GolfGame instance.
      *
@@ -90,7 +89,8 @@ public class GameControl implements Screen {
 
     /**
      * Called when this screen becomes the current screen
-     * Initializes the UI, environment, terrain, sounds, background, camera, lights, and input processing
+     * Initializes the UI, environment, terrain, sounds, background, camera, lights,
+     * and input processing
      */
     @Override
     public void show() {
@@ -108,21 +108,20 @@ public class GameControl implements Screen {
         setupLights();
         setupInput();
 
-
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
-        //create balls
+        // create balls
         ball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("2e3d49"));
         AIball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("007d8d"));
         RBball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("880808"));
 
-        //target and rules
+        // target and rules
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
         gameRules = new GameRules(target, ball, functionTerrain, terrain);
         gameRulesRB = new GameRules(target, RBball, functionTerrain, terrain);
         gameRulesAI = new GameRules(target, AIball, functionTerrain, terrain);
 
-        //movement of balls
+        // movement of balls
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
         golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB);
@@ -159,7 +158,8 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Sets up the input processing for the game, including handling camera controls and charging bar
+     * Sets up the input processing for the game, including handling camera controls
+     * and charging bar
      */
     private void setupInput() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -200,7 +200,8 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Triggers the rule-based bot to play a shot, calculating the new velocity and updating its state
+     * Triggers the rule-based bot to play a shot, calculating the new velocity and
+     * updating its state
      */
     public void triggerRuleBasedBotPlay() {
         Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
@@ -237,7 +238,6 @@ public class GameControl implements Screen {
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        
         spriteBatch.begin();
         spriteBatch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         spriteBatch.end();
@@ -259,7 +259,7 @@ public class GameControl implements Screen {
         target.render(modelBatch, environment);
         modelBatch.end();
 
-        //ui
+        // ui
         ui.setChargePower(chargePower);
         ui.render();
     }
@@ -274,20 +274,22 @@ public class GameControl implements Screen {
         // game rules
         gameRules.checkGameStatus();
 
-        //Check if game is over 
+        // Check if game is over
         if ((gameRules.isGameOver() || gameRulesRB.isGameOver() || gameRulesAI.isGameOver()) && !gameOverSoundPlayed) {
             ui.setGameOverLabelVisible(true);
             soundwinning.play();
             gameOverSoundPlayed = true;
         }
-         //Check if game is over 
-         if ((gameRules.fellInWater() || gameRulesRB.fellInWater() || gameRulesAI.fellInWater()) && !fellInWaterSoundPlayed) {
+        // Check if game is over
+        if ((gameRules.fellInWater() || gameRulesRB.fellInWater() || gameRulesAI.fellInWater())
+                && !fellInWaterSoundPlayed) {
             ui.setFellInWaterLabelVisible(true);
             soundFellInWater.play();
             fellInWaterSoundPlayed = true;
         }
-        //check if ball fell out of bounds
-        if ((gameRules.outOfBorder() || gameRulesRB.outOfBorder() || gameRulesAI.outOfBorder()) && !fellInWaterSoundPlayed) {
+        // check if ball fell out of bounds
+        if ((gameRules.outOfBorder() || gameRulesRB.outOfBorder() || gameRulesAI.outOfBorder())
+                && !fellInWaterSoundPlayed) {
             ui.setFellOutOfBoundsLabelVisible(true);
             soundFellInWater.play();
             fellInWaterSoundPlayed = true;
@@ -297,7 +299,7 @@ public class GameControl implements Screen {
     /**
      * Called when the screen is resized
      *
-     * @param width The new width of the screen
+     * @param width  The new width of the screen
      * @param height The new height of the screen
      */
     @Override
@@ -319,7 +321,7 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Called when this screen is no longer the current screen 
+     * Called when this screen is no longer the current screen
      */
     @Override
     public void hide() {
@@ -372,4 +374,3 @@ public class GameControl implements Screen {
         }
     }
 }
-

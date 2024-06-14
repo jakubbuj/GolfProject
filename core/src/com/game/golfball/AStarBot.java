@@ -133,9 +133,17 @@ public class AStarBot {
 
     private List<Vector3> generatePossibleShots(Vector3 position) {
         List<Vector3> shots = new ArrayList<>();
-        // Generate shots with varying velocities and directions
-        for (float vx = (float) -physicsEngine.maxVelocity; vx <= physicsEngine.maxVelocity; vx += 1) {
-            for (float vz = (float) -physicsEngine.maxVelocity; vz <= physicsEngine.maxVelocity; vz += 1) {
+
+        double distanceToTarget = heuristic(position);
+        double scalingFactor = Math.max(1, distanceToTarget / 10); // arbitrary scaling factor (adjust as necessary)
+
+        // Generate shots with varying velocities and directions, scaled by the distance to target
+        for (float vx = (float) -physicsEngine.maxVelocity / (float) scalingFactor;
+             vx <= physicsEngine.maxVelocity / (float) scalingFactor;
+             vx += 1) {
+            for (float vz = (float) -physicsEngine.maxVelocity / (float) scalingFactor;
+                 vz <= physicsEngine.maxVelocity / (float) scalingFactor;
+                 vz += 1) {
                 shots.add(new Vector3(vx, 0, vz));
             }
         }

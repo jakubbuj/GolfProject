@@ -34,7 +34,7 @@ public class GolfBall {
 
         // Create the ball model
         ModelBuilder modelBuilder = new ModelBuilder();
-        Model ballModel = modelBuilder.createSphere(1f, 1f, 1f, 24, 24,
+        Model ballModel = modelBuilder.createSphere(0.4f, 0.4f, 0.4f, 24, 24,
                 new Material(ColorAttribute.createDiffuse(color)),
                 Usage.Position | Usage.Normal);
 

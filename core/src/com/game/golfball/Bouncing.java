@@ -6,6 +6,8 @@ import com.game.terrain.Maze.Wall;
 import java.util.List;
 
 public class Bouncing {
+    private static final float BUFFER_ZONE = 0.01f; // Buffer zone around the walls
+
     /**
      * Detects collision with a wall and calculates the new velocity after the bounce.
      * 
@@ -15,7 +17,7 @@ public class Bouncing {
      * @return The new velocity vector after the bounce.
      */
     public static Vector3 detectCollisionAndBounce(Vector3 position, Vector3 velocity, List<Wall> walls) {
-        if(walls==null)return velocity;
+        if(walls == null) return velocity;
         for (Wall wall : walls) {
             if (isColliding(position, wall)) {
                 return calculateBounce(position, velocity, wall);
@@ -32,8 +34,8 @@ public class Bouncing {
      * @return True if the ball is colliding with the wall, false otherwise.
      */
     private static boolean isColliding(Vector3 position, Wall wall) {
-        float wallHalfWidth = wall.getWidth() / 2;
-        float wallHalfDepth = wall.getDepth() / 2;
+        float wallHalfWidth = wall.getWidth() / 2 + BUFFER_ZONE;
+        float wallHalfDepth = wall.getDepth() / 2 + BUFFER_ZONE;
         Vector3 wallPosition = wall.getPosition();
 
         // Check collision with the wall's bounding box

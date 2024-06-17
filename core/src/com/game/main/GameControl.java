@@ -24,13 +24,17 @@ import com.game.golfball.GolfBall;
 import com.game.golfball.GolfBallMovement;
 import com.game.golfball.PhysicsEngine;
 import com.game.golfball.RuleBasedBot;
-import com.game.golfball.AStar.AStarBot;
+import com.game.golfball.AStar.AStarMazeSolver;
+import com.game.golfball.AStar.Node;
+import com.game.golfball.AStar.PathSegmenter;
 import com.game.terrain.GameRules;
 import com.game.terrain.Target;
 import com.game.terrain.TerrainV2;
 import com.game.terrain.Maze.Maze;
 import com.game.terrain.Maze.Wall;
 import com.game.ui.UI;
+
+import java.util.ArrayList;
 
 public class GameControl implements Screen {
 
@@ -62,7 +66,7 @@ public class GameControl implements Screen {
     private GolfBallMovement ballMovement;
     private GolfAI golfAI;
     private RuleBasedBot ruleBasedBot;
-    private AStarBot aStarBot; // Add AStarBot instance
+    private GolfAI aStarBot; // Add AStarBot instance
     // game parameters
     public static String functionTerrain = SettingsScreen.terrainFunction;
     public float X0 = SettingsScreen.InitialX.floatValue();
@@ -87,6 +91,7 @@ public class GameControl implements Screen {
     //maze
     private Maze maze;
     private List<Wall> walls;
+    private List<Vector3> segmentedPath = new ArrayList<>();
 
     /**
      * Constructs a GameControl object with the specified GolfGame instance.
@@ -123,7 +128,6 @@ public class GameControl implements Screen {
         maze = new Maze();
         walls = maze.getWalls();
 
-
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0, walls);
         // create balls
@@ -142,7 +146,7 @@ public class GameControl implements Screen {
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules, walls);
         golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI, walls);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB, walls);
-        aStarBot = new AStarBot(Astar, targetPosition, physicsEngine, gameRulesAI); // Initialize AStarBot
+        aStarBot = new GolfAI(Astar, targetPosition, physicsEngine, gameRulesAI, walls); // Initialize AStarBot
 
     }
 
@@ -209,7 +213,7 @@ public class GameControl implements Screen {
     public void triggerAIShot() {
         Vector3 aiShot = golfAI.findBestShot();
         AIball.setVelocity(aiShot);
-        golfAI.update();
+        golfAI.update(AIball);
     }
 
     /**
@@ -226,8 +230,16 @@ public class GameControl implements Screen {
      * Triggers a shot by the A* bot
      */
     public void triggerAStarShot() {
-        path = aStarBot.findBestPath(); // Calculate path when triggered
-        aStarBot.update(path);
+        AStarMazeSolver mazeSolver = new AStarMazeSolver(new Vector3(X0, 20, Y0), targetPosition);
+        List<Node> path = mazeSolver.findBestPath();
+
+        PathSegmenter segmenter = new PathSegmenter(path, 3); // Divide into 10 parts
+        for (Node node : segmenter.segmentPath()) {
+            segmentedPath.add(new Vector3(node.x, 0, node.y));
+        }
+        aStarBot.setPathSegments(segmentedPath);
+        System.out.println(path);
+        System.out.println(segmentedPath);
     }
 
     /**
@@ -294,10 +306,11 @@ public class GameControl implements Screen {
      */
     private void update() {
         ballMovement.update(); // make ball move
-        golfAI.update(); // make AI ball move
+        golfAI.update(AIball); // make AI ball move
         ruleBasedBot.update(); // make rule based bot play
-        aStarBot.update(path); // Update A* bot if path is available
 
+        // Update A* ball's state and target if necessary
+        aStarBot.update(Astar);
 
         // game rules
         gameRules.checkGameStatus();

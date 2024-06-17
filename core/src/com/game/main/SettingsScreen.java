@@ -413,14 +413,15 @@ public class SettingsScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                function.setText(" sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y ) ");
-                InitialCoordinateX.setText("4.0");
-                InitialCoordinateY.setText("6.0");
+                //function.setText(" sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y ) ");
+                function.setText(" 1 ");
+                InitialCoordinateX.setText("8");
+                InitialCoordinateY.setText("8");
                 GRASS_K.setText("1.0");
                 GRASS_S.setText("0.5");
                 SAND_K.setText("0.3");
                 SAND_S.setText("0.4");
-                TargetXBox.setText("4.0");
+                TargetXBox.setText("1.0");
                 TargetYBox.setText("1.0");
                 TRBox.setText("0.5");
 

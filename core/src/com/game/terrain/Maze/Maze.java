@@ -16,23 +16,11 @@ public class Maze {
 
     private void createMaze() {
         // Define a simple maze layout
-        int[][] mazeLayout = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {1, 0, 0, 0, 0, 1, 0, 0, 0, 1},
-            {1, 0, 1, 1, 0, 1, 0, 1, 0, 1},
-            {1, 0, 1, 0, 0, 0, 0, 1, 0, 1},
-            {1, 0, 1, 0, 1, 1, 1, 1, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 1, 0, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 0, 1},
-            {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-            {1, 0, 1, 1, 1, 1, 1, 1, 0, 1},
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
-        };
+        int[][] mazeLayout = MazeLayout.getMazeLayout();
         
-
-        float wallWidth = 1.5f;
-        float wallHeight = 2.5f;
-        float wallDepth = 1.5f;
+        float wallWidth = 1f;
+        float wallHeight = 1.5f;
+        float wallDepth = 1f;
 
         for (int z = 0; z < mazeLayout.length; z++) {
             for (int x = 0; x < mazeLayout[z].length; x++) {

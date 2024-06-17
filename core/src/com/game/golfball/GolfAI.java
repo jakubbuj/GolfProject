@@ -3,6 +3,9 @@ package com.game.golfball;
 import com.badlogic.gdx.math.Vector3;
 import com.game.terrain.GameRules;
 import com.game.terrain.GetHeight;
+import com.game.terrain.Maze.Wall;
+
+import java.util.List;
 
 public class GolfAI {
     private static Vector3 targetPosition;
@@ -24,6 +27,7 @@ public class GolfAI {
     private double epsilonGrad; // Current epsilon for gradient approximation
     private int t; // Time step
     private GameRules gameRules; // Game rules
+    private List<Wall> walls; // List of walls
 
     /**
      * Constructs a GolfAI object with the specified parameters
@@ -32,8 +36,9 @@ public class GolfAI {
      * @param targetPosition The target position for the golf ball
      * @param physicsEngine  The physics engine used for simulations
      * @param gameRules      The game rules defining constraints and objectives
+     * @param walls          The list of walls in the maze
      */
-    public GolfAI(GolfBall AIball, Vector3 targetPosition, PhysicsEngine physicsEngine, GameRules gameRules) {
+    public GolfAI(GolfBall AIball, Vector3 targetPosition, PhysicsEngine physicsEngine, GameRules gameRules, List<Wall> walls) {
         this.AIball = AIball;
         GolfAI.targetPosition = targetPosition;
         this.physicsEngine = physicsEngine;
@@ -46,14 +51,14 @@ public class GolfAI {
             throw new IllegalArgumentException("gameRules cannot be null");
         }
         this.gameRules = gameRules;
+        this.walls = walls;
     }
 
     /**
-     * Calculates the best shot ( figure out perfect velocity ) for the golf ball to reach the target position
+     * Calculates the best shot (figure out perfect velocity) for the golf ball to reach the target position
      *
      * @return The velocity vector representing the best shot
      */
-
     public Vector3 findBestShot() {
         Vector3 currentVelocity = new Vector3(2f, 0f, -6f);
 
@@ -68,7 +73,7 @@ public class GolfAI {
                 break;
             }
 
-            Vector3 gradient = approximateGradient(currentVelocity,deviation);
+            Vector3 gradient = approximateGradient(currentVelocity, deviation);
 
             t++;
 
@@ -78,10 +83,8 @@ public class GolfAI {
             v.x = (float) (BETA2 * v.x + (1 - BETA2) * gradient.x * gradient.x);
             v.z = (float) (BETA2 * v.z + (1 - BETA2) * gradient.z * gradient.z);
 
-
             float mHatX = (float) (m.x / (1 - Math.pow(BETA1, t)));
             float mHatZ = (float) (m.z / (1 - Math.pow(BETA1, t)));
-
 
             float vHatX = (float) (v.x / (1 - Math.pow(BETA2, t)));
             float vHatZ = (float) (v.z / (1 - Math.pow(BETA2, t)));
@@ -103,7 +106,7 @@ public class GolfAI {
     }
 
     /**
-     * Calculates   function representing the deviation between the current shot
+     * Calculates the function representing the deviation between the current shot
      * and the target position.
      *
      * @param velocity The velocity vector representing the current shot
@@ -117,9 +120,9 @@ public class GolfAI {
     }
 
     /**
-     * Approximates the gradient of the deviation function with respect to the velocity ( we do it this way to and not by caclulating derivative of distance function cuz we need to take terrain somehow into account)
+     * Approximates the gradient of the deviation function with respect to the velocity
      *
-     * @param velocity         The velocity vector representing the current shot
+     * @param velocity The velocity vector representing the current shot
      * @param originalDeviation The original deviation between the current shot and the target position
      * @return The gradient vector approximating the rate of change of deviation with respect to velocity
      */
@@ -160,15 +163,14 @@ public class GolfAI {
      * @param velocity The velocity vector to be clipped
      */
     private void clipVelocity(Vector3 velocity) {
-
-        double maxVelocity = 70.0; 
+        double maxVelocity = 70.0;
         if (velocity.len() > maxVelocity) {
             velocity.scl((float) (maxVelocity / velocity.len()));
         }
     }
 
     /**
-     * Updates the position and velocity of the golf ball according to the calculated shot (this is the shot we see on screan so it moves the  ball)
+     * Updates the position and velocity of the golf ball according to the calculated shot
      */
     public void update() {
         Vector3 currentPosition = AIball.getPosition();
@@ -177,8 +179,17 @@ public class GolfAI {
         physicsEngine.setState(currentPosition.x, currentPosition.z, currentVelocity.x, currentVelocity.z);
         double[] newState = physicsEngine.runSingleStep(currentPosition, currentVelocity);
 
-        AIball.setPosition(new Vector3((float) newState[0], AIball.getPosition().y, (float) newState[1]));
-        AIball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
+        // Update ball position and velocity
+        Vector3 newPosition = new Vector3((float) newState[0], AIball.getPosition().y, (float) newState[1]);
+        Vector3 newVelocity = new Vector3((float) newState[2], 0, (float) newState[3]);
+
+        // Check for collisions and apply bounce logic
+        if (walls != null) {
+            newVelocity = Bouncing.detectCollisionAndBounce(newPosition, newVelocity, walls);
+        }
+
+        AIball.setPosition(newPosition);
+        AIball.setVelocity(newVelocity);
         AIball.getPosition().y = (float) GetHeight.getHeight(PhysicsEngine.heightFunction, AIball.getPosition().x, AIball.getPosition().z);
     }
 }

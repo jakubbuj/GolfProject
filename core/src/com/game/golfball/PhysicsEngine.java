@@ -4,6 +4,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.game.terrain.GetHeight;
 import com.game.terrain.SandHeightCalculator;
 import com.game.terrain.TerrainV2;
+import com.game.terrain.Maze.Wall;
+
+import java.util.List;
 
 public class PhysicsEngine {
 
@@ -16,6 +19,7 @@ public class PhysicsEngine {
     public static double maxVelocity = 5;
     double xInitialVelocity = 0, zInitialVelocity = 0;
     public double terrainHeight = 0;
+    private List<Wall> walls;
 
     final double g = 9.80665;
     final static double LIMIT_ZERO = 0.0000001;
@@ -42,10 +46,10 @@ public class PhysicsEngine {
      * @param SAND_S           The static coefficient on sand
      * @param xInitialVelocity The initial velocity of the ball in the x-direction
      * @param zInitialVelocity The initial velocity of the ball in the z-direction
+     * @param walls            The list of walls in the maze
      */
     public PhysicsEngine(String heightFunction, double X0, double Y0, double Xt, double Yt, double Rt, double GRASS_K,
-            double GRASS_S, double SAND_K, double SAND_S, double xInitialVelocity, double zInitialVelocity) {
-
+                         double GRASS_S, double SAND_K, double SAND_S, double xInitialVelocity, double zInitialVelocity, List<Wall> walls) {
         PhysicsEngine.heightFunction = heightFunction;
         this.X0 = X0;
         this.Y0 = Y0;
@@ -58,12 +62,13 @@ public class PhysicsEngine {
         this.SAND_S = SAND_S;
         this.xInitialVelocity = xInitialVelocity;
         this.zInitialVelocity = zInitialVelocity;
+        this.walls = walls;
     }
 
     public static void main(String[] args) {
         PhysicsEngine testEngine = new PhysicsEngine(
                 " sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y ) ",
-                5, 2, 4, 1, 0.15, 1, 0.5, 0.3, 0.4, 0.0, 0.0);
+                5, 2, 4, 1, 0.15, 1, 0.5, 0.3, 0.4, 0.0, 0.0, null);
 
         double[] a = testEngine.runSimulation(5, 5);
 
@@ -107,10 +112,6 @@ public class PhysicsEngine {
         stateVector[2] = xInitialVelocity;
         stateVector[3] = yInitialVelocity;
 
-        // debug // System.out.println(
-        // "Initial State: X0=" + X0 + ", Y0=" + Y0 + ", Vx0=" + xInitialVelocity + ",
-        // Vy0=" + yInitialVelocity);
-
         int maxIterations = 1000; // Set a reasonable limit for iterations
         int iteration = 0;
 
@@ -120,8 +121,6 @@ public class PhysicsEngine {
         double positionThreshold = 0.0001; // Increased precision
         double velocityThreshold = 0.0001; // Increased precision
 
-        // debug // Simulation loop: run until both velocities are close to zero or max
-        // iterations reached
         while (true) {
             updateStateVectorEuler(false);
 
@@ -131,6 +130,15 @@ public class PhysicsEngine {
                 break;
             }
 
+            // Check for collisions and apply bounce logic
+            Vector3 position = new Vector3((float) stateVector[0], 0, (float) stateVector[1]);
+            Vector3 velocity = new Vector3((float) stateVector[2], 0, (float) stateVector[3]);
+            if (walls != null) {
+                velocity = Bouncing.detectCollisionAndBounce(position, velocity, walls);
+            }
+            stateVector[2] = velocity.x;
+            stateVector[3] = velocity.z;
+
             // Check for small changes in position and velocity
             double positionChange = Math.sqrt(
                     Math.pow(stateVector[0] - previousState[0], 2) +
@@ -139,20 +147,11 @@ public class PhysicsEngine {
                     Math.pow(stateVector[2] - previousState[2], 2) +
                             Math.pow(stateVector[3] - previousState[3], 2));
 
-            // debug
-            // if (iteration % 100 == 0) {
-            // System.out.println("Iteration: " + iteration + ", Position Change: " +
-            // positionChange + ", Velocity Change: " + velocityChange);
-            // System.out.println("Current State: X=" + stateVector[0] + ", Z=" +
-            // stateVector[1] + ", Vx=" + stateVector[2] + ", Vz=" + stateVector[3]);
-            // }
-
-            // Early stopping if changes are very small
             if (positionChange < positionThreshold && velocityChange < velocityThreshold) {
-                System.out.println("Early stopping due to small changes in state.");
                 break;
             }
-            // early stop if the velocity is small
+
+            // Early stop if the velocity is small
             if (Math.abs(stateVector[2]) < 0.01 && Math.abs(stateVector[3]) < 0.01) {
                 break;
             }
@@ -160,15 +159,11 @@ public class PhysicsEngine {
             // Update the previous state
             System.arraycopy(stateVector, 0, previousState, 0, stateVector.length);
 
-            // stop whe iterations reach maxiterations limit
             iteration++;
             if (iteration >= maxIterations) {
                 break;
             }
         }
-
-        // debug // System.out.println("Updated State: X=" + stateVector[0] + ", Z=" +
-        // stateVector[1] + ", Vx=" + stateVector[2] + ", Vz=" + stateVector[3]);
 
         return stateVector;
     }
@@ -356,7 +351,7 @@ public class PhysicsEngine {
 
     /**
      * Runs a single step of the simulation given the ball's current position and
-     * velocity ( so updates state vectors only once)
+     * velocity (so updates state vectors only once)
      *
      * @param ballPosition The current position of the ball
      * @param ballVelocity The current velocity of the ball

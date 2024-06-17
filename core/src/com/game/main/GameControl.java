@@ -28,6 +28,8 @@ import com.game.golfball.AStar.AStarBot;
 import com.game.terrain.GameRules;
 import com.game.terrain.Target;
 import com.game.terrain.TerrainV2;
+import com.game.terrain.Maze.Maze;
+import com.game.terrain.Maze.Wall;
 import com.game.ui.UI;
 
 public class GameControl implements Screen {
@@ -82,6 +84,9 @@ public class GameControl implements Screen {
     private SpriteBatch spriteBatch;
     private GolfGame game;
     private SettingsScreen settingsScreen; // Reference to SettingsScreen instance
+    //maze
+    private Maze maze;
+    private List<Wall> walls;
 
     /**
      * Constructs a GameControl object with the specified GolfGame instance.
@@ -113,8 +118,14 @@ public class GameControl implements Screen {
         setupLights();
         setupInput();
 
+        //setup maze
+        // Comment out these lines if you don't want to use a maze
+        maze = new Maze();
+        walls = maze.getWalls();
+
+
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
-                GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0);
+                GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0, walls);
         // create balls
         ball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("2e3d49"));
         AIball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("007d8d"));
@@ -128,10 +139,11 @@ public class GameControl implements Screen {
         gameRulesAI = new GameRules(target, AIball, functionTerrain, terrain);
 
         // movement of balls
-        ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
-        golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI);
-        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB);
+        ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules, walls);
+        golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI, walls);
+        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB, walls);
         aStarBot = new AStarBot(Astar, targetPosition, physicsEngine, gameRulesAI); // Initialize AStarBot
+
     }
 
     /**
@@ -267,6 +279,9 @@ public class GameControl implements Screen {
         RBball.render(modelBatch, environment);
         Astar.render(modelBatch, environment); // Ensure Astar is being rendered
         target.render(modelBatch, environment);
+        if (maze != null) { // Check if maze is initialized
+            maze.render(modelBatch, environment);
+        }
         modelBatch.end();
 
         // ui

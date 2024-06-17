@@ -1,8 +1,12 @@
 package com.game.golfball;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.game.terrain.GameRules;
 import com.game.terrain.GetHeight;
+import com.game.terrain.Maze.Wall;
+import java.util.List;
+
 public class RuleBasedBot {
 
     private static Vector3 targetPosition;
@@ -11,7 +15,7 @@ public class RuleBasedBot {
     private PhysicsEngine physicsEngine;
     private static GolfBall RBball;
     private static GameRules gameRules;
-
+    private List<Wall> walls;
 
     /**
      * Constructs a RuleBasedBot object with the specified parameters
@@ -21,8 +25,9 @@ public class RuleBasedBot {
      * @param targetRadius     The radius of the target area
      * @param physicsEngine    The physics engine for simulating ball movement
      * @param gameRules        The game rules governing the bot's behavior
+     * @param walls            The list of walls in the maze
      */
-    public RuleBasedBot(GolfBall RBball, Vector3 targetPosition, float targetRadius, PhysicsEngine physicsEngine, GameRules gameRules) {
+    public RuleBasedBot(GolfBall RBball, Vector3 targetPosition, float targetRadius, PhysicsEngine physicsEngine, GameRules gameRules, List<Wall> walls) {
         this.RBball = RBball;
         this.targetPosition = targetPosition;
         this.targetRadius = targetRadius;
@@ -31,6 +36,7 @@ public class RuleBasedBot {
             throw new IllegalArgumentException("gameRules cannot be null");
         }
         this.gameRules = gameRules;
+        this.walls = walls;
     }
 
     /**
@@ -52,14 +58,10 @@ public class RuleBasedBot {
         double slopeForceZ = 1;
         if (slopeX > 0.2){ 
             slopeForceX = slopeX * 10;
-         } //else if (slopeX < 0.1){
-        //     slopeForceX = 0.7;
-        // }
+         }
         if (slopeZ > 0.2){
             slopeForceZ = slopeZ * 10;
-        } //else if (slopeZ < 0.1){
-        //     slopeForceZ = 0.8;
-        // }
+        }
 
         double force;
         if (magnitude < 7 && magnitude > 1) force = magnitude * 1.5; //Close to the target, the magnitude will be small, so we need stronger force in comparison to the magnitude to move the ball significantly
@@ -73,28 +75,28 @@ public class RuleBasedBot {
      * Updates the state of the bot and the ball's position and velocity
      */
     public void update() {
-
-        //Vector3 currentVelocity = new Vector3(initialVelocity);
-        
         Vector3 currentPosition = RBball.getPosition();
-        // Get the current position and velocity of the ball
-        currentPosition = RBball.getPosition();
-        Vector3 currentVelocity = new Vector3 (RBball.getVelocity());
+        Vector3 currentVelocity = RBball.getVelocity();
+
         // Set the current state in the physics engine
         physicsEngine.setState(currentPosition.x, currentPosition.z, currentVelocity.x, currentVelocity.z);
 
         // Run the physics simulation for one timestep
         double[] newState = physicsEngine.runSingleStep(currentPosition, currentVelocity);
 
-        // Update the ball's position based on the physics engine output
-        RBball.setPosition(new Vector3((float) newState[0], RBball.getPosition().y, (float) newState[1]));
+        // Update ball position and velocity based on physics engine output
+        Vector3 newPosition = new Vector3((float) newState[0], RBball.getPosition().y, (float) newState[1]);
+        Vector3 newVelocity = new Vector3((float) newState[2], 0, (float) newState[3]);
 
-        // Update the ball's velocity based on the physics engine output
-        RBball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
+        // Check for collisions and apply bounce logic
+        newVelocity = Bouncing.detectCollisionAndBounce(newPosition, newVelocity, walls);
+
+        // Update the ball's position and velocity
+        RBball.setPosition(newPosition);
+        RBball.setVelocity(newVelocity);
 
         // Adjust the ball's vertical position based on the terrain height
-        RBball.getPosition().y = (float) GetHeight.getHeight(PhysicsEngine.heightFunction, RBball.getPosition().x, RBball.getPosition().z); // Keeping the ball slightly above the terrain
-
+        RBball.getPosition().y = (float) GetHeight.getHeight(PhysicsEngine.heightFunction, RBball.getPosition().x, RBball.getPosition().z);
     }
 
     /**
@@ -107,5 +109,4 @@ public class RuleBasedBot {
         boolean yPos = RBball.getPosition().y <= targetPosition.y + targetRadius && RBball.getPosition().y >= targetPosition.y - targetRadius;
         return xPos && yPos;
     }
-
 }

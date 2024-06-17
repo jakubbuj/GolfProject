@@ -23,7 +23,7 @@ public class PhysicsEngine {
 
     final double g = 9.80665;
     final static double LIMIT_ZERO = 0.0000001;
-    final double h = 0.003; // Reduced step size for better precision
+    final double h = 0.004; // Reduced step size for better precision
     final double ballMass = 0.5;
     private double currentTime = 0.0;
 

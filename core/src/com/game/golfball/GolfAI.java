@@ -16,10 +16,10 @@ public class GolfAI {
     private static final double EPSILON_ADAM = 1e-8; // Epsilon for Adam optimizer to ensure numerical stability
     private static final double INITIAL_EPSILON_GRAD = 0.5; // Initial epsilon for gradient approximation
     private static final double MIN_EPSILON_GRAD = 1e-4; // Minimum epsilon for gradient approximation
-    private static final int MAX_ITERATIONS = 150; // Max iterations for convergence
+    private static final int MAX_ITERATIONS = 500; // Max iterations for convergence
     private static final double INITIAL_LEARNING_RATE = 1; // Initial learning rate for large steps
     private static final double MIN_LEARNING_RATE = 0.005; // Minimum learning rate for fine adjustments
-    private static final double TOLERANCE = 0.1; // Tolerance for stopping condition
+    private static final double TOLERANCE = 0.05; // Tolerance for stopping condition
     private static final double BETA1 = 0.9; // Decay rate for the first moment estimate
     private static final double BETA2 = 0.999; // Decay rate for the second moment estimate
 
@@ -65,12 +65,16 @@ public class GolfAI {
      */
     public Vector3 findBestShot() {
         Vector3 currentVelocity = new Vector3(2f, 0f, -6f);
+        Vector3 bestVelocity = new Vector3(currentVelocity);
+        float lowestDeviation = Float.MAX_VALUE;
 
         for (int iteration = 0; iteration < MAX_ITERATIONS; iteration++) {
             Vector3 deviation = calculateFunction(currentVelocity);
 
-            System.out.println();
-            System.out.println("Iteration: " + iteration + ", Velocity: " + currentVelocity + ", Deviation: " + deviation);
+            if (deviation.len() < lowestDeviation) {
+                lowestDeviation = deviation.len();
+                bestVelocity.set(currentVelocity);
+            }
 
             if (deviation.len() < TOLERANCE) {
                 System.out.println("Convergence achieved.");
@@ -97,16 +101,16 @@ public class GolfAI {
             currentVelocity.x -= learningRate * mHatX / (Math.sqrt(vHatX) + EPSILON_ADAM);
             currentVelocity.z -= learningRate * mHatZ / (Math.sqrt(vHatZ) + EPSILON_ADAM);
 
-            //gradient and velocity clipping to prevent overshooting
+            // Gradient and velocity clipping to prevent overshooting
             gradientClip(gradient);
             clipVelocity(currentVelocity);
 
-            //Update learning rate and epsilon for gradient approximation
+            // Update learning rate and epsilon for gradient approximation
             learningRate = Math.max(MIN_LEARNING_RATE, learningRate * 0.98);
             epsilonGrad = Math.max(MIN_EPSILON_GRAD, epsilonGrad * 0.99);
         }
 
-        return currentVelocity;
+        return bestVelocity;
     }
 
     /**
@@ -151,7 +155,7 @@ public class GolfAI {
     /**
      * Clips the gradient vector to prevent overshooting during optimization
      *
-     * @param gradient  gradient vector to be clipped
+     * @param gradient gradient vector to be clipped
      */
     private void gradientClip(Vector3 gradient) {
         // Clipping the gradient to ensure it doesn't overshoot
@@ -258,5 +262,4 @@ public class GolfAI {
         this.epsilonGrad = INITIAL_EPSILON_GRAD;
         this.t = 0;
     }
-    
 }

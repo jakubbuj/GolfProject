@@ -233,7 +233,7 @@ public class GameControl implements Screen {
         AStarMazeSolver mazeSolver = new AStarMazeSolver(new Vector3(X0, 20, Y0), targetPosition);
         List<Node> path = mazeSolver.findBestPath();
 
-        PathSegmenter segmenter = new PathSegmenter(path, 3); // Divide into 10 parts
+        PathSegmenter segmenter = new PathSegmenter(path, 4); // Divide into 10 parts
         for (Node node : segmenter.segmentPath()) {
             segmentedPath.add(new Vector3(node.x, 0, node.y));
         }

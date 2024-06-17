@@ -2,6 +2,7 @@ package com.game.golfball;
 
 import com.badlogic.gdx.math.Vector3;
 import com.game.terrain.GameRules;
+import com.game.terrain.GetHeight;
 
 public class GolfAI {
     private static Vector3 targetPosition;
@@ -10,7 +11,7 @@ public class GolfAI {
     private static final double EPSILON_ADAM = 1e-8; // Epsilon for Adam optimizer to ensure numerical stability
     private static final double INITIAL_EPSILON_GRAD = 0.5; // Initial epsilon for gradient approximation
     private static final double MIN_EPSILON_GRAD = 1e-4; // Minimum epsilon for gradient approximation
-    private static final int MAX_ITERATIONS = 1000; // Max iterations for convergence
+    private static final int MAX_ITERATIONS = 100; // Max iterations for convergence
     private static final double INITIAL_LEARNING_RATE = 1; // Initial learning rate for large steps
     private static final double MIN_LEARNING_RATE = 0.005; // Minimum learning rate for fine adjustments
     private static final double TOLERANCE = 0.4; // Tolerance for stopping condition
@@ -178,6 +179,6 @@ public class GolfAI {
 
         AIball.setPosition(new Vector3((float) newState[0], AIball.getPosition().y, (float) newState[1]));
         AIball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
-        AIball.getPosition().y = (float) (physicsEngine.terrainHeight);
+        AIball.getPosition().y = (float) GetHeight.getHeight(PhysicsEngine.heightFunction, AIball.getPosition().x, AIball.getPosition().z);
     }
 }

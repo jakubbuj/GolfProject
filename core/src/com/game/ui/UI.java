@@ -105,6 +105,7 @@ public class UI {
         starButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                gameControl.triggerAStarShot();
                 System.out.println("starbutton pressed");
             }
         });

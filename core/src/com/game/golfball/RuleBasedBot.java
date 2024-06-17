@@ -2,6 +2,7 @@ package com.game.golfball;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.game.terrain.GameRules;
+import com.game.terrain.GetHeight;
 public class RuleBasedBot {
 
     private static Vector3 targetPosition;
@@ -92,7 +93,7 @@ public class RuleBasedBot {
         RBball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
 
         // Adjust the ball's vertical position based on the terrain height
-        RBball.getPosition().y = (float) (physicsEngine.terrainHeight); // Keeping the ball slightly above the terrain
+        RBball.getPosition().y = (float) GetHeight.getHeight(PhysicsEngine.heightFunction, RBball.getPosition().x, RBball.getPosition().z); // Keeping the ball slightly above the terrain
 
     }
 

@@ -15,7 +15,7 @@ public class PhysicsEngine {
     double xMapStart = 0, xMapEnd = 50, yMapStart = 0, yMapEnd = 50; // x and y map limits
     public static double maxVelocity = 5;
     double xInitialVelocity = 0, zInitialVelocity = 0;
-    double terrainHeight = 0;
+    public double terrainHeight = 0;
 
     final double g = 9.80665;
     final static double LIMIT_ZERO = 0.0000001;

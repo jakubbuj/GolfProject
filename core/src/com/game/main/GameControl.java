@@ -2,6 +2,7 @@ package com.game.main;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
+import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -23,6 +24,7 @@ import com.game.golfball.GolfBall;
 import com.game.golfball.GolfBallMovement;
 import com.game.golfball.PhysicsEngine;
 import com.game.golfball.RuleBasedBot;
+import com.game.golfball.AStar.AStarBot;
 import com.game.terrain.GameRules;
 import com.game.terrain.Target;
 import com.game.terrain.TerrainV2;
@@ -45,6 +47,7 @@ public class GameControl implements Screen {
     private GameRules gameRulesRB;
     private GameRules gameRulesAI;
     private Target target;
+    private List<Vector3> path;
     // used in applying force to ball
     private boolean isCharging;
     private float chargePower;
@@ -53,9 +56,11 @@ public class GameControl implements Screen {
     private GolfBall ball;
     private GolfBall AIball;
     private GolfBall RBball;
+    private GolfBall Astar;
     private GolfBallMovement ballMovement;
     private GolfAI golfAI;
     private RuleBasedBot ruleBasedBot;
+    private AStarBot aStarBot; // Add AStarBot instance
     // game parameters
     public static String functionTerrain = SettingsScreen.terrainFunction;
     public float X0 = SettingsScreen.InitialX.floatValue();
@@ -114,6 +119,7 @@ public class GameControl implements Screen {
         ball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("2e3d49"));
         AIball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("007d8d"));
         RBball = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("880808"));
+        Astar = new GolfBall(new Vector3(X0, 20, Y0), Color.valueOf("ffa500"));
 
         // target and rules
         target = new Target(targetPosition.x, targetPosition.z, targetRadius); // Example values
@@ -125,12 +131,7 @@ public class GameControl implements Screen {
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
         golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI);
         ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB);
-
-        // Now that gameRules is initialized, pass it to ballMovement
-        ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules);
-        golfAI = new GolfAI(AIball, targetPosition, physicsEngine, gameRulesAI);
-        ruleBasedBot = new RuleBasedBot(RBball, targetPosition, targetRadius, physicsEngine, gameRulesRB);
-
+        aStarBot = new AStarBot(Astar, targetPosition, physicsEngine, gameRulesAI); // Initialize AStarBot
     }
 
     /**
@@ -210,6 +211,14 @@ public class GameControl implements Screen {
     }
 
     /**
+     * Triggers a shot by the A* bot
+     */
+    public void triggerAStarShot() {
+        path = aStarBot.findBestPath(); // Calculate path when triggered
+        aStarBot.update(path);
+    }
+
+    /**
      * Applies a force to the ball based on the current charge power
      */
     private void applyForceBasedOnCharge() {
@@ -256,6 +265,7 @@ public class GameControl implements Screen {
         AIball.render(modelBatch, environment);
         ball.render(modelBatch, environment);
         RBball.render(modelBatch, environment);
+        Astar.render(modelBatch, environment); // Ensure Astar is being rendered
         target.render(modelBatch, environment);
         modelBatch.end();
 
@@ -268,9 +278,12 @@ public class GameControl implements Screen {
      * Updates the game state, including the ball movements and game rules checks
      */
     private void update() {
-        ballMovement.update(); // moke a golfbal move
-        golfAI.update(); // make aiball move
+        ballMovement.update(); // make ball move
+        golfAI.update(); // make AI ball move
         ruleBasedBot.update(); // make rule based bot play
+        aStarBot.update(path); // Update A* bot if path is available
+
+
         // game rules
         gameRules.checkGameStatus();
 
@@ -280,6 +293,7 @@ public class GameControl implements Screen {
             soundwinning.play();
             gameOverSoundPlayed = true;
         }
+
         // Check if game is over
         if ((gameRules.fellInWater() || gameRulesRB.fellInWater() || gameRulesAI.fellInWater())
                 && !fellInWaterSoundPlayed) {
@@ -287,6 +301,7 @@ public class GameControl implements Screen {
             soundFellInWater.play();
             fellInWaterSoundPlayed = true;
         }
+
         // check if ball fell out of bounds
         if ((gameRules.outOfBorder() || gameRulesRB.outOfBorder() || gameRulesAI.outOfBorder())
                 && !fellInWaterSoundPlayed) {
@@ -338,13 +353,14 @@ public class GameControl implements Screen {
         ball.setPosition(new Vector3(X0, 20, Y0));
         AIball.setPosition(new Vector3(X0, 20, Y0));
         RBball.setPosition(new Vector3(X0, 20, Y0));
+        Astar.setPosition(new Vector3(X0, 20, Y0)); // Reset A* ball position
 
         gameOverSoundPlayed = false;
         ui.setGameOverLabelVisible(false);
         fellInWaterSoundPlayed = false;
         ui.setFellInWaterLabelVisible(false);
         ui.setFellOutOfBoundsLabelVisible(false);
-
+        path = null; // Reset path
     }
 
     /**

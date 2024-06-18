@@ -247,7 +247,7 @@ public class SettingsScreen implements Screen {
      * grassK, grassS, sandK, sandS, TargetXo, TargetYo, Radius.
      */
     private void handleSubmitButton() {
-        submitButton = new TextButton("Submit", skin);
+        submitButton = new TextButton("Submit and play", skin);
         submitButton.setPosition(530, 100);
         submitButton.setSize(100, 30);
         submitButton.addListener(new ClickListener() {
@@ -389,7 +389,7 @@ public class SettingsScreen implements Screen {
                     stage.addActor(errorLabel);
                 }
                 if (errorLabel == null && errorIcon == null) {
-                    game.setScreen(new MainMenu(game));
+                    game.setScreen(new OptionsScreen(game));
                 }
                
                 MainMenu.clicksound.play();

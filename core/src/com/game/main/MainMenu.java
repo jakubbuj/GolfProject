@@ -120,6 +120,19 @@ public class MainMenu implements Screen {
                     PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
             if (Gdx.input.isTouched()) {
                 clicksound.play();
+               
+                // Update corresponding static variables
+                SettingsScreen.terrainFunction = "1";
+                SettingsScreen.InitialX = 8.0;
+                SettingsScreen.InitialY = 8.0;
+                SettingsScreen.grassK = 1.0;
+                SettingsScreen.grassS = 0.5;
+                SettingsScreen.sandK = 0.3;
+                SettingsScreen.sandS = 0.4;
+                SettingsScreen.TargetXo = 1.0;
+                SettingsScreen.TargetYo = 1.0;
+                SettingsScreen.Radius = 0.5;
+
                 game.setScreen(new OptionsScreen(game));
             }
         } else {

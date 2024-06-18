@@ -123,10 +123,13 @@ public class GameControl implements Screen {
         setupLights();
         setupInput();
 
+
         //setup maze
         // Comment out these lines if you don't want to use a maze
+        if(OptionsScreen.GT.equals("maze")) {
         maze = new Maze();
         walls = maze.getWalls();
+        } 
 
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0, walls);

@@ -6,7 +6,7 @@ import com.game.terrain.Maze.Wall;
 import java.util.List;
 
 public class Bouncing {
-    private static final float BUFFER_ZONE = 0.01f; // Buffer zone around the walls
+    private static final float BUFFER_ZONE = 0.06f; // Buffer zone around the walls
 
     /**
      * Detects collision with a wall and calculates the new velocity after the bounce.

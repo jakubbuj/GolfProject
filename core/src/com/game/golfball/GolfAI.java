@@ -81,26 +81,6 @@ public class GolfAI {
                 break;
             }
 
-
-                         //helps the shot get there from further away... (comment out if not needed)
-            double deviationThreshold = 0.2;
-            double velocityAdjustment = 0.2;
-
-            if (Math.abs(deviation.x) > deviationThreshold) {
-                currentVelocity.x += Math.signum(deviation.x) * velocityAdjustment;
-            }
-
-            if (Math.abs(deviation.y) > deviationThreshold) {
-                currentVelocity.y += Math.signum(deviation.y) * velocityAdjustment;
-            }
-
-            if (Math.abs(deviation.z) > deviationThreshold) {
-                currentVelocity.z += Math.signum(deviation.z) * velocityAdjustment;
-            }
-
-
-            
-
             Vector3 gradient = approximateGradient(currentVelocity, deviation);
 
             t++;

@@ -11,8 +11,8 @@ public class SoundManager {
      * Loads the sounds used in the game
      */
     public void loadSounds() {
-        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/falling_in_water.mp3"));
-        soundWinning = Gdx.audio.newSound(Gdx.files.internal("assets/winning.mp3"));
+        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/ninagameoverrr.mp3"));
+        soundWinning = Gdx.audio.newSound(Gdx.files.internal("assets/winsound.wav"));
     }
 
     /**

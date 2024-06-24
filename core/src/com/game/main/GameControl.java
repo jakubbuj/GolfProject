@@ -1,7 +1,6 @@
 package com.game.main;
 
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -9,15 +8,10 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.math.Vector3;
 import com.game.golfball.GolfAI;
 import com.game.golfball.GolfBall;
@@ -38,16 +32,12 @@ import java.util.ArrayList;
 
 public class GameControl implements Screen {
 
-    private static Sound soundwinning;
     private boolean gameOverSoundPlayed = false;
-    private Sound soundFellInWater;
     private boolean fellInWaterSoundPlayed = false;
     private UI ui;
     private ModelBatch modelBatch;
     static Environment environment;
     private TerrainV2 terrain;
-    public static PerspectiveCamera camera;
-    private CameraInputController camController;
     private PhysicsEngine physicsEngine;
     private GameRules gameRules;
     private GameRules gameRulesRB;
@@ -93,6 +83,9 @@ public class GameControl implements Screen {
     private List<Wall> walls;
     private List<Vector3> segmentedPath = new ArrayList<>();
 
+    private SoundManager soundManager; // SoundManager instance
+    private LightSetup lightSetup; // LightSetup instance
+
     /**
      * Constructs a GameControl object with the specified GolfGame instance.
      *
@@ -100,6 +93,8 @@ public class GameControl implements Screen {
      */
     public GameControl(GolfGame game) {
         this.game = game;
+        this.soundManager = new SoundManager();
+        this.lightSetup = new LightSetup(); // Initialize LightSetup
     }
 
     /**
@@ -113,23 +108,23 @@ public class GameControl implements Screen {
         modelBatch = new ModelBatch();
         environment = new Environment();
         terrain = new TerrainV2(width, depth, scale);
-        soundwinning = Gdx.audio.newSound(Gdx.files.internal("assets/winsound.wav"));
-        soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/ninagameoverrr.mp3"));
+        soundManager.loadSounds(); // Load sounds
+
         backgroundTexture = new Texture("assets/clouds.jpg");
 
         spriteBatch = new SpriteBatch();
 
-        setupCamera();
-        setupLights();
-        setupInput();
+        CameraSetup.setupCamera();
+        lightSetup.setupLights(environment); // Setup lights
 
+        setupInput();
 
         //setup maze
         // Comment out these lines if you don't want to use a maze
         if(OptionsScreen.GT.equals("maze")) {
-        maze = new Maze();
-        walls = maze.getWalls();
-        } 
+            maze = new Maze();
+            walls = maze.getWalls();
+        }
 
         physicsEngine = new PhysicsEngine(functionTerrain, X0, Y0, targetPosition.x, targetPosition.z, targetRadius,
                 GRASS_K, GRASS_S, SAND_K, SAND_S, 0.0, 0.0, walls);
@@ -154,37 +149,13 @@ public class GameControl implements Screen {
     }
 
     /**
-     * Sets up the camera for the game
-     */
-    private void setupCamera() {
-        camera = new PerspectiveCamera(75, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(10f, 10f, 10f);
-        camera.lookAt(0f, 0f, 0f);
-        camera.near = 0.1f;
-        camera.far = 300f;
-        camera.update();
-
-        camController = new CameraInputController(camera);
-    }
-
-    /**
-     * Sets up the lighting for the game environment
-     */
-    private void setupLights() {
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.8f, 0.8f, 0.8f, 5.0f));
-        environment.add(new DirectionalLight().set(0.9f, 0.9f, 0.9f, -3f, -10f, -0f));
-        environment.add(new DirectionalLight().set(0.9f, 0.9f, 0.9f, 3f, 10f, -0f));
-        environment.add(new PointLight().set(0.8f, 0.8f, 0.8f, new Vector3(0, 30, 0), 500f));
-    }
-
-    /**
      * Sets up the input processing for the game, including handling camera controls
      * and charging bar
      */
     private void setupInput() {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(ui.getStage());
-        inputMultiplexer.addProcessor(camController);
+        inputMultiplexer.addProcessor(CameraSetup.camController);
         inputMultiplexer.addProcessor(new InputAdapter() {
             @Override
             public boolean keyDown(int keycode) {
@@ -249,7 +220,7 @@ public class GameControl implements Screen {
      * Applies a force to the ball based on the current charge power
      */
     private void applyForceBasedOnCharge() {
-        Vector3 direction = new Vector3(camera.direction).nor();
+        Vector3 direction = new Vector3(CameraSetup.camera.direction).nor();
         Vector3 hitForce = direction.scl(chargePower);
         ballMovement.applyForce(hitForce);
     }
@@ -278,7 +249,7 @@ public class GameControl implements Screen {
         spriteBatch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         spriteBatch.end();
 
-        camController.update();
+        CameraSetup.camController.update();
 
         if (isCharging) {
             chargePower += deltaTime;
@@ -287,7 +258,7 @@ public class GameControl implements Screen {
 
         update();
 
-        modelBatch.begin(camera);
+        modelBatch.begin(CameraSetup.camera);
         terrain.render(modelBatch, environment);
         AIball.render(modelBatch, environment);
         ball.render(modelBatch, environment);
@@ -321,7 +292,7 @@ public class GameControl implements Screen {
         // Check if game is over
         if ((gameRules.isGameOver() || gameRulesRB.isGameOver() || gameRulesAI.isGameOver()) && !gameOverSoundPlayed) {
             ui.setGameOverLabelVisible(true);
-            soundwinning.play();
+            soundManager.playWinningSound(); // Play winning sound
             gameOverSoundPlayed = true;
         }
 
@@ -329,7 +300,7 @@ public class GameControl implements Screen {
         if ((gameRules.fellInWater() || gameRulesRB.fellInWater() || gameRulesAI.fellInWater())
                 && !fellInWaterSoundPlayed) {
             ui.setFellInWaterLabelVisible(true);
-            soundFellInWater.play();
+            soundManager.playFellInWaterSound(); // Play fell in water sound
             fellInWaterSoundPlayed = true;
         }
 
@@ -337,7 +308,7 @@ public class GameControl implements Screen {
         if ((gameRules.outOfBorder() || gameRulesRB.outOfBorder() || gameRulesAI.outOfBorder())
                 && !fellInWaterSoundPlayed) {
             ui.setFellOutOfBoundsLabelVisible(true);
-            soundFellInWater.play();
+            soundManager.playFellInWaterSound(); // Play fell in water sound
             fellInWaterSoundPlayed = true;
         }
     }
@@ -411,13 +382,14 @@ public class GameControl implements Screen {
             terrain.dispose();
         if (ball != null)
             ball.dispose();
-        if (camera != null)
-            camera = null;
+        if (CameraSetup.camera != null)
+            CameraSetup.camera = null;
         if (backgroundTexture != null) {
             backgroundTexture.dispose();
         }
         if (spriteBatch != null) {
             spriteBatch.dispose();
         }
+        soundManager.dispose(); // Dispose sounds
     }
 }

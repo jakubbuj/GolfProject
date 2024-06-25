@@ -247,7 +247,7 @@ public class SettingsScreen implements Screen {
      * grassK, grassS, sandK, sandS, TargetXo, TargetYo, Radius.
      */
     private void handleSubmitButton() {
-        submitButton = new TextButton("Submit", skin);
+        submitButton = new TextButton("Submit and play", skin);
         submitButton.setPosition(530, 100);
         submitButton.setSize(100, 30);
         submitButton.addListener(new ClickListener() {
@@ -389,7 +389,7 @@ public class SettingsScreen implements Screen {
                     stage.addActor(errorLabel);
                 }
                 if (errorLabel == null && errorIcon == null) {
-                    game.setScreen(new MainMenu(game));
+                    game.setScreen(new OptionsScreen(game));
                 }
                
                 MainMenu.clicksound.play();
@@ -413,14 +413,15 @@ public class SettingsScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                function.setText(" sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y ) ");
-                InitialCoordinateX.setText("5.0");
-                InitialCoordinateY.setText("2.0");
+                //function.setText(" sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y ) ");
+                function.setText(" 1 ");
+                InitialCoordinateX.setText("8");
+                InitialCoordinateY.setText("8");
                 GRASS_K.setText("1.0");
                 GRASS_S.setText("0.5");
                 SAND_K.setText("0.3");
                 SAND_S.setText("0.4");
-                TargetXBox.setText("4.0");
+                TargetXBox.setText("1.0");
                 TargetYBox.setText("1.0");
                 TRBox.setText("0.5");
 

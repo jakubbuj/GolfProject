@@ -8,11 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.game.golfball.AStarBot;
 import com.game.main.GameControl;
 
 /**
- * The {@code UI} class is responsible for creating and managing the user interface elements in the game.
+ * The {@code UI} class is responsible for creating and managing the user
+ * interface elements in the game.
  * This includes buttons, labels, and a progress bar.
  */
 public class UI {
@@ -31,7 +31,8 @@ public class UI {
     /**
      * Constructs a {@code UI} instance and initializes the UI elements.
      *
-     * @param gameControl the {@code GameControl} instance to interact with the game logic
+     * @param gameControl the {@code GameControl} instance to interact with the game
+     *                    logic
      */
     public UI(GameControl gameControl) {
         this.gameControl = gameControl;
@@ -79,7 +80,8 @@ public class UI {
     }
 
     /**
-     * Sets up the Rule Based Bot Game button which triggers a rule-based bot play when pressed.
+     * Sets up the Rule Based Bot Game button which triggers a rule-based bot play
+     * when pressed.
      */
     private void setupRuleBasedBotButton() {
         rbbButton = new TextButton("Rule Based Bot Game", skin);
@@ -94,6 +96,7 @@ public class UI {
         });
         stage.addActor(rbbButton);
     }
+
     public void setupStarButton() {
         starButton = new TextButton("Star", skin);
         starButton.setSize(200, 30);
@@ -101,6 +104,7 @@ public class UI {
         starButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                gameControl.triggerAStarShot();
                 System.out.println("starbutton pressed");
             }
         });
@@ -223,7 +227,8 @@ public class UI {
     }
 
     /**
-     * Renders the UI elements, updating the progress bar value and drawing the stage.
+     * Renders the UI elements, updating the progress bar value and drawing the
+     * stage.
      */
     public void render() {
         progressBar.setValue(gameControl.getChargePower());

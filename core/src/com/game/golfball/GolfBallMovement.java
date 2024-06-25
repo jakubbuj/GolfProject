@@ -2,12 +2,17 @@ package com.game.golfball;
 
 import com.badlogic.gdx.math.Vector3;
 import com.game.terrain.GameRules;
+import com.game.terrain.GetHeight;
+import com.game.golfball.Bouncing;
+import com.game.terrain.Maze.Wall;
+
+import java.util.List;
 
 public class GolfBallMovement {
-
     private GolfBall ball;
     private PhysicsEngine physicsEngine;
     private GameRules gameRules;
+    private List<Wall> walls;
 
     /**
      * Constructs a GolfBallMovement object with the specified ball, physics engine, and game rules.
@@ -15,14 +20,16 @@ public class GolfBallMovement {
      * @param ball          The golf ball to be moved.
      * @param physicsEngine The physics engine used for simulating ball movement.
      * @param gameRules     The game rules governing ball movement and game status.
+     * @param walls         The list of walls in the maze.
      */
-    public GolfBallMovement(GolfBall ball, PhysicsEngine physicsEngine, GameRules gameRules) {
+    public GolfBallMovement(GolfBall ball, PhysicsEngine physicsEngine, GameRules gameRules, List<Wall> walls) {
         this.ball = ball;
         this.physicsEngine = physicsEngine;
         if (gameRules == null) {
             throw new IllegalArgumentException("gameRules cannot be null");
         }
         this.gameRules = gameRules;
+        this.walls = walls;
     }
 
     /**
@@ -68,11 +75,18 @@ public class GolfBallMovement {
 
         double[] newState = physicsEngine.runSingleStep(currentPosition, currentVelocity);
 
-        ball.setPosition(new Vector3((float) newState[0], ball.getPosition().y, (float) newState[1]));
-        ball.setVelocity(new Vector3((float) newState[2], 0, (float) newState[3]));
+        // Update ball position and velocity
+        Vector3 newPosition = new Vector3((float) newState[0], ball.getPosition().y, (float) newState[1]);
+        Vector3 newVelocity = new Vector3((float) newState[2], 0, (float) newState[3]);
+
+        // Check for collisions and apply bounce logic
+        newVelocity = Bouncing.detectCollisionAndBounce(newPosition, newVelocity, walls);
+
+        ball.setPosition(newPosition);
+        ball.setVelocity(newVelocity);
 
         // Adjust the ball's vertical position based on the terrain height
-        ball.getPosition().y = (float) (physicsEngine.terrainHeight);
+        ball.getPosition().y = (float) GetHeight.getHeight(PhysicsEngine.heightFunction, ball.getPosition().x, ball.getPosition().z);
 
         // Check if the ball has effectively stopped moving and set velocity to zero
         if (!ball.isMoving()) {

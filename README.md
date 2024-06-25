@@ -27,7 +27,7 @@ After entering all values, click the "Submit" button. You will return to the Mai
 3. Options Screen:
 
 Enter your name.
-Select the preferred game mode.
+Select the preferred game mode (with or without a maze).
 Press the "Submit and Play" button.
 
 4. Game Control Screen:
@@ -35,6 +35,7 @@ Press the "Submit and Play" button.
 To apply force to the white golf ball, press, hold, and release the space bar.
 Press "Rule Based Bot Game" for the bot to take a shot.
 Press "AI Shot" for the bot to take a hole-in-one shot.
+Press "Star" for the Astar bot to solve to maze (click it only if the maze is visible)
 
 Correspondences for Inputting Functions and Constants:
 Constant e: E
@@ -43,4 +44,4 @@ Square root: sqrt
 Sine: sin
 Cosine: cos
 Natural log (base e): ln
-Logarithm (base 10): log
+Logarithm (base 10): log

@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.Vector3;
 import com.game.golfball.GolfAI;
 import com.game.golfball.GolfBall;
@@ -79,7 +78,7 @@ public class GameControl implements Screen {
     private SpriteBatch spriteBatch;
     private GolfGame game;
     private SettingsScreen settingsScreen; // Reference to SettingsScreen instance
-    //maze
+    // maze
     private Maze maze;
     private List<Wall> walls;
     private List<Vector3> segmentedPath = new ArrayList<>();
@@ -120,9 +119,8 @@ public class GameControl implements Screen {
 
         setupInput();
 
-        //setup maze
-        // Comment out these lines if you don't want to use a maze
-        if(OptionsScreen.GT.equals("maze")) {
+        // setup maze
+        if (OptionsScreen.GT.equals("maze")) {
             maze = new Maze();
             walls = maze.getWalls();
         }

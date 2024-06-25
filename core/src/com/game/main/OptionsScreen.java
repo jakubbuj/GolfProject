@@ -89,7 +89,7 @@ public class OptionsScreen implements Screen {
         gameTypeBox = new SelectBox<>(skin);
         gameTypeBox.setPosition(300, 330);
         gameTypeBox.setSize(200, 30);
-        gameTypeBox.setItems("multiplayer", "against AI", "singleplayer");
+        gameTypeBox.setItems("maze", "normal");
 
         stage.addActor(gameTypeBox);
         stage.addActor(gameTypeLabel);

@@ -1,10 +1,12 @@
 package com.game.golfball;
 
-
 import com.badlogic.gdx.math.Vector3;
 import com.game.terrain.GetHeight;
 import com.game.terrain.SandHeightCalculator;
+import com.game.terrain.TerrainV2;
+import com.game.terrain.Maze.Wall;
 
+import java.util.List;
 
 public class PhysicsEngine {
 
@@ -14,13 +16,14 @@ public class PhysicsEngine {
     double SAND_K, SAND_S; // kinetic and static coefficients on the sand
     public static String heightFunction; // h(x,y) function of the height profile
     double xMapStart = 0, xMapEnd = 50, yMapStart = 0, yMapEnd = 50; // x and y map limits
-    double maxVelocity = 5;
+    public static double maxVelocity = 5;
     double xInitialVelocity = 0, zInitialVelocity = 0;
-    double terrainHeight = 0;
+    public double terrainHeight = 0;
+    private List<Wall> walls;
 
     final double g = 9.80665;
     final static double LIMIT_ZERO = 0.0000001;
-    final double h = 0.005; // Reduced step size for better precision
+    final double h = 0.004; // Reduced step size for better precision
     final double ballMass = 0.5;
     private double currentTime = 0.0;
     
@@ -31,22 +34,23 @@ public class PhysicsEngine {
     /**
      * Constructs a PhysicsEngine object with the specified parameters
      *
-     * @param heightFunction      The mathematical function representing the height profile of the terrain
-     * @param X0                  The initial x-coordinate position of the ball
-     * @param Y0                  The initial y-coordinate position of the bal.
-     * @param Xt                  The x-coordinate position of the target
-     * @param Yt                  The y-coordinate position of the targe
-     * @param Rt                  The radius of the target
-     * @param GRASS_K             The kinetic coefficient on grass
-     * @param GRASS_S             The static coefficient on grass
-     * @param SAND_K              The kinetic coefficient on sand
-     * @param SAND_S              The static coefficient on sand
-     * @param xInitialVelocity    The initial velocity of the ball in the x-direction
-     * @param zInitialVelocity    The initial velocity of the ball in the z-direction
+     * @param heightFunction   The mathematical function representing the height
+     *                         profile of the terrain
+     * @param X0               The initial x-coordinate position of the ball
+     * @param Y0               The initial y-coordinate position of the bal.
+     * @param Xt               The x-coordinate position of the target
+     * @param Yt               The y-coordinate position of the targe
+     * @param Rt               The radius of the target
+     * @param GRASS_K          The kinetic coefficient on grass
+     * @param GRASS_S          The static coefficient on grass
+     * @param SAND_K           The kinetic coefficient on sand
+     * @param SAND_S           The static coefficient on sand
+     * @param xInitialVelocity The initial velocity of the ball in the x-direction
+     * @param zInitialVelocity The initial velocity of the ball in the z-direction
+     * @param walls            The list of walls in the maze
      */
     public PhysicsEngine(String heightFunction, double X0, double Y0, double Xt, double Yt, double Rt, double GRASS_K,
-                         double GRASS_S, double SAND_K, double SAND_S, double xInitialVelocity, double zInitialVelocity) {
-
+                         double GRASS_S, double SAND_K, double SAND_S, double xInitialVelocity, double zInitialVelocity, List<Wall> walls) {
         PhysicsEngine.heightFunction = heightFunction;
         this.X0 = X0;
         this.Y0 = Y0;
@@ -59,13 +63,13 @@ public class PhysicsEngine {
         this.SAND_S = SAND_S;
         this.xInitialVelocity = xInitialVelocity;
         this.zInitialVelocity = zInitialVelocity;
+        this.walls = walls;
     }
 
     public static void main(String[] args) {
         PhysicsEngine testEngine = new PhysicsEngine(
                 " sqrt ( ( sin ( 0.1 * x ) + cos ( 0.1 * y ) ) ^ 2 ) + 0.5 * sin ( 0.3 * x ) * cos ( 0.3 * y ) ",
-                5, 2, 4, 1, 0.15, 1, 0.5, 0.3, 0.4, 0.0, 0.0
-        );
+                5, 2, 4, 1, 0.15, 1, 0.5, 0.3, 0.4, 0.0, 0.0, null);
 
         double[] a = testEngine.runSimulation(5, 5);
 
@@ -77,9 +81,12 @@ public class PhysicsEngine {
     /*
      * Sets the initial state (position and velocity) of the ball.
      *
-     * @param x0  The initial x-coordinate position of the ball
-     * @param y0  The initial y-coordinate position of the bal
+     * @param x0 The initial x-coordinate position of the ball
+     * 
+     * @param y0 The initial y-coordinate position of the bal
+     * 
      * @param vx0 The initial velocity of the ball in the x-direction
+     * 
      * @param vy0 The initial velocity of the ball in the z-direction
      */
 
@@ -91,11 +98,13 @@ public class PhysicsEngine {
     }
 
     /**
-     * Runs a simulation of the ball's movement given the initial velocities ( the whole movement from starting postions to stop )
+     * Runs a simulation of the ball's movement given the initial velocities ( the
+     * whole movement from starting postions to stop )
      *
      * @param xInitialVelocity The initial velocity of the ball in the x-direction
      * @param yInitialVelocity The initial velocity of the ball in the z-direction
-     * @return The final state vector representing the position and velocity of the ball after simulation
+     * @return The final state vector representing the position and velocity of the
+     *         ball after simulation
      */
     public double[] runSimulation(double xInitialVelocity, double yInitialVelocity) {
         // Initialize the state vector for position and velocity
@@ -103,9 +112,6 @@ public class PhysicsEngine {
         stateVector[1] = Y0;
         stateVector[2] = xInitialVelocity;
         stateVector[3] = yInitialVelocity;
-
-     //debug   // System.out.println(
-        //         "Initial State: X0=" + X0 + ", Y0=" + Y0 + ", Vx0=" + xInitialVelocity + ", Vy0=" + yInitialVelocity);
 
         int maxIterations = 1000; // Set a reasonable limit for iterations
         int iteration = 0;
@@ -116,53 +122,49 @@ public class PhysicsEngine {
         double positionThreshold = 0.0001; // Increased precision
         double velocityThreshold = 0.0001; // Increased precision
 
-     //debug   // Simulation loop: run until both velocities are close to zero or max iterations reached
         while (true) {
             updateStateVectorEuler(false);
 
-            if (GetHeight.getHeight(heightFunction, stateVector[0], stateVector[1]) < 0){
+            if (GetHeight.getHeight(heightFunction, stateVector[0], stateVector[1]) < 0) {
                 stateVector[2] = 0;
                 stateVector[3] = 0;
                 break;
             }
 
+            // Check for collisions and apply bounce logic
+            Vector3 position = new Vector3((float) stateVector[0], 0, (float) stateVector[1]);
+            Vector3 velocity = new Vector3((float) stateVector[2], 0, (float) stateVector[3]);
+            if (walls != null) {
+                velocity = Bouncing.detectCollisionAndBounce(position, velocity, walls);
+            }
+            stateVector[2] = velocity.x;
+            stateVector[3] = velocity.z;
+
             // Check for small changes in position and velocity
             double positionChange = Math.sqrt(
                     Math.pow(stateVector[0] - previousState[0], 2) +
-                            Math.pow(stateVector[1] - previousState[1], 2)
-            );
+                            Math.pow(stateVector[1] - previousState[1], 2));
             double velocityChange = Math.sqrt(
                     Math.pow(stateVector[2] - previousState[2], 2) +
-                            Math.pow(stateVector[3] - previousState[3], 2)
-            );
+                            Math.pow(stateVector[3] - previousState[3], 2));
 
-            // debug  
-            // if (iteration % 100 == 0) {
-            //     System.out.println("Iteration: " + iteration + ", Position Change: " + positionChange + ", Velocity Change: " + velocityChange);
-            //     System.out.println("Current State: X=" + stateVector[0] + ", Z=" + stateVector[1] + ", Vx=" + stateVector[2] + ", Vz=" + stateVector[3]);
-            // }
-
-            // Early stopping if changes are very small
             if (positionChange < positionThreshold && velocityChange < velocityThreshold) {
-                System.out.println("Early stopping due to small changes in state.");
                 break;
             }
-            //early stop if the velocity is small
-            if(Math.abs(stateVector[2]) <0.01 && Math.abs(stateVector[3]) <0.01){
+
+            // Early stop if the velocity is small
+            if (Math.abs(stateVector[2]) < 0.01 && Math.abs(stateVector[3]) < 0.01) {
                 break;
             }
 
             // Update the previous state
             System.arraycopy(stateVector, 0, previousState, 0, stateVector.length);
 
-            //stop whe iterations reach maxiterations limit
             iteration++;
             if (iteration >= maxIterations) {
                 break;
             }
         }
-
-       //debug // System.out.println("Updated State: X=" + stateVector[0] + ", Z=" + stateVector[1] + ", Vx=" + stateVector[2] + ", Vz=" + stateVector[3]);
 
         return stateVector;
     }
@@ -180,12 +182,15 @@ public class PhysicsEngine {
         // Calculate the next state vector using the Runge-Kutta method
 
         double[] stateVector1 = returnUpdatedVector(time, isImmobile, x, z, kineticCoefficient);
-        double[] stateVector2 = returnUpdatedVector(time + 0.5 * h, isImmobile, x + 0.5 * h, z + 0.5 * h, kineticCoefficient);
-        double[] stateVector3 = returnUpdatedVector(time + 0.5 * h, isImmobile, x + 0.5 * h, z + 0.5 * h, kineticCoefficient);
+        double[] stateVector2 = returnUpdatedVector(time + 0.5 * h, isImmobile, x + 0.5 * h, z + 0.5 * h,
+                kineticCoefficient);
+        double[] stateVector3 = returnUpdatedVector(time + 0.5 * h, isImmobile, x + 0.5 * h, z + 0.5 * h,
+                kineticCoefficient);
         double[] stateVector4 = returnUpdatedVector(time + h, isImmobile, x + h, z + h, kineticCoefficient);
 
         for (int i = 0; i < stateVector.length; i++) {
-            stateVector[i] += (1.0 / 6.0) * h * (stateVector1[i] + 2 * stateVector2[i] + 2 * stateVector3[i] + stateVector4[i]);
+            stateVector[i] += (1.0 / 6.0) * h
+                    * (stateVector1[i] + 2 * stateVector2[i] + 2 * stateVector3[i] + stateVector4[i]);
         }
 
         // Check if the velocity is low enough to consider the ball stopped
@@ -198,10 +203,10 @@ public class PhysicsEngine {
     /**
      * Returns the updated vector using the system's equations
      *
-     * @param t                The current time step
-     * @param isImmobile       A flag indicating if the ball is immobile
-     * @param x                The x-coordinate position
-     * @param z                The z-coordinate position
+     * @param t                  The current time step
+     * @param isImmobile         A flag indicating if the ball is immobile
+     * @param x                  The x-coordinate position
+     * @param z                  The z-coordinate position
      * @param kineticCoefficient The kinetic friction coefficient
      * @return The updated system function array
      */
@@ -236,8 +241,8 @@ public class PhysicsEngine {
         double xAcceleration = (xFirstTerm + xSecondTerm) / ballMass;
         double zAcceleration = (zFirstTerm + zSecondTerm) / ballMass;
 
-        //double windForceX = 0.1 * Math.sin(t); 
-        //double windForceZ = 0.1 * Math.cos(t);
+        // double windForceX = 0.1 * Math.sin(t);
+        // double windForceZ = 0.1 * Math.cos(t);
 
         // Update system function array
         systemFunction[0] = stateVector[2]; // xVelocity
@@ -247,7 +252,7 @@ public class PhysicsEngine {
 
         return systemFunction;
     }
-    
+
     /**
      * Updates the state vector using the Euler method for numerical integration
      *
@@ -284,8 +289,8 @@ public class PhysicsEngine {
         double zAcceleration = (gravityForceZ - frictionForceZ) / ballMass;
 
         // Apply Euler's method to update velocities and positions
-        stateVector[2] += xAcceleration * h; 
-        stateVector[3] += zAcceleration * h; 
+        stateVector[2] += xAcceleration * h;
+        stateVector[3] += zAcceleration * h;
 
         // Update positions based on new velocities
         stateVector[0] += stateVector[2] * h;
@@ -306,12 +311,20 @@ public class PhysicsEngine {
      * @return True if the position is within a sand area, false otherwise
      */
     private boolean isWithinSandArea(double x, double z) {
-        float sand = SandHeightCalculator.getSandHeight((float) x+50, (float) z+50);
-        return(sand > 0.5);
+
+        float sand = SandHeightCalculator.getSandHeight((float) x + 50, (float) z + 50);
+
+        if (sand > 0.5) {
+            // debug //System.out.println("x: " + x + ",z: " + z + " SAND:" + sand);
+            return true;
+        }
+        // debug //System.out.println("x: " + x + ",z: " + z + " GRASS " + sand);
+        return false;
     }
 
     /**
-     * Calculates the derivative of the height function with respect to the z-coordinate.
+     * Calculates the derivative of the height function with respect to the
+     * z-coordinate.
      *
      * @param x The x-coordinate position.
      * @param y The y-coordinate position.
@@ -324,7 +337,8 @@ public class PhysicsEngine {
     }
 
     /**
-     * Calculates the derivative of the height function with respect to the z-coordinate
+     * Calculates the derivative of the height function with respect to the
+     * z-coordinate
      *
      * @param x The x-coordinate position
      * @param z The z-coordinate position
@@ -337,7 +351,8 @@ public class PhysicsEngine {
     }
 
     /**
-     * Runs a single step of the simulation given the ball's current position and velocity ( so updates state vectors only once)
+     * Runs a single step of the simulation given the ball's current position and
+     * velocity (so updates state vectors only once)
      *
      * @param ballPosition The current position of the ball
      * @param ballVelocity The current velocity of the ball
@@ -382,7 +397,8 @@ public class PhysicsEngine {
     /**
      * Returns the current state vector
      *
-     * @return The current state vector representing the position and velocity of the ball
+     * @return The current state vector representing the position and velocity of
+     *         the ball
      */
     public double[] getStateVector() {
         return stateVector;

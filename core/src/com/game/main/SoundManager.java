@@ -1,45 +1,43 @@
 package com.game.main;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.Gdx;
 
 public class SoundManager {
-    private Sound soundWinning;
     private Sound soundFellInWater;
-    private boolean gameOverSoundPlayed = false;
-    private boolean fellInWaterSoundPlayed = false;
+    private Sound soundWinning;
 
-    public SoundManager() {
-        soundWinning = Gdx.audio.newSound(Gdx.files.internal("assets/winsound.wav"));
+    /**
+     * Loads the sounds used in the game
+     */
+    public void loadSounds() {
         soundFellInWater = Gdx.audio.newSound(Gdx.files.internal("assets/ninagameoverrr.mp3"));
+        soundWinning = Gdx.audio.newSound(Gdx.files.internal("assets/winsound.wav"));
     }
 
-    public Sound getSoundWinning() {
-        return soundWinning;
+    /**
+     * Plays the sound for falling in water
+     */
+    public void playFellInWaterSound() {
+        soundFellInWater.play();
     }
 
-    public Sound getSoundFellInWater() {
-        return soundFellInWater;
+    /**
+     * Plays the sound for winning
+     */
+    public void playWinningSound() {
+        soundWinning.play();
     }
 
-    public boolean isGameOverSoundPlayed() {
-        return gameOverSoundPlayed;
-    }
-
-    public void setGameOverSoundPlayed(boolean gameOverSoundPlayed) {
-        this.gameOverSoundPlayed = gameOverSoundPlayed;
-    }
-
-    public boolean isFellInWaterSoundPlayed() {
-        return fellInWaterSoundPlayed;
-    }
-
-    public void setFellInWaterSoundPlayed(boolean fellInWaterSoundPlayed) {
-        this.fellInWaterSoundPlayed = fellInWaterSoundPlayed;
-    }
-
+    /**
+     * Disposes of the sounds when no longer needed
+     */
     public void dispose() {
-        soundWinning.dispose();
-        soundFellInWater.dispose();
+        if (soundFellInWater != null) {
+            soundFellInWater.dispose();
+        }
+        if (soundWinning != null) {
+            soundWinning.dispose();
+        }
     }
 }

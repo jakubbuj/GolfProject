@@ -37,7 +37,7 @@ public class GameControl implements Screen {
     private boolean fellInWaterSoundPlayed = false;
     private UI ui;
     private ModelBatch modelBatch;
-    private static Environment environment;
+    static Environment environment;
     private TerrainV2 terrain;
     private PhysicsEngine physicsEngine;
     private GameRules gameRules;
@@ -112,6 +112,7 @@ public class GameControl implements Screen {
         soundManager.loadSounds(); // Load sounds
 
         backgroundTexture = new Texture("assets/clouds.jpg");
+
         spriteBatch = new SpriteBatch();
 
         CameraSetup.setupCamera();
@@ -181,6 +182,9 @@ public class GameControl implements Screen {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
+    /**
+     * Triggers a shot by the AI bot
+     */
     public void triggerAIShot() {
         Vector3 aiShot = golfAI.findBestShot();
         AIball.setVelocity(aiShot);
@@ -192,9 +196,9 @@ public class GameControl implements Screen {
      * updating its state
      */
     public void triggerRuleBasedBotPlay() {
-        Vector3 newShotVelocity = ballManager.getRuleBasedBot().calculateNewVelocity();
-        ballManager.getRBball().setVelocity(newShotVelocity);
-        ballManager.getRuleBasedBot().update();
+        Vector3 newShotVelocity = ruleBasedBot.calculateNewVelocity();
+        RBball.setVelocity(newShotVelocity);
+        ruleBasedBot.update(); // Bot makes one shot
     }
 
     /**
@@ -219,16 +223,27 @@ public class GameControl implements Screen {
     private void applyForceBasedOnCharge() {
         Vector3 direction = new Vector3(CameraSetup.camera.direction).nor();
         Vector3 hitForce = direction.scl(chargePower);
-        ballManager.getBallMovement().applyForce(hitForce);
+        ballMovement.applyForce(hitForce);
     }
 
+    /**
+     * Gets the current charge power
+     *
+     * @return The current charge power
+     */
     public float getChargePower() {
         return chargePower;
     }
 
+    /**
+     * Called every frame to render the game screen
+     *
+     * @param delta The time in seconds since the last render
+     */
     @Override
     public void render(float delta) {
         float deltaTime = Gdx.graphics.getDeltaTime();
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         spriteBatch.begin();
@@ -261,6 +276,9 @@ public class GameControl implements Screen {
         ui.render();
     }
 
+    /**
+     * Updates the game state, including the ball movements and game rules checks
+     */
     private void update() {
         ballMovement.update(); // make ball move
         golfAI.update(AIball); // make AI ball move
@@ -306,10 +324,16 @@ public class GameControl implements Screen {
     public void resize(int width, int height) {
     }
 
+    /**
+     * Called when the game is paused
+     */
     @Override
     public void pause() {
     }
 
+    /**
+     * Called when the game is resumed after being paused
+     */
     @Override
     public void resume() {
     }
@@ -321,7 +345,11 @@ public class GameControl implements Screen {
     public void hide() {
     }
 
+    /**
+     * Restarts the game by resetting all relevant variables to their initial values
+     */
     public void restartGame() {
+        // Reset all relevant variables to their initial values
         chargePower = 0;
         isCharging = false;
         // Reset ball positions
@@ -330,18 +358,24 @@ public class GameControl implements Screen {
         RBball.setPosition(new Vector3(X0, 20, Y0));
         Astar.setPosition(new Vector3(X0, 20, Y0)); // Reset A* ball position
 
-        soundManager.setGameOverSoundPlayed(false);
+        gameOverSoundPlayed = false;
         ui.setGameOverLabelVisible(false);
-        soundManager.setFellInWaterSoundPlayed(false);
+        fellInWaterSoundPlayed = false;
         ui.setFellInWaterLabelVisible(false);
         ui.setFellOutOfBoundsLabelVisible(false);
         path = null; // Reset path
     }
 
+    /**
+     * Navigates back to the main menu
+     */
     public void backToMainMenu() {
         game.setScreen(new MainMenu(game));
     }
 
+    /**
+     * Disposes of resources used by this screen
+     */
     @Override
     public void dispose() {
         modelBatch.dispose();

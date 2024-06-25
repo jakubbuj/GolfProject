@@ -116,7 +116,7 @@ public class UI {
      * Sets up the game over label which is displayed when the game is won.
      */
     private void setupGameOverLabel() {
-        gameOverLabel = new TextButton("You win! Ball reached the target! Number of shots taken: #  RESTART ", skin);
+        gameOverLabel = new TextButton("You win! Ball reached the target!  RESTART ", skin);
         gameOverLabel.setPosition(Gdx.graphics.getWidth() / 2 - 300, Gdx.graphics.getHeight() / 2);
         gameOverLabel.setSize(600, 30);
         gameOverLabel.addListener(new ChangeListener() {

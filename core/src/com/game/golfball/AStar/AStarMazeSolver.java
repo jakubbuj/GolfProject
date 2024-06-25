@@ -10,12 +10,21 @@ public class AStarMazeSolver {
     private Node start;
     private Node goal;
 
+    /**
+     * Constructs an AStarMazeSolver with the start and goal positions
+     * @param start the starting position as a Vector3
+     * @param goal the goal position as a Vector3
+     */
     public AStarMazeSolver(Vector3 start, Vector3 goal) {
         this.maze = MazeLayout.getMazeLayout();
         this.start = new Node((int) start.x, (int) start.z);
         this.goal = new Node((int) goal.x, (int) goal.z);
     }
 
+    /**
+     * Finds the best path from start to goal using the A* algorithm
+     * @return a list of nodes representing the best path
+     */
     public List<Node> findBestPath() {
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getFScore));
         Set<Node> closedSet = new HashSet<>();
@@ -57,6 +66,11 @@ public class AStarMazeSolver {
         return Collections.emptyList();
     }
 
+    /**
+     * Gets the neighboring nodes of a given node
+     * @param node the node to find neighbors for
+     * @return a list of neighboring nodes
+     */
     private List<Node> getNeighbors(Node node) {
         List<Node> neighbors = new ArrayList<>();
         int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
@@ -72,10 +86,22 @@ public class AStarMazeSolver {
         return neighbors;
     }
 
+    /**
+     * Calculates the heuristic distance between two nodes
+     * @param a the first node
+     * @param b the second node
+     * @return the heuristic distance
+     */
     private double heuristic(Node a, Node b) {
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
 
+    /**
+     * Reconstructs the path from start to goal
+     * @param cameFrom a map of nodes to their predecessors
+     * @param current the current node
+     * @return a list of nodes representing the path
+     */
     private List<Node> reconstructPath(Map<Node, Node> cameFrom, Node current) {
         List<Node> path = new ArrayList<>();
         while (current != null) {

@@ -40,6 +40,15 @@ public class GameRules {
     }
 
     /**
+     * Sets the ball for the game rules.
+     *
+     * @param ball the golf ball object
+     */
+    public void setBall(GolfBall ball) {
+        this.ball = ball;
+    }
+
+    /**
      * Checks if the game is over by determining if the ball has reached the target
      * 
      * @return true if the game is over, false otherwise

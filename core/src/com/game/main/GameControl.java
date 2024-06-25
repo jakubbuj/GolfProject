@@ -140,6 +140,7 @@ public class GameControl implements Screen {
         gameRules = new GameRules(target, ball, functionTerrain, terrain);
         gameRulesRB = new GameRules(target, RBball, functionTerrain, terrain);
         gameRulesAI = new GameRules(target, AIball, functionTerrain, terrain);
+        gameRulesAstar = new GameRules(target, Astar, functionTerrain, terrain);
 
         // movement of balls
         ballMovement = new GolfBallMovement(ball, physicsEngine, gameRules, walls);

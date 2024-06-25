@@ -1,16 +1,16 @@
-0
+0. Edit maze layout
 
  To modify the maze configuration, navigate to the MazeLayout.java file. In this file, you'll find various maze layouts. Simply    uncomment the desired layout and ensure that all other unused layouts are commented out. This will set the active maze configuration  for the game.
 
-0.5  Getting Started 
+1.  Getting Started 
 
    open file project-1.2-ken-17-main in ide and then to lunch application run the main class named DesktopLauncher.java
 
-1. Main Menu Screen:
+2. Main Menu Screen:
 
 Before pressing "Play", press the "Settings" button at the bottom of the screen.
 
-2. Settings Screen:
+3. Settings Screen:
 
 In the provided text fields, input the following variables (use a "." for decimal points, not ","):
 
@@ -28,13 +28,13 @@ Optionally, you can use the "Default" button to set all variables to their defau
 
 After entering all values, click the "Submit" button. You will return to the Main Menu screen.
 
-3. Options Screen:
+4. Options Screen:
 
 Enter your name.
 Select the preferred game mode (with or without a maze).
 Press the "Submit and Play" button.
 
-4. Game Control Screen:
+5. Game Control Screen:
 
 To apply force to the white golf ball, press, hold, and release the space bar.
 Press "Rule Based Bot Game" for the bot to take a shot.

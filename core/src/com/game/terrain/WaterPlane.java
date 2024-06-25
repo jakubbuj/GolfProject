@@ -20,12 +20,23 @@ public class WaterPlane {
     private int depth;
     private float scale;
 
+    /**
+     * Constructs a WaterPlane with the specified width, depth, and scale
+     * @param width the width of the water plane
+     * @param depth the depth of the water plane
+     * @param scale the scale of the water plane
+     */
     public WaterPlane(int width, int depth, float scale) {
         this.width = width;
         this.depth = depth;
         this.scale = scale;
     }
 
+    /**
+     * Creates the water model instance with the specified transparency
+     * @param alpha the transparency level of the water
+     * @return the created water model instance
+     */
     public ModelInstance createWater(float alpha) {
         ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -47,6 +58,11 @@ public class WaterPlane {
         return waterInstance;
     }
 
+    /**
+     * Renders the water plane
+     * @param modelBatch the ModelBatch used for rendering
+     * @param environment the Environment for the rendering context
+     */
     public void render(ModelBatch modelBatch, Environment environment) {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -56,6 +72,9 @@ public class WaterPlane {
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
+    /**
+     * Disposes of the water model resources
+     */
     public void dispose() {
         if (waterModel != null) {
             waterModel.dispose();

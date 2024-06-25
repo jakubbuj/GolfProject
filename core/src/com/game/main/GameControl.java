@@ -86,6 +86,8 @@ public class GameControl implements Screen {
     private SoundManager soundManager; // SoundManager instance
     private LightSetup lightSetup; // LightSetup instance
 
+    GameRules gameRulesAstar; 
+
     /**
      * Constructs a GameControl object with the specified GolfGame instance.
      *
@@ -287,6 +289,12 @@ public class GameControl implements Screen {
 
         // game rules
         gameRules.checkGameStatus();
+        gameRulesAstar.checkGameStatus();
+
+        // Check if game is over for A star
+        if (gameRulesAstar.isGameOver()) {
+            ui.setGameOverLabelVisible(true);
+        }
 
         // Check if game is over
         if ((gameRules.isGameOver() || gameRulesRB.isGameOver() || gameRulesAI.isGameOver()) && !gameOverSoundPlayed) {

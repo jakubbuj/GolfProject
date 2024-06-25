@@ -18,6 +18,15 @@ public class Wall {
     private float depth;
     private ModelInstance wallModel;
 
+    /**
+     * Constructs a Wall with the specified position and dimensions
+     * @param x the x-coordinate of the wall's position
+     * @param y the y-coordinate of the wall's position
+     * @param z the z-coordinate of the wall's position
+     * @param width the width of the wall
+     * @param height the height of the wall
+     * @param depth the depth of the wall
+     */
     public Wall(float x, float y, float z, float width, float height, float depth) {
         this.position = new Vector3(x, y, z);
         this.width = width;
@@ -26,6 +35,9 @@ public class Wall {
         createWall();
     }
 
+    /**
+     * Creates the wall model using the specified dimensions and color
+     */
     private void createWall() {
         ModelBuilder modelBuilder = new ModelBuilder();
         Model wall = modelBuilder.createBox(width, height, depth, 
@@ -35,18 +47,35 @@ public class Wall {
         wallModel.transform.setToTranslation(position.x, position.y, position.z);
     }
 
+    /**
+     * Renders the wall using the provided ModelBatch and Environment
+     * @param modelBatch the ModelBatch used for rendering
+     * @param environment the Environment for the rendering context
+     */
     public void render(ModelBatch modelBatch, Environment environment) {
         modelBatch.render(wallModel, environment);
     }
 
+    /**
+     * Gets the position of the wall
+     * @return the position of the wall as a Vector3
+     */
     public Vector3 getPosition() {
         return position;
     }
 
+    /**
+     * Gets the width of the wall
+     * @return the width of the wall
+     */
     public float getWidth() {
         return width;
     }
 
+    /**
+     * Gets the depth of the wall
+     * @return the depth of the wall
+     */
     public float getDepth() {
         return depth;
     }

@@ -1,10 +1,10 @@
-0.  Getting Started 
-
-   open file project-1.2-ken-17-main in ide and then to lunch application run the main class named DesktopLauncher.java
-
-0.5
+0
 
  To modify the maze configuration, navigate to the MazeLayout.java file. In this file, you'll find various maze layouts. Simply    uncomment the desired layout and ensure that all other unused layouts are commented out. This will set the active maze configuration  for the game.
+
+0.5  Getting Started 
+
+   open file project-1.2-ken-17-main in ide and then to lunch application run the main class named DesktopLauncher.java
 
 1. Main Menu Screen:
 

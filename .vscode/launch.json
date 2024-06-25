@@ -6,6 +6,34 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Euler_Method_for_1st_ODE",
+            "request": "launch",
+            "mainClass": "Euler_Method_for_1st_ODE",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "Euler_Method_for_1st_ODE_experiment",
+            "request": "launch",
+            "mainClass": "Euler_Method_for_1st_ODE_experiment",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "Runge_Kutta_4th_ODE",
+            "request": "launch",
+            "mainClass": "Runge_Kutta_4th_ODE",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "Main_phase1",
+            "request": "launch",
+            "mainClass": "Main_phase1",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "GolfAI",
             "request": "launch",
             "mainClass": "com.game.GolfAI",

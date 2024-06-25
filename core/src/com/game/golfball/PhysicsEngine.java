@@ -26,7 +26,6 @@ public class PhysicsEngine {
     final double h = 0.004; // Reduced step size for better precision
     final double ballMass = 0.5;
     private double currentTime = 0.0;
-    
 
     double[] stateVector = new double[4];
     double[] systemFunction = new double[4];

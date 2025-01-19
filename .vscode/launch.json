@@ -6,66 +6,43 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Euler_Method_for_1st_ODE",
-            "request": "launch",
-            "mainClass": "Euler_Method_for_1st_ODE",
-            "projectName": ""
-        },
-        {
-            "type": "java",
-            "name": "Euler_Method_for_1st_ODE_experiment",
-            "request": "launch",
-            "mainClass": "Euler_Method_for_1st_ODE_experiment",
-            "projectName": ""
-        },
-        {
-            "type": "java",
-            "name": "Runge_Kutta_4th_ODE",
-            "request": "launch",
-            "mainClass": "Runge_Kutta_4th_ODE",
-            "projectName": ""
-        },
-        {
-            "type": "java",
-            "name": "Main_phase1",
-            "request": "launch",
-            "mainClass": "Main_phase1",
-            "projectName": ""
-        },
-        {
-            "type": "java",
             "name": "GolfAI",
             "request": "launch",
             "mainClass": "com.game.GolfAI",
-            "projectName": "core"
+            "projectName": "core",
+            "vmArgs": "-XstartOnFirstThread"
         },
         {
             "type": "java",
             "name": "PhysicsEngine",
             "request": "launch",
             "mainClass": "com.game.PhysicsEngine",
-            "projectName": "project-1.2-ken-17-core"
+            "projectName": "project-1.2-ken-17-core",
+            "vmArgs": "-XstartOnFirstThread"
         },
         {
             "type": "java",
             "name": "PhysicsEngine",
             "request": "launch",
             "mainClass": "com.game.PhysicsEngine",
-            "projectName": "core"
+            "projectName": "core",
+            "vmArgs": "-XstartOnFirstThread"
         },
         {
             "type": "java",
             "name": "DesktopLauncher",
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",
-            "projectName": "desktop"
+            "projectName": "desktop",
+            "vmArgs": "-XstartOnFirstThread"
         },
         {
             "type": "java",
             "name": "Launch DesktopLauncher",
             "request": "launch",
             "mainClass": "com.game.DesktopLauncher",
-            "projectName": "project-1.2-ken-17-desktop"
+            "projectName": "project-1.2-ken-17-desktop",
+            "vmArgs": "-XstartOnFirstThread"
         }
     ]
 }
